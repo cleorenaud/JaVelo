@@ -1,5 +1,9 @@
 package ch.epfl.javelo.projection;
 
+/**
+ * Non instanciable, offre des méthodes permettant de convertir entre les coordonnées WGS 84 et les coordonnées Suisse
+ * @author Cléo Renaud (325156)
+ */
 public final class Ch1903 {
     public static double e(double lon, double lat) {
         lon = Math.toDegrees(lon);

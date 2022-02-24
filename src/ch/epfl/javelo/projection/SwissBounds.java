@@ -1,5 +1,9 @@
 package ch.epfl.javelo.projection;
 
+/**
+ * Non instanciable contenant des méthodes et des constantes liées aux limites de la Suisse
+ * @author Cléo Renaud (325156)
+ */
 public final class SwissBounds {
     public static final double MIN_E = 2485000;
     public static final double MAX_E = 2834000;
