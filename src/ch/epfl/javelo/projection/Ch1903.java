@@ -5,6 +5,12 @@ package ch.epfl.javelo.projection;
  * @author Cléo Renaud (325156)
  */
 public final class Ch1903 {
+    /**
+     * Méthode qui retourne la coordonnée est d'un point donné en coordonnées WGS84
+     * @param lon (double) la longitude du point donné
+     * @param lat (double) la latitude du point donné
+     * @return (double) la coordonnée est du point
+     */
     public static double e(double lon, double lat) {
         lon = Math.toDegrees(lon);
         lat = Math.toDegrees(lat);
@@ -14,6 +20,12 @@ public final class Ch1903 {
         return eastCoordinate;
     }
 
+    /**
+     * Méthode qui retourne la coordonnée nord d'un point donné en coordonnées WGS84
+     * @param lon (double) la longitude du point donné
+     * @param lat (double) la latitude du point donné
+     * @return (double) la coordonnée nord du point
+     */
     public static double n(double lon, double lat) {
         lon = Math.toDegrees(lon);
         lat = Math.toDegrees(lat);
@@ -23,6 +35,12 @@ public final class Ch1903 {
         return northCoordinate;
     }
 
+    /**
+     * Méthode qui retourne la longitude d'un point donné en coordonnées Ch1903
+     * @param e (double) la coordonnée est du point donné
+     * @param n (double) la coordonnée nord du point donné
+     * @return (double) la longitude du point
+     */
     public static double lon(double e, double n) {
         e = Math.pow(10, -6) * (e - 2600000);
         n = Math.pow(10, -6) * (n - 1200000);
@@ -32,6 +50,12 @@ public final class Ch1903 {
         return longitude;
     }
 
+    /**
+     * Méthode qui retourne la latitude d'un point donné en coordonnées Ch1903
+     * @param e (double) la coordonnée est du point donné
+     * @param n (double) la coordonnée nord du point donné
+     * @return (double) la latitude du point
+     */
     public static double lat(double e, double n) {
         e = Math.pow(10, -6) * (e - 2600000);
         n = Math.pow(10, -6) * (n - 1200000);
