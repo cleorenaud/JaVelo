@@ -2,14 +2,17 @@ package ch.epfl.javelo.projection;
 
 /**
  * Non instanciable, offre des méthodes permettant de convertir entre les coordonnées WGS 84 et les coordonnées Suisse
+ *
  * @author Cléo Renaud (325156)
  */
 public final class Ch1903 {
 
-    private Ch1903() {}
+    private Ch1903() {
+    }
 
     /**
      * Méthode qui retourne la coordonnée est d'un point donné en coordonnées WGS84
+     *
      * @param lon (double) la longitude du point donné
      * @param lat (double) la latitude du point donné
      * @return (double) la coordonnée est du point
@@ -25,6 +28,7 @@ public final class Ch1903 {
 
     /**
      * Méthode qui retourne la coordonnée nord d'un point donné en coordonnées WGS84
+     *
      * @param lon (double) la longitude du point donné
      * @param lat (double) la latitude du point donné
      * @return (double) la coordonnée nord du point
@@ -40,6 +44,7 @@ public final class Ch1903 {
 
     /**
      * Méthode qui retourne la longitude d'un point donné en coordonnées Ch1903
+     *
      * @param e (double) la coordonnée est du point donné
      * @param n (double) la coordonnée nord du point donné
      * @return (double) la longitude du point
@@ -55,6 +60,7 @@ public final class Ch1903 {
 
     /**
      * Méthode qui retourne la latitude d'un point donné en coordonnées Ch1903
+     *
      * @param e (double) la coordonnée est du point donné
      * @param n (double) la coordonnée nord du point donné
      * @return (double) la latitude du point
@@ -65,6 +71,6 @@ public final class Ch1903 {
         double latitude = 16.9023892 + 3.238272 * n - 0.270978 * Math.pow(e, 2) - 0.002528 * Math.pow(n, 2) - 0.0447 * Math.pow(e, 2) * n - 0.0140 * Math.pow(n, 3);
         latitude = latitude * 100 / 36;
         latitude = Math.toRadians(latitude);
-         return latitude;
+        return latitude;
     }
 }

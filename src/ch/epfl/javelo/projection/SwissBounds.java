@@ -2,6 +2,7 @@ package ch.epfl.javelo.projection;
 
 /**
  * Non instanciable contenant des méthodes et des constantes liées aux limites de la Suisse
+ *
  * @author Cléo Renaud (325156)
  */
 public final class SwissBounds {
@@ -12,10 +13,12 @@ public final class SwissBounds {
     public static final double WIDTH = MAX_E - MIN_E;
     public static final double HEIGHT = MAX_N - MIN_N;
 
-    private SwissBounds() {}
-    
+    private SwissBounds() {
+    }
+
     /**
      * Méthode permettant de vérifier si les coordonnées d'un point donné sont bien dans les limites de la Suisse
+     *
      * @param e (double) coordonnée est du point donné
      * @param n (double) coordonnée nord du point donné
      * @return (boolean)
