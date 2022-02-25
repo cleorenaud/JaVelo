@@ -5,6 +5,9 @@ package ch.epfl.javelo.projection;
  * @author Cléo Renaud (325156)
  */
 public final class Ch1903 {
+
+    private Ch1903() {}
+
     /**
      * Méthode qui retourne la coordonnée est d'un point donné en coordonnées WGS84
      * @param lon (double) la longitude du point donné

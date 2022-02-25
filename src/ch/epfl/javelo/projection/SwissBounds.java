@@ -12,6 +12,8 @@ public final class SwissBounds {
     public static final double WIDTH = MAX_E - MIN_E;
     public static final double HEIGHT = MAX_N - MIN_N;
 
+    private SwissBounds() {}
+    
     /**
      * Méthode permettant de vérifier si les coordonnées d'un point donné sont bien dans les limites de la Suisse
      * @param e (double) coordonnée est du point donné
