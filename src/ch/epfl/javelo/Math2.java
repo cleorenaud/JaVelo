@@ -1,7 +1,7 @@
 package ch.epfl.javelo;
 
 /**
- * une classe permettant certains calculs
+ * une classe permettant certains calculs, non instanciable
  *
  * @author Roxanne Chevalley (339716)
  */
