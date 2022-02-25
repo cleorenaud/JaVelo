@@ -1,7 +1,7 @@
 package ch.epfl.javelo;
 
 /**
- * une classe permettant certains calculs, non instanciable
+ * Une classe permettant certains calculs, non instanciable
  *
  * @author Roxanne Chevalley (339716)
  */
@@ -15,7 +15,7 @@ public final class Math2 {
     ;
 
     /**
-     * méthode qui permet d'avoir la division x/y arrondi à l'entier supérier
+     * Méthode qui permet d'avoir la division x/y arrondi à l'entier suppérieur
      *
      * @param x (int) : le dividende
      * @param y (int) : le diviseur
@@ -30,7 +30,7 @@ public final class Math2 {
     }
 
     /**
-     * méthode qui retourne la coordonée y de la droite passant par (y0,0) et (y1,1) et ayant x comme coordonnée
+     * Méthode qui retourne la coordonée y de la droite passant par (y0,0) et (y1,1) et ayant x comme coordonnée
      *
      * @param y0 (double) : l'ordonnée au point 0
      * @param y1 (double) : l'ordonnée au point 1
@@ -42,7 +42,8 @@ public final class Math2 {
     }
 
     /**
-     * retourne v, si v appartient à l'intervalle (min,max), min si v est plus petit que min et max si v est plus grand que max
+     * Retourne v, si v appartient à l'intervalle (min,max), min si v est plus petit que min et max si v est plus grand
+     * que max
      *
      * @param min (int) : le minimum de l'intervalle
      * @param v   (int) la variable
@@ -61,7 +62,8 @@ public final class Math2 {
     }
 
     /**
-     * retourne v, si v appartient à l'intervalle (min,max), min si v est plus petit que min et max si v est plus grand que max
+     * Retourne v, si v appartient à l'intervalle (min,max), min si v est plus petit que min et max si v est plus grand
+     * que max
      *
      * @param min (double) : le minimum de l'intervalle
      * @param v   (double) la variable
@@ -80,7 +82,7 @@ public final class Math2 {
     }
 
     /**
-     * fonction qui calcule le sinus hyperbolique inverse d'une variable
+     * Fonction qui calcule le sinus hyperbolique inverse d'une variable
      *
      * @param x (double) : la variable
      * @return l'asinh de x (double)
@@ -90,7 +92,7 @@ public final class Math2 {
     }
 
     /**
-     * retourne le produit scalaire entre le vecteur u et v
+     * Retourne le produit scalaire entre le vecteur u et v
      *
      * @param uX (double) : coordonnée x du vecteur u
      * @param uY (double) : coordonnée y du vecteur u
@@ -103,7 +105,7 @@ public final class Math2 {
     }
 
     /**
-     * retourne la norme d'un vecteur u au carré
+     * Retourne la norme d'un vecteur u au carré
      *
      * @param uX (double) : la coordonnée X du vecteur u
      * @param uY (double) : la coordonnée y du vecteur u
@@ -114,7 +116,7 @@ public final class Math2 {
     }
 
     /**
-     * retourne la norme d'un vecteur
+     * Retourne la norme d'un vecteur
      *
      * @param uX (double) : la coordonnée X du vecteur u
      * @param uY (double) : la coordonnée y du vecteur u
@@ -125,7 +127,7 @@ public final class Math2 {
     }
 
     /**
-     * retourne la longueur de la projection du vecteur allant du point A au point P
+     * Retourne la longueur de la projection du vecteur allant du point A au point P
      * sur le vecteur allant du point A au point B
      *
      * @param aX (double) : la coordonnée x du point A

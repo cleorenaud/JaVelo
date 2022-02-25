@@ -25,7 +25,8 @@ public final class Functions {
     }
 
     private static final class Constant implements DoubleUnaryOperator {
-        Constant(double y) {}
+        Constant(double y) {
+        }
 
         @Override
         public double applyAsDouble(double y) {
@@ -35,19 +36,21 @@ public final class Functions {
 
     /**
      * Méthode retournant une fonction obtenue pas interpolation linéaire entre les échantillons
+     *
      * @param samples (float[]) échantillons espacés régulièrement
-     * @param xMax (double) valeur maximale de la plage dans laquelle on a nos échantillons
+     * @param xMax    (double) valeur maximale de la plage dans laquelle on a nos échantillons
      * @return (DoubleUnaryOperator)
      */
     public static DoubleUnaryOperator sampled(float[] samples, double xMax) {
-        if ((samples.length < 2) || (xMax <=0)) {
+        if ((samples.length < 2) || (xMax <= 0)) {
             throw new IllegalArgumentException();
         }
         return new Sampled(samples, xMax);
     }
 
     private static final class Sampled implements DoubleUnaryOperator {
-        Sampled(float[] samples, double xMax) {}
+        Sampled(float[] samples, double xMax) {
+        }
 
 
         @Override
