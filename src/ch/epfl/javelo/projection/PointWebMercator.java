@@ -29,16 +29,22 @@ public record PointWebMercator(double x, double y) {
      * @return (PointWebMercator) le point Web Mercator correspondant aux paramètres donnés
      */
     public static PointWebMercator of(int zoomLevel, double x, double y) {
+        x = x / Math.scalb(256, zoomLevel);
+        y = y / Math.scalb(256, zoomLevel);
+        return new PointWebMercator(x, y);
     }
 
     /**
      * Méthode de construction retournant le point Web Mercator correspondant au point du système de coordonnées suisse
      * donné
      *
-     * @param poitnCh (PointCh) le point exprimé dans le système de coordonées suisse
+     * @param pointCh (PointCh) le point exprimé dans le système de coordonées suisse
      * @return (PointWebMercator) le point Web Mercator correpondant aux paramètres donnés
      */
-    public static PointWebMercator ofPointCh(PointCh poitnCh) {
+    public static PointWebMercator ofPointCh(PointCh pointCh) {
+        double x = WebMercator.x(pointCh.lon());
+        double y = WebMercator.y(pointCh.lat());
+        return new PointWebMercator(x, y);
     }
 
     /**
