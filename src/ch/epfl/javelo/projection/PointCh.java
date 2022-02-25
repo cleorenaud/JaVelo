@@ -10,7 +10,7 @@ import ch.epfl.javelo.Math2;
 public record PointCh(double e, double n) {
     public PointCh{ //constructeur compact
       if(!SwissBounds.containsEN(e,n)){
-          throw new IllegalArgumentException(); //lance une exception si le point n'est pas dans le territoir suisse
+          throw new IllegalArgumentException(); //lance une exception si le point n'est pas dans le territoire Suisse
       }
     }
 
