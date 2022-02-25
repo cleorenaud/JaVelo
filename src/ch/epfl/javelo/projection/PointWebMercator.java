@@ -3,6 +3,8 @@ package ch.epfl.javelo.projection;
 /**
  * Représente un point dans le système Web Mercator
  *
+ * @param x (double) la coordonnée x de point dans le système Web Mercator
+ * @param y (double) la coordonnée y du point dans le système Web Mercator
  * @author Cléo Renaud (325156)
  */
 public record PointWebMercator(double x, double y) {

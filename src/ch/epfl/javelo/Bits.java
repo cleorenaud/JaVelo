@@ -22,7 +22,7 @@ public final class Bits {
      * incluse dans l'intervalle allant de 0 à 31 (inclus), ou si start ou length est négatif, ou si start est
      * supérieur à 31
      */
-    public int extractSigned(int value, int start, int length) throws IllegalArgumentException{
+    public static int extractSigned(int value, int start, int length) throws IllegalArgumentException{
     if(start + length > 32 || start>31 || length<0 || start<0){
         throw new IllegalArgumentException();
     }
@@ -42,7 +42,7 @@ public final class Bits {
      * @throws IllegalArgumentException si l'intervalle (start, start+length-1) n'est pas totalement
      * incluse dans l'intervalle allant de 0 à 30 (inclus), ou si start ou length est négatif
      */
-    public int extractUnsigned(int value, int start, int length) throws IllegalArgumentException{
+    public static int extractUnsigned(int value, int start, int length) throws IllegalArgumentException{
         if(start + length > 31 || length<0 || start<0){
             throw new IllegalArgumentException();
         }
