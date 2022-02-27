@@ -25,12 +25,26 @@ public final class Functions {
     }
 
     private static final class Constant implements DoubleUnaryOperator {
-        Constant(double y) {
+        private double constant;
+
+        /**
+         * Constructeur de la classe Constant
+         *
+         * @param y (double) valeur de constante retournée par la fonction
+         */
+        public Constant(double y) {
+            this.constant = y;
         }
 
+        /**
+         * Méthode permettant d'appliquer la fonction constante au paramètre donné
+         *
+         * @param y (double) l'argument
+         * @return (double) la constante
+         */
         @Override
         public double applyAsDouble(double y) {
-            return y;
+            return constant;
         }
     }
 
@@ -39,7 +53,7 @@ public final class Functions {
      *
      * @param samples (float[]) échantillons espacés régulièrement
      * @param xMax    (double) valeur maximale de la plage dans laquelle on a nos échantillons
-     * @return (DoubleUnaryOperator)
+     * @return (DoubleUnaryOperator) une fonction qui permet d'interpoler
      */
     public static DoubleUnaryOperator sampled(float[] samples, double xMax) {
         if ((samples.length < 2) || (xMax <= 0)) {
@@ -49,13 +63,46 @@ public final class Functions {
     }
 
     private static final class Sampled implements DoubleUnaryOperator {
-        Sampled(float[] samples, double xMax) {
+        private float[] samples;
+        private double xMax;
+        private int nSamples; //le nombre d'échantillons
+        private double interval; // la longueur de l'intervalle entre deux échantillons
+
+        /**
+         * Constructeur de la classe Sampled
+         *
+         * @param samples (float[]) le tableau contenant les échantillons
+         * @param xMax    (double) la valeur de x correspondant au dernier échantillon
+         */
+        public Sampled(float[] samples, double xMax) {
+            this.samples = samples;
+            this.xMax = xMax;
+            nSamples = samples.length;
+            interval = xMax / (nSamples - 1);
         }
 
-
+        /**
+         * Méthode permettant d'appliquer une interpolation linéaire à un paramètre donné
+         *
+         * @param x (double) le paramètre donné
+         * @return (double) la valeur interpolée
+         */
         @Override
-        public double applyAsDouble(double operand) {
-            return 0;
+        public double applyAsDouble(double x) {
+            // On cherche à trouver dans quel intervalle est x
+            // a*interval <= x < (a+1)*interval
+            // Pour trouver a on utilise la division entière de x par interval
+            // On utilise l'interpolation en prenant samples[a] et samples[a+1]
+            int a = (int) (x / interval);
+            double remainder = x % interval;
+            // Si x est hors de l'intervalle [0 ; xMax] on retroune la valeur de 0 ou de xMax
+            if (x <= 0) {
+                return samples[0];
+            }
+            if (x >= xMax) {
+                return samples[nSamples];
+            }
+            return Math2.interpolate(samples[a], samples[a + 1], remainder / interval);
         }
     }
 

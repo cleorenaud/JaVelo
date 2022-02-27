@@ -7,7 +7,7 @@ package ch.epfl.javelo;
  */
 public final class Math2 {
     /**
-     * constructeur privé de la classe Math2
+     * Constructeur privé de la classe Math2
      */
     private Math2() {
     }
