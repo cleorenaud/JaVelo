@@ -26,10 +26,8 @@ public final class Bits {
     if(start + length > 32 || start>31 || length<0 || start<0){
         throw new IllegalArgumentException();
     }
-    if(length==0){
-        return 0;
-    }
-    int temp = value<<start;
+
+    int temp = value<<(32-(length+start));
     return temp >> (32-length);
     }
 
@@ -46,10 +44,7 @@ public final class Bits {
         if(start + length > 31 || length<0 || start<0){
             throw new IllegalArgumentException();
         }
-        if(length==0){
-            return 0;
-        }
-        int temp = value<<start;
-        return temp >> (32-length);
+        int temp = value<<(32-(start+length));
+        return temp >>> (32-length);
     }
 }
