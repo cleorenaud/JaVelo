@@ -9,6 +9,13 @@ import ch.epfl.javelo.Math2;
  */
 
 public record PointCh(double e, double n) {
+
+    /**
+     * constructeur de PointCh
+     * @param e (double) : la coordonnée est du point
+     * @param n (double) : la coordonnée nord du point
+     * @throws IllegalArgumentException si les coordonnées fournies ne sont pas dans les limites de la Suisse
+     */
     public PointCh { //constructeur compact
         if (!SwissBounds.containsEN(e, n)) {
             throw new IllegalArgumentException(); //lance une exception si le point n'est pas dans le territoire Suisse

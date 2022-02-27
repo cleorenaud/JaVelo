@@ -38,5 +38,4 @@ public final class Q28_4 {
         return Math.scalb((float)q28_4, 4);
     }
 
-
 }
