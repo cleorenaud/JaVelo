@@ -9,7 +9,7 @@ package ch.epfl.javelo;
  * @author Roxanne Chevalley (339716)
  */
 public final class Q28_4 {
-    private Q28_4(){}; //constructeur privé
+    private Q28_4(){} //constructeur privé
 
     /**
      * retourne la valeur Q28.4 correspondant à l'entier donné
