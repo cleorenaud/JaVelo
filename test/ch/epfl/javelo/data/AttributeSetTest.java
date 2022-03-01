@@ -18,9 +18,12 @@ class AttributeSetTest {
     @Test
     void ofWorksWithKnownAttributes() {
         AttributeSet set = new AttributeSet(0);
-        set.of(Attribute.HIGHWAY_TRACK);
-        //assertEquals(new AttributeSet(32), );
-
+        set = set.of(Attribute.HIGHWAY_TRACK, Attribute.HIGHWAY_UNCLASSIFIED);
+        // Vérifie que l'AttributeSet set contient bien les attributs attribués grace à la méthode of
+        assertTrue((set.contains(Attribute.HIGHWAY_TRACK)) && (set.contains(Attribute.HIGHWAY_UNCLASSIFIED)));
+        // Vérifie que l'AttributeSet set contient bien les memes attributs que l'AttributeSet défini avec les bits
+        // correspondants
+        assertEquals(set, new AttributeSet(34));
     }
 
     @Test
@@ -41,6 +44,18 @@ class AttributeSetTest {
         assertFalse(set1.intersects(set2));
         // Test quand l'intersection n'est pas vide
         assertTrue(set1.intersects(set3));
+    }
+
+    @Test
+    void toStringWorksOnRandomAttributeSet() {
+        AttributeSet set = new AttributeSet(34);
+        assertEquals("{highway=track,highway=unclassified}", set.toString());
+    }
+
+    @Test
+    void toStringWorksOnEmptyAttributeSet() {
+        AttributeSet set = new AttributeSet(0);
+        assertEquals("{}", set.toString());
     }
 
 }
