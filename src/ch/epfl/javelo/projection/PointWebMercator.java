@@ -84,7 +84,7 @@ public record PointWebMercator(double x, double y) {
      * @return (double) la latitude du point
      */
     public double lat() {
-        return WebMercator.lat(x);
+        return WebMercator.lat(y);
     }
 
     /**
@@ -93,9 +93,12 @@ public record PointWebMercator(double x, double y) {
      * @return (PointCh) le point de coordonnées suisses
      */
     public PointCh toPointCh() {
-        if (SwissBounds.containsEN(x, y)) {
-            return new PointCh(x, y);
-        } else return null;
+        double n=Ch1903.n(lon(),lat());
+        double e= Ch1903.e(lon(),lat());
+        if (SwissBounds.containsEN(e,n)) {
+            return new PointCh(e,n);
+        }
+        return null;
     }
 
 }

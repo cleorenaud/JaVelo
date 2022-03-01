@@ -3,6 +3,8 @@ package ch.epfl.javelo.projection;
 import ch.epfl.javelo.Preconditions;
 import org.junit.jupiter.api.Test;
 
+import java.awt.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class PointWebMercatorTest {
@@ -27,6 +29,30 @@ class PointWebMercatorTest {
         PointWebMercator pt2 = new PointWebMercator (1,1);
         assertEquals(16384, pt2.xAtZoomLevel(6));
         assertEquals(16384, pt2.yAtZoomLevel(6));
+    }
 
+   @Test
+    void testToPointChException(){
+        double e=2500000;
+        double n=1000000;
+        double lon= Ch1903.lon(e,n);
+        double lat = Ch1903.lat(e,n);
+        double x=WebMercator.x(lon);
+        double y= WebMercator.y(lat);
+        PointWebMercator pt2 =new PointWebMercator(x,y);
+        assertEquals(null, pt2.toPointCh());
+    }
+
+    @Test
+    void testToPointCh(){
+        double e=2500000;
+        double n=1100000;
+        double lon= Ch1903.lon(e,n);
+        double lat = Ch1903.lat(e,n);
+        double x=WebMercator.x(lon);
+        double y= WebMercator.y(lat);
+        PointWebMercator pt2 =new PointWebMercator(x,y);
+        assertEquals(e, pt2.toPointCh().e(), 2);
+        assertEquals(n, pt2.toPointCh().n(), 2);
     }
 }

@@ -21,7 +21,7 @@ public final class WebMercator {
      * @return (double) la coordonée x du point
      */
     public static double x(double lon) {
-        return (lon + Math.PI) / (2 * Math.PI);
+        return (lon + Math.PI) / (Math.PI*2);
     }
 
     /**
