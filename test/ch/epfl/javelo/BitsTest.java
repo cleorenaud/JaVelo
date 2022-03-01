@@ -30,8 +30,8 @@ class BitsTest {
         // Test sur valeur simple
         assertEquals(0, Bits.extractSigned(0, 3, 4));
         // Test sur la valeur donnée dans le sujet
-        // assertEquals(10, Bits.extractSigned(-889275714, 8, 4));
-        // Test quand on garde le meme nombre
+        assertEquals(-6, Bits.extractSigned(-889275714, 8, 4));
+        // Test quand on garde le meme nombre moins le premier caractère
         assertEquals(-1, Bits.extractSigned(-1, 0, 31));
     }
 
@@ -55,11 +55,11 @@ class BitsTest {
     @Test
     void bitsExtractUnsignedWorksOnValidInput() {
         // Test sur valeur simple
-        assertEquals(0, Bits.extractSigned(0, 3, 4));
+        assertEquals(0, Bits.extractUnsigned(0, 3, 4));
         // Test sur la valeur donnée dans le sujet
-        assertEquals(10, Bits.extractSigned(-889275714, 8, 4));
-        // Test quand on garde le meme nombre
-        // assertEquals(4294967295, Bits.extractSigned(-1, 0, 31));
+        assertEquals(10, Bits.extractUnsigned(-889275714, 8, 4));
+        // Test quand on garde le meme nombre moins le premier caractère
+        assertEquals(2147483647, Bits.extractUnsigned(-1, 0, 31));
     }
 
 }
