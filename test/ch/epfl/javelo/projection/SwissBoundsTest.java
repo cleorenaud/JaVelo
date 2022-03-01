@@ -14,4 +14,5 @@ class SwissBoundsTest {
         assertEquals(349000.0, SwissBounds.WIDTH);
         assertEquals(221000.0, SwissBounds.HEIGHT);
     }
+    
 }
