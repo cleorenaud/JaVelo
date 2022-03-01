@@ -53,7 +53,7 @@ public record AttributeSet(long bits) {
     }
 
     /**
-     * méthode qui retourne vrai ssi l'intersection de l'ensemble récepteur (this)
+     * Méthode qui retourne vrai ssi l'intersection de l'ensemble récepteur (this)
      * avec celui passé en argument (that) n'est pas vide.
      * @param that (AttributeSet) : un autre ensemble d'attributs
      * @return vrai si l'intersection de l'ensemble récepteur (this)
@@ -65,7 +65,7 @@ public record AttributeSet(long bits) {
             newThis= newThis>>>63;
             long newThat = that.bits()<<(63-i);
             newThat=newThat>>>63;
-            if(newThis==newThat){
+            if(newThis==1 && newThat==1){
                 return true;
             }
         }
