@@ -56,7 +56,7 @@ public record PointWebMercator(double x, double y) {
      * @return (double) la coordonnée x
      */
     public double xAtZoomLevel(int zoomLevel) {
-        return (y * Math.scalb(256, zoomLevel));
+        return (x * Math.scalb(256, zoomLevel));
     }
 
     /**
