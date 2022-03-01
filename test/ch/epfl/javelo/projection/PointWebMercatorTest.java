@@ -53,6 +53,6 @@ class PointWebMercatorTest {
         double y= WebMercator.y(lat);
         PointWebMercator pt2 =new PointWebMercator(x,y);
         assertEquals(e, pt2.toPointCh().e(), 2);
-        assertEquals(n, pt2.toPointCh().n(), 2);
+        assertEquals(n, pt2.toPointCh().n(), 2); 
     }
 }
