@@ -100,7 +100,7 @@ public final class Functions {
                 return samples[0];
             }
             if (x >= xMax) {
-                return samples[nSamples];
+                return samples[nSamples-1];
             }
             return Math2.interpolate(samples[a], samples[a + 1], remainder / interval);
         }
