@@ -15,12 +15,13 @@ import java.util.StringJoiner;
 public record AttributeSet(long bits) {
 
     /**
-     * le constructeur
+     * Le constructeur
      * @param bits la séquence de bits représentant un ensemble d'attributs OpenStreetMap
-     * @throws IllegalArgumentException si la valeur passée au constructeur contient un bit à 1 qui ne correspond à aucun attribut valide
+     * @throws IllegalArgumentException si la valeur passée au constructeur contient un bit à 1 qui ne correspond à
+     * aucun attribut valide
      */
     public AttributeSet{//constructeur compact
-        if ((bits>>>62)!=0){
+        if ((bits>>>Attribute.ALL.size())!=0){
             throw new IllegalArgumentException();
         }
     }
@@ -40,7 +41,7 @@ public record AttributeSet(long bits) {
     }
 
     /**
-     * méthode qui retourne vrai si et seulement si l'ensemble récepteur (this) contient l'attribut donné
+     * Méthode qui retourne vrai si et seulement si l'ensemble récepteur (this) contient l'attribut donné
      * @param attribute (Attribute) : l'attribut "cherché"
      * @return vrai si l'ensemble récepteur (this) contient l'attribut donné et faux sinon (boolean)
      */
@@ -52,7 +53,7 @@ public record AttributeSet(long bits) {
     }
 
     /**
-     * méthode qui retourne vrai ssi l'intersection de l'ensemble récepteur (this)
+     * Méthode qui retourne vrai ssi l'intersection de l'ensemble récepteur (this)
      * avec celui passé en argument (that) n'est pas vide.
      * @param that (AttributeSet) : un autre ensemble d'attributs
      * @return vrai si l'intersection de l'ensemble récepteur (this)
@@ -64,7 +65,7 @@ public record AttributeSet(long bits) {
             newThis= newThis>>>63;
             long newThat = that.bits()<<(63-i);
             newThat=newThat>>>63;
-            if(newThis==newThat){
+            if(newThis==1 && newThat==1){
                 return true;
             }
         }
