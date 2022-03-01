@@ -20,7 +20,7 @@ public final class WebMercator {
      * @param lon (double) la longitude du point
      * @return (double) la coordonée x du point
      */
-    static double x(double lon) {
+    public static double x(double lon) {
         return (lon + Math.PI) / 2 * Math.PI;
     }
 
@@ -30,7 +30,7 @@ public final class WebMercator {
      * @param lat (double) la latitude du point
      * @return (double) la coordonnée y du point
      */
-    static double y(double lat) {
+    public static double y(double lat) {
         return ((Math.PI - Math2.asinh(Math.tan(lat))) / (2 * Math.PI));
     }
 
@@ -40,7 +40,7 @@ public final class WebMercator {
      * @param x (double) la coordonnée x du point projeté
      * @return (double) la longitude en radians
      */
-    static double lon(double x) {
+    public static double lon(double x) {
         return 2 * Math.PI * x - Math.PI;
     }
 
@@ -50,7 +50,7 @@ public final class WebMercator {
      * @param y (double) la coordonnée y du point projeté
      * @return (double) la latitude en radians
      */
-    static double lat(double y) {
+    public static double lat(double y) {
         return (Math.atan(Math.sinh(Math.PI - 2 * Math.PI * y)));
     }
 
