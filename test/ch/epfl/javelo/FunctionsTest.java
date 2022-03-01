@@ -54,7 +54,6 @@ class FunctionsTest {
         assertEquals(20, f3.applyAsDouble(2.5));
         DoubleUnaryOperator f4 = Functions.sampled (tab3, 2);
         assertEquals(15, f4.applyAsDouble(1.125));
-
     }
 
 
