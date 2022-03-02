@@ -10,19 +10,28 @@ import java.nio.ByteBuffer;
 import java.util.List;
 
 /**
- * Enregistrement représentant un tableau contenant les 16384 secteurs de JaVelo
+ * Enregistrement représentant un tableau contenant les 16384 secteurs de JaVelo avec pour seul attribut buffer
+ * (ByteBuffer), la mémoire tampon contenant la valeur des attributs de la totalité des secteurs
  *
  * @author Cléo Renaud (325156)
  */
-public record GraphSectors() {
-    private static ByteBuffer buffer;
+public record GraphSectors(ByteBuffer buffer) {
+    // Donne l'index à partir duquel on accède à l'identité du premier nœud du secteur, exprimé en octets
+    private static final int OFFSET_FIRST = 0;
+    // Donne l'index à partir duquel on accède à l'identité du nœud situé juste après le dernier nœud du secteur,
+    // exprimé en octets
+    private static final int OFFSET_SECOND = OFFSET_FIRST + Integer.BYTES;
+    // Donne le nombre d'octets nécessaire pour représenter un secteur
+    private static final int SECTORS_INTS = OFFSET_SECOND + Short.BYTES;
 
-    public GraphSectors() {
-    }
-
-    record Sector() {
-        static int startNodeId;
-        static int endNodeId;
+    /**
+     * Enregistrement représentant un secteur uniquement doté de deux attributs : l'identité du premier nœud du secteur
+     * et l'identité du nœud situé après le dernier nœud du secteur
+     */
+    public record Sector(int startNodeId, int endNodeId) {
+        // Les deux attributs d'un secteur doivent être interpretés de façon non signée (U32 pour l'identité du premier
+        // nœud et U16 pour le nombre de nœuds
+        
     }
 
     /**

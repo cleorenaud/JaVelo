@@ -7,7 +7,7 @@ package ch.epfl.javelo.data;
 import java.util.StringJoiner;
 
 /**
- * Classe qui représente un ensemble d'attributs OpenStreetMap à l'aide d'une séquence de bits
+ * Enregistrement qui représente un ensemble d'attributs OpenStreetMap à l'aide d'une séquence de bits
  *
  * @author : Roxanne Chevalley (339716)
  */

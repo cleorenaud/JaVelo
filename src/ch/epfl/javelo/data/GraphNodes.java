@@ -7,7 +7,7 @@ package ch.epfl.javelo.data;
 import java.nio.*;
 
 /**
- * enregistrement représentant le tableau de tous les nœuds du graphe JaVelo
+ * Enregistrement représentant le tableau de tous les nœuds du graphe JaVelo
  * avec comme unique argument buffer (IntBuffer), la mémoire tampon
  * contenant la valeur des attributs de la totalité des nœuds du graphe.
  *
@@ -21,7 +21,7 @@ public record GraphNodes(IntBuffer buffer) {
     private static final int NODE_INTS = OFFSET_OUT_EDGES + 1;
 
     /**
-     * méthode qui retourne le nombre total de nœuds
+     * Méthode qui retourne le nombre total de nœuds
      * @return le nombre total de nœuds (int)
      */
     public int count(){
@@ -29,7 +29,7 @@ public record GraphNodes(IntBuffer buffer) {
     }
 
     /**
-     * méthode qui retourne la coordonnée E du nœud d'identité donnée.
+     * Méthode qui retourne la coordonnée E du nœud d'identité donnée.
      * @param nodeId (int) : l'identité du nœud
      * @return la coordonnée E du nœud d'identité donnée (double)
      */
@@ -40,7 +40,7 @@ public record GraphNodes(IntBuffer buffer) {
 
 
     /**
-     * méthode qui retourne la coordonnée N du nœud d'identité donnée.
+     * Méthode qui retourne la coordonnée N du nœud d'identité donnée.
      * @param nodeId (int) : l'identité du nœud
      * @return la coordonnée N du nœud d'identité donnée (double)
      */
@@ -50,7 +50,7 @@ public record GraphNodes(IntBuffer buffer) {
     }
 
     /**
-     * méthode qui retourne le nombre d'arêtes sortant du nœud d'identité donnée
+     * Méthode qui retourne le nombre d'arêtes sortant du nœud d'identité donnée
      * @param nodeId (int) : l'identité du nœud
      * @return le nombre d'arêtes sortant du nœud d'identité donnée (int)
      */
@@ -61,10 +61,10 @@ public record GraphNodes(IntBuffer buffer) {
     }
 
     /**
-     * méthode qui retourne l'identité de la edgeIndex-ième arête sortant du nœud d'identité nodeId
+     * Méthode qui retourne l'identité de la edgeIndex-ième arrête sortant du nœud d'identité nodeId
      * @param nodeId (int) : l'identité du nœud
      * @param edgeIndex (int) : l'index de l'arrête recherchée
-     * @return l'identité de la edgeIndex-ième arête sortant du nœud d'identité nodeId
+     * @return l'identité de la edgeIndex-ième arrête sortant du nœud d'identité nodeId
      */
     public int edgeId(int nodeId, int edgeIndex){
         assert 0 <= edgeIndex && edgeIndex < outDegree(nodeId);
