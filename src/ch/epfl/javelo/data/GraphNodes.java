@@ -7,5 +7,4 @@ package ch.epfl.javelo.data;
 import java.nio.*;
 
 public record GraphNodes(IntBuffer buffer) {
-
 }
