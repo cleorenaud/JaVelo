@@ -74,7 +74,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      * @return vrai si l'arête d'identité donnée possède un profil et faux sinon
      */
     public boolean hasProfile(int edgeId) {
-        double m = profileIds.get(edgeId) >>> 30;
+        double m = Bits.extractUnsigned(profileIds.get(edgeId),31,2);
         return (m != 0);
     }
 
@@ -92,8 +92,8 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
         int nbEch = 1 + (int) Math.ceil(length(edgeId) / 2.0);
         float[] tabTemp = new float[nbEch];
         float[] tabFin = new float[nbEch];
-        int firstIndex = (profileIds.get(edgeId) << 2) >>> 2;
-        double m = profileIds.get(edgeId) >>> 30;
+        int firstIndex = Bits.extractUnsigned(profileIds.get(edgeId),29,30);
+        double m = Bits.extractUnsigned(profileIds.get(edgeId),31,2);;
         tabTemp[0] = Q28_4.asFloat(elevations.get(firstIndex));
         for (int i = firstIndex + 1; i < firstIndex + nbEch; ++i) {
             int n = i - firstIndex;
