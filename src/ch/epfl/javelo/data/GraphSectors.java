@@ -7,6 +7,7 @@ package ch.epfl.javelo.data;
 import ch.epfl.javelo.projection.PointCh;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,7 +32,7 @@ public record GraphSectors(ByteBuffer buffer) {
     public record Sector(int startNodeId, int endNodeId) {
         // Les deux attributs d'un secteur doivent être interpretés de façon non signée (U32 pour l'identité du premier
         // nœud et U16 pour le nombre de nœuds
-        
+
     }
 
     /**
@@ -40,11 +41,47 @@ public record GraphSectors(ByteBuffer buffer) {
      *
      * @param center   (PointCh) le point donné
      * @param distance (double) la moitié de la taille du côté du carré centré sur center
-     * @return (Lise < Sector >) la liste de tous les secteurs ayant une intersection avec le carré centré au point donné
+     * @return (List < Sector >) la liste de tous les secteurs ayant une intersection avec le carré centré au point donné
      */
+    /*
     public List<Sector> sectorsInArea(PointCh center, double distance) {
-        return null;
+        // La liste de tous les secteurs ayant une intersection avec le carré défini dans les paramètres
+        ArrayList<Sector> intersect = new ArrayList<>();
+
+        // On cherche a calculer les coordonnées des 4 sommets du carré (en coordonées N et E
+        // Ensuite on convertira nos nodes des secteurs deja definis en coordonnées N et E pour voir si ils sont inclus
+        // Cela se fait au moyen des methodes nodeE et nodeN
+
+        // Les quatres sommets de notre carré
+        PointCh hautGauche = new PointCh(center.e() - distance, center.n() + distance);
+        PointCh basGauche = new PointCh(center.e() - distance, center.n() - distance);
+        PointCh hautDroit = new PointCh(center.e() + distance, center.n() + distance);
+        PointCh basDroit = new PointCh(center.e() + distance, center.n() - distance);
+
+
+
+        // Il y a une intersection si le carré et le secteur possedent au moins un point commun
+        for (int i = 0; i < buffer.capacity(); i++) {
+
+            // La premiere et la derniere node pour chaque secteur
+            int startNode = buffer.getInt(SECTORS_INTS * i);
+            int endNode = Short.toUnsignedInt(buffer.getShort(OFFSET_SECOND * i + 1));
+
+            for (int j = startNode; j < endNode; j++) {
+                // On cherche maintenant les coordonnée de nos nodes
+                int node = j;
+                double eNode = GraphNodes.nodeE(node);
+                double nNode = nodeN(node);
+
+            }
+
+            intersect.add(new Sector(startNode, endNode));
+
+
+        }
+        return intersect;
     }
+    */
 
 
 }
