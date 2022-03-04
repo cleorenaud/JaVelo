@@ -101,6 +101,7 @@ public record GraphSectors(ByteBuffer buffer) {
                 intersect.add(new Sector(startNode, endNode));
             }
         }
+
         return intersect;
     }
 

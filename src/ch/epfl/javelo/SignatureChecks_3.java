@@ -8,6 +8,7 @@ package ch.epfl.javelo;
 final class SignatureChecks_3 {
     private SignatureChecks_3() {}
 
+
     void checkGraphNodes() throws Exception {
         v01 = new ch.epfl.javelo.data.GraphNodes(v02);
         v02 = v01.buffer();
