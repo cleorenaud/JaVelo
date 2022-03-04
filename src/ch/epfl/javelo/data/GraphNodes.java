@@ -51,7 +51,7 @@ public record GraphNodes(IntBuffer buffer) {
     }
 
     /**
-     * Méthode qui retourne le nombre d'arêtes sortant du nœud d'identité donnée
+     * Méthode qui retourne le nombre d'arrêtes sortant du nœud d'identité donnée
      * @param nodeId (int) : l'identité du nœud
      * @return le nombre d'arêtes sortant du nœud d'identité donnée (int)
      */
