@@ -89,29 +89,29 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
         if (!hasProfile(edgeId)) {
             return new float[0];
         }
-        int nbEch = 1 + (int) Math.ceil(length(edgeId) / 2.0);
-        float[] tabTemp = new float[nbEch];
-        float[] tabFin = new float[nbEch];
-        int firstIndex = Bits.extractUnsigned(profileIds.get(edgeId),29,30);
-        double m = Bits.extractUnsigned(profileIds.get(edgeId),31,2);;
-        tabTemp[0] = Q28_4.asFloat(elevations.get(firstIndex));
-        for (int i = firstIndex + 1; i < firstIndex + nbEch; ++i) {
+        int nbEch = 1 + (int) Math.ceil(length(edgeId) / 2.0); //calcul le nombre d'échantillons
+        float[] tabTemp = new float[nbEch]; //créations de deux tableaux
+        float[] tabFin = new float[nbEch]; //tableau au cas ou la route est inversée
+        int firstIndex = Bits.extractUnsigned(profileIds.get(edgeId),29,30); //savoir le type de profil
+        double m = Bits.extractUnsigned(profileIds.get(edgeId),31,2);; //identité du premier échantillon
+        tabTemp[0] = Q28_4.asFloat(elevations.get(firstIndex)); //remplit avec le premier échantillon
+        for (int i = firstIndex + 1; i < firstIndex + nbEch; ++i) { //remplissage du tableau
             int n = i - firstIndex;
             if (m == 1) {
                 tabTemp[n] = Q28_4.asFloat(elevations.get(i));
             }
             if (m == 2) {
-                double k = Math.ceil(((double) n) / 2.0);
-                int fact = n % 2 + 1;
+                double k = Math.ceil(((double) n) / 2.0); //savoir quel index chercher dans elevations
+                int fact = n % 2 + 1; //permettra de savoir ce qu'il faut extraire de "info"
                 short info = elevations.get(firstIndex + (int) k);
-                short dif = (short) Bits.extractUnsigned(info, 8 * fact, 8);
+                short dif = (short) Bits.extractUnsigned(info, 8 * fact-1, 8);
                 dif = (short) Q28_4.asFloat(dif);
-                tabTemp[n] = tabTemp[n - 1] + dif;
+                tabTemp[n] = tabTemp[n - 1] + dif; //remplissage du tableau
             }
             if (m == 3) {
-                double k = Math.ceil(((double) n) / 4.0);
+                double k = Math.ceil(((double) n) / 4.0); //savoir quel index chercher dans elevations
                 int fact = 1;
-                if (n % 4 == 1) {
+                if (n % 4 == 1) { //permettra de savoir ce qu'il faut extraire de "info"
                     fact = 4;
                 }
                 if (n % 4 == 2) {
@@ -121,17 +121,17 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
                     fact = 2;
                 }
                 short info = elevations.get(firstIndex + (int) k);
-                short dif = (short) Bits.extractUnsigned(info, 4 * fact, 4);
+                short dif = (short) Bits.extractUnsigned(info, 4 * fact-1, 4);
                 dif = (short) Q28_4.asFloat(dif);
-                tabTemp[n] = tabTemp[n - 1] + dif;
+                tabTemp[n] = tabTemp[n - 1] + dif; //remplissage du tableau
             }
 
         }
         if (!isInverted(edgeId)) {
-            return tabTemp;
+            return tabTemp; //tabTemp est dans le bon ordre si la route n'est pas inversée
         }
         for (int i = 0; i < nbEch; ++i) {
-            tabFin[i] = tabTemp[nbEch - 1 - i];
+            tabFin[i] = tabTemp[nbEch - 1 - i]; //inverse les indices si la route est inversée
         }
         return tabFin;
 
