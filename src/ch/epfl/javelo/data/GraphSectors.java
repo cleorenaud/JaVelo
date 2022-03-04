@@ -88,8 +88,8 @@ public record GraphSectors(ByteBuffer buffer) {
         // Maintenant on cherche
         int hauteur = (secteurs[0] - secteurs[2])/128;
         int largeur = secteurs[3] - secteurs[2];
-        for (int i = 0; i < hauteur; i++) {
-            for (int j = 0; j < largeur; j++) {
+        for (int i = 0; i <= hauteur; i++) {
+            for (int j = 0; j <= largeur; j++) {
                 // Numéro du secteur qu'on va ajouter a l'ArrayList intersect
                 int secteur = secteurs[2] + i * 128 + j;
                 // On cherche la première et la dernière node du secteur grace au ByteBuffer buffer
