@@ -81,7 +81,7 @@ public record GraphSectors(ByteBuffer buffer) {
         for (int i = 0; i < sommets.size(); i++) {
             int x = (int) Math.floor(((sommets.get(i)).e() - SwissBounds.MIN_E) / ((SwissBounds.MAX_E - SwissBounds.MIN_E) / 128));
             int y = (int) Math.floor(((sommets.get(i)).n() - SwissBounds.MIN_N) / ((SwissBounds.MAX_N - SwissBounds.MIN_N) / 128));
-            // on passe de coordonnées suisses du secteur aux numéros de celui ci, qu'on stocke dans un tableau
+            // on passe de coordonnées suisses du secteur aux numéros de celui-ci, qu'on stocke dans un tableau
             secteurs[i] = x + 128 * y;
         }
 
@@ -92,7 +92,7 @@ public record GraphSectors(ByteBuffer buffer) {
             for (int j = 0; j < largeur; j++) {
                 // Numéro du secteur qu'on va ajouter a l'ArrayList intersect
                 int secteur = secteurs[2] + i * 128 + j;
-                // On cherche la première et la derniere node du secteur grace au ByteBuffer buffer
+                // On cherche la première et la dernière node du secteur grace au ByteBuffer buffer
                 int startNode = buffer.getInt(SECTORS_INTS * secteur);
                 int numberNode = Short.toUnsignedInt(buffer.getShort(SECTORS_INTS * secteur + OFFSET_SECOND));
                 int endNode= startNode + numberNode;
