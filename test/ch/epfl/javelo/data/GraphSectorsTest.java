@@ -21,8 +21,6 @@ class GraphSectorsTest {
     GraphSectors.Sector sector1 = new GraphSectors.Sector(1,2);
 
 
-
-
     @Test
     void gSTest(){
         List<GraphSectors.Sector> list1 = new ArrayList<>();
