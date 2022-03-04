@@ -51,10 +51,27 @@ public record GraphSectors(ByteBuffer buffer) {
         ArrayList<PointCh> sommets = new ArrayList<>();
         // On cherche a calculer les coordonnées des 4 sommets du carré (en coordonées suisses).
         // On les stock dans un ArrayList pour simplifier les calculs suivants au moyen d'une boucle for
-        sommets.add(new PointCh(center.e() - distance, center.n() + distance)); // Sommet en haut à gauche
-        sommets.add(new PointCh(center.e() + distance, center.n() + distance)); // Sommet en haut à droite
-        sommets.add(new PointCh(center.e() - distance, center.n() - distance)); // Sommet en bas à gauche
-        sommets.add(new PointCh(center.e() + distance, center.n() - distance)); // Sommet en bas à droite
+        double estMoinDis= center.e()-distance;
+        if(estMoinDis<SwissBounds.MIN_E){
+            estMoinDis= SwissBounds.MIN_E;
+        }
+        double estPlusDis = center.e()+distance;
+        if(estPlusDis>SwissBounds.MAX_E){
+            estPlusDis= SwissBounds.MAX_E;
+        }
+        double nordMoinDis= center.n()-distance;
+        if(nordMoinDis<SwissBounds.MIN_N){
+            nordMoinDis= SwissBounds.MIN_N;
+        }
+        double nordPlusDis = center.n()+distance;
+        if(nordPlusDis>SwissBounds.MAX_N){
+            nordPlusDis= SwissBounds.MAX_N;
+        }
+
+        sommets.add(new PointCh(estMoinDis, nordPlusDis)); // Sommet en haut à gauche (assurément dans SwissBounds)
+        sommets.add(new PointCh(estPlusDis, nordPlusDis)); // Sommet en haut à droite (assurément dans SwissBounds)
+        sommets.add(new PointCh(estMoinDis, nordMoinDis)); // Sommet en bas à gauche (assurément dans SwissBounds)
+        sommets.add(new PointCh(estPlusDis, nordMoinDis)); // Sommet en bas à droite (assurément dans SwissBounds)
 
         int[] secteurs = new int[4];
         // Un point de coordonnées (n, e) se trouve dans le secteur (x, y) (x appartient à [0, 128] et y à [0, 128]
@@ -64,20 +81,21 @@ public record GraphSectors(ByteBuffer buffer) {
         for (int i = 0; i < sommets.size(); i++) {
             int x = (int) Math.floor(((sommets.get(i)).e() - SwissBounds.MIN_E) / ((SwissBounds.MAX_E - SwissBounds.MIN_E) / 128));
             int y = (int) Math.floor(((sommets.get(i)).n() - SwissBounds.MIN_N) / ((SwissBounds.MAX_N - SwissBounds.MIN_N) / 128));
-            // on passe de coordonnées suisses du secteur aux numéro de celui ci, qu'on stocke dans un tableau
+            // on passe de coordonnées suisses du secteur aux numéros de celui ci, qu'on stocke dans un tableau
             secteurs[i] = x + 128 * y;
         }
 
         // Maintenant on cherche
-        int hauteur = secteurs[1] - secteurs[3];
-        int largeur = secteurs[2] - secteurs[1];
+        int hauteur = (secteurs[0] - secteurs[2])/128;
+        int largeur = secteurs[3] - secteurs[2];
         for (int i = 0; i < hauteur; i++) {
             for (int j = 0; j < largeur; j++) {
                 // Numéro du secteur qu'on va ajouter a l'ArrayList intersect
-                int secteur = secteurs[3] + i * 128 + j;
+                int secteur = secteurs[2] + i * 128 + j;
                 // On cherche la premiere et la derniere node du secteur grace au ByteBuffer buffer
                 int startNode = buffer.getInt(SECTORS_INTS * secteur);
-                int endNode = Short.toUnsignedInt(buffer.getShort(OFFSET_SECOND * secteur + 1));
+                int numberNode = Short.toUnsignedInt(buffer.getShort(SECTORS_INTS * secteur + OFFSET_SECOND));
+                int endNode= startNode + numberNode;
                 // On peut maintenant créer un secteur et l'ajouter à notre ArrayList contenant tous les secteurs ayant
                 // une intersection avec le carré passé en paramètres
                 intersect.add(new Sector(startNode, endNode));
