@@ -23,7 +23,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     private static final int EDGES_INTS = OFFSET_ATT + Short.BYTES;
 
     /**
-     * méthode qui retourne vrai si l'arête d'identité donnée va dans le sens inverse
+     * Méthode qui retourne vrai si l'arrête d'identité donnée va dans le sens inverse
      * de la voie OSM dont elle provient et retourne faux sinon.
      *
      * @param edgeId (int) : l'identité de l'arête
@@ -35,7 +35,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     }
 
     /**
-     * méthode qui retourne l'identité du nœud destination de l'arête d'identité donnée
+     * Méthode qui retourne l'identité du nœud destination de l'arête d'identité donnée
      *
      * @param edgeId (int) : l'identité de l'arête
      * @return l'identité du nœud destination de l'arête d'identité donnée (int)
