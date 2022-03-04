@@ -75,9 +75,11 @@ public record GraphSectors(ByteBuffer buffer) {
             for (int j = 0; j < largeur; j++) {
                 // Numéro du secteur qu'on va ajouter a l'ArrayList intersect
                 int secteur = secteurs[3] + i * 128 + j;
-                // La premiere et la derniere node du secteur
+                // On cherche la premiere et la derniere node du secteur grace au ByteBuffer buffer
                 int startNode = buffer.getInt(SECTORS_INTS * secteur);
                 int endNode = Short.toUnsignedInt(buffer.getShort(OFFSET_SECOND * secteur + 1));
+                // On peut maintenant créer un secteur et l'ajouter à notre ArrayList contenant tous les secteurs ayant
+                // une intersection avec le carré passé en paramètres
                 intersect.add(new Sector(startNode, endNode));
             }
         }
