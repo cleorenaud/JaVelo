@@ -51,6 +51,7 @@ public record GraphSectors(ByteBuffer buffer) {
         ArrayList<PointCh> sommets = new ArrayList<>();
         // On cherche a calculer les coordonnées des 4 sommets du carré (en coordonées suisses).
         // On les stock dans un ArrayList pour simplifier les calculs suivants au moyen d'une boucle for
+        distance= Math.abs(distance);
         double estMoinDis= center.e()-distance;
         if(estMoinDis<SwissBounds.MIN_E){
             estMoinDis= SwissBounds.MIN_E;
