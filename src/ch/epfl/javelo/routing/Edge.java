@@ -54,7 +54,10 @@ public record Edge(int fromNodeId, int toNodeId, PointCh fromPoint, PointCh toPo
      * @return (PointCh) le point se trouvant à la position donnée
      */
     public PointCh pointAt(double position) {
-
+        double lengthOnEdge = position / length();
+        double eastCoordinate = lengthOnEdge * (toPoint().e() - fromPoint().e()) + fromPoint().e();
+        double northCoordinate = lengthOnEdge * (toPoint().n() - fromPoint().n()) + fromPoint().n();
+        return new PointCh(eastCoordinate, northCoordinate);
     }
 
     /**
