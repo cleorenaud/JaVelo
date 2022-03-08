@@ -4,5 +4,6 @@
  */
 package ch.epfl.javelo.data;
 
-public class Graph {
+public final class Graph {
+
 }
