@@ -30,35 +30,80 @@ class GraphEdgesTest {
     void isInvertedWorksOnKnownEdge() {
         // Sens : inversé. Nœud destination : 12.
         edgesBuffer.putInt(0, ~12);
+        // Longueur : 0x10.b m (= 16.6875 m)
+        edgesBuffer.putShort(4, (short) 0x10_b);
+        // Dénivelé : 0x10.0 m (= 16.0 m)
+        edgesBuffer.putShort(6, (short) 0x10_0);
+        // Identité de l'ensemble d'attributs OSM : 2022
+        edgesBuffer.putShort(8, (short) 2022);
         assertTrue(edges.isInverted(0));
     }
 
     @Test
     void targetNodeIdWorksOnKnownEdge() {
+        // Sens : inversé. Nœud destination : 12.
+        edgesBuffer.putInt(0, ~12);
+        // Longueur : 0x10.b m (= 16.6875 m)
+        edgesBuffer.putShort(4, (short) 0x10_b);
+        // Dénivelé : 0x10.0 m (= 16.0 m)
+        edgesBuffer.putShort(6, (short) 0x10_0);
+        // Identité de l'ensemble d'attributs OSM : 2022
+        edgesBuffer.putShort(8, (short) 2022);
         assertEquals(12, edges.targetNodeId(0));
     }
 
     @Test
     void lengthWorksOnKnownEdge() {
+        // Sens : inversé. Nœud destination : 12.
+        edgesBuffer.putInt(0, ~12);
         // Longueur : 0x10.b m (= 16.6875 m)
         edgesBuffer.putShort(4, (short) 0x10_b);
+        // Dénivelé : 0x10.0 m (= 16.0 m)
+        edgesBuffer.putShort(6, (short) 0x10_0);
+        // Identité de l'ensemble d'attributs OSM : 2022
+        edgesBuffer.putShort(8, (short) 2022);
         assertEquals(16.6875, edges.length(0));
     }
 
     @Test
     void elevationGainWorksOnKnownEdge() {
+        // Sens : inversé. Nœud destination : 12.
+        edgesBuffer.putInt(0, ~12);
+        // Longueur : 0x10.b m (= 16.6875 m)
+        edgesBuffer.putShort(4, (short) 0x10_b);
         // Dénivelé : 0x10.0 m (= 16.0 m)
         edgesBuffer.putShort(6, (short) 0x10_0);
+        // Identité de l'ensemble d'attributs OSM : 2022
+        edgesBuffer.putShort(8, (short) 2022);
         assertEquals(16.0, edges.elevationGain(0));
     }
 
     @Test
-    void hasProfileWorksOnKnownEdge() {
+    void hasProfileWorksWithProfil() {
+        // Arrête possédant un profil
+        // Sens : inversé. Nœud destination : 12.
+        edgesBuffer.putInt(0, ~12);
+        // Longueur : 0x10.b m (= 16.6875 m)
+        edgesBuffer.putShort(4, (short) 0x10_b);
+        // Dénivelé : 0x10.0 m (= 16.0 m)
+        edgesBuffer.putShort(6, (short) 0x10_0);
+        // Identité de l'ensemble d'attributs OSM : 2022
+        edgesBuffer.putShort(8, (short) 2022);
 
+        assertTrue(edges.hasProfile(0));
     }
 
     @Test
     void profileSamplesWorksOnKnownEdge() {
+        // Sens : inversé. Nœud destination : 12.
+        edgesBuffer.putInt(0, ~12);
+        // Longueur : 0x10.b m (= 16.6875 m)
+        edgesBuffer.putShort(4, (short) 0x10_b);
+        // Dénivelé : 0x10.0 m (= 16.0 m)
+        edgesBuffer.putShort(6, (short) 0x10_0);
+        // Identité de l'ensemble d'attributs OSM : 2022
+        edgesBuffer.putShort(8, (short) 2022);
+
         float[] expectedSamples = new float[]{
                 384.0625f, 384.125f, 384.25f, 384.3125f, 384.375f,
                 384.4375f, 384.5f, 384.5625f, 384.6875f, 384.75f
@@ -68,6 +113,14 @@ class GraphEdgesTest {
 
     @Test
     void attributesIndexWorksOnKnownEdge() {
+        // Sens : inversé. Nœud destination : 12.
+        edgesBuffer.putInt(0, ~12);
+        // Longueur : 0x10.b m (= 16.6875 m)
+        edgesBuffer.putShort(4, (short) 0x10_b);
+        // Dénivelé : 0x10.0 m (= 16.0 m)
+        edgesBuffer.putShort(6, (short) 0x10_0);
+        // Identité de l'ensemble d'attributs OSM : 2022
+        edgesBuffer.putShort(8, (short) 2022);
         assertEquals(2022, edges.attributesIndex(0));
     }
 }

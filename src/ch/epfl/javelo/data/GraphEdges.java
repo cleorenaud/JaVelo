@@ -23,7 +23,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     private static final int EDGES_INTS = OFFSET_ATT + Short.BYTES;
 
     /**
-     * Méthode qui retourne vrai si l'arrête d'identité donnée va dans le sens inverse
+     * Méthode qui retourne vrai si l'arête d'identité donnée va dans le sens inverse
      * de la voie OSM dont elle provient et retourne faux sinon.
      *
      * @param edgeId (int) : l'identité de l'arête
@@ -48,7 +48,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     }
 
     /**
-     * méthode qui retourne la longueur, en mètres, de l'arête d'identité donnée.
+     * Méthode qui retourne la longueur, en mètres, de l'arête d'identité donnée.
      *
      * @param edgeId (int) : l'identité de l'arête
      * @return la longueur, en mètres, de l'arête d'identité donnée
@@ -58,7 +58,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     }
 
     /**
-     * méthode qui retourne le dénivelé positif, en mètres, de l'arête d'identité donnée
+     * Méthode qui retourne le dénivelé positif, en mètres, de l'arête d'identité donnée
      *
      * @param edgeId (int) : l'identité de l'arête
      * @return le dénivelé positif, en mètres, de l'arête d'identité donnée
@@ -68,18 +68,18 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     }
 
     /**
-     * méthode qui retourne vrai si l'arête d'identité donnée possède un profil et faux sinon.
+     * Méthode qui retourne vrai si l'arête d'identité donnée possède un profil et faux sinon.
      *
      * @param edgeId (int) : l'identité de l'arête
      * @return vrai si l'arête d'identité donnée possède un profil et faux sinon
      */
     public boolean hasProfile(int edgeId) {
-        double m = Bits.extractUnsigned(profileIds.get(edgeId),31,2);
+        double m = Bits.extractUnsigned(profileIds.get(edgeId) ,30,2);
         return (m != 0);
     }
 
     /**
-     * méthode qui retourne le tableau des échantillons du profil de l'arête d'identité donnée,
+     * Méthode qui retourne le tableau des échantillons du profil de l'arête d'identité donnée,
      * qui est vide si l'arête ne possède pas de profil
      *
      * @param edgeId (int) : l'identité de l'arête
@@ -92,8 +92,8 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
         int nbEch = 1 + (int) Math.ceil(length(edgeId) / 2.0); //calcul le nombre d'échantillons
         float[] tabTemp = new float[nbEch]; //créations de deux tableaux
         float[] tabFin = new float[nbEch]; //tableau au cas ou la route est inversée
-        int firstIndex = Bits.extractUnsigned(profileIds.get(edgeId),29,30); //savoir le type de profil
-        double m = Bits.extractUnsigned(profileIds.get(edgeId),31,2);; //identité du premier échantillon
+        int firstIndex = Bits.extractUnsigned(profileIds.get(edgeId),0,30); //savoir le type de profil
+        double m = Bits.extractUnsigned(profileIds.get(edgeId),30,2);; //identité du premier échantillon
         tabTemp[0] = Q28_4.asFloat(elevations.get(firstIndex)); //remplit avec le premier échantillon
         for (int i = firstIndex + 1; i < firstIndex + nbEch; ++i) { //remplissage du tableau
             int n = i - firstIndex;
@@ -102,27 +102,27 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
             }
             if (m == 2) {
                 double k = Math.ceil(((double) n) / 2.0); //savoir quel index chercher dans elevations
-                int fact = n % 2 + 1; //permettra de savoir ce qu'il faut extraire de "info"
+                int fact = n % 2; //permettra de savoir ce qu'il faut extraire de "info"
                 short info = elevations.get(firstIndex + (int) k);
-                short dif = (short) Bits.extractUnsigned(info, 8 * fact-1, 8);
+                short dif = (short) Bits.extractSigned(info, 8 * fact, 8);
                 dif = (short) Q28_4.asFloat(dif);
                 tabTemp[n] = tabTemp[n - 1] + dif; //remplissage du tableau
             }
             if (m == 3) {
                 double k = Math.ceil(((double) n) / 4.0); //savoir quel index chercher dans elevations
-                int fact = 1;
+                int fact = 0;
                 if (n % 4 == 1) { //permettra de savoir ce qu'il faut extraire de "info"
-                    fact = 4;
-                }
-                if (n % 4 == 2) {
                     fact = 3;
                 }
-                if (n % 4 == 3) {
+                if (n % 4 == 2) {
                     fact = 2;
                 }
+                if (n % 4 == 3) {
+                    fact = 1;
+                }
                 short info = elevations.get(firstIndex + (int) k);
-                short dif = (short) Bits.extractUnsigned(info, 4 * fact-1, 4);
-                dif = (short) Q28_4.asFloat(dif);
+                float dif = (float) Bits.extractSigned(info, 4 * fact, 4);
+                dif = (float) Q28_4.asDouble((int)dif);
                 tabTemp[n] = tabTemp[n - 1] + dif; //remplissage du tableau
             }
 
@@ -131,7 +131,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
             return tabTemp; //tabTemp est dans le bon ordre si la route n'est pas inversée
         }
         for (int i = 0; i < nbEch; ++i) {
-            tabFin[i] = tabTemp[nbEch - 1 - i]; //inverse les indices si la route est inversée
+            tabFin[i] = tabTemp[nbEch - 1 - i];//inverse les indices si la route est inversée
         }
         return tabFin;
 

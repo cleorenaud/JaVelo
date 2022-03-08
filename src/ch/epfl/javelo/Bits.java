@@ -45,7 +45,7 @@ public final class Bits {
      *                                  incluse dans l'intervalle allant de 0 à 30 (inclus), ou si start ou length est négatif
      */
     public static int extractUnsigned(int value, int start, int length) throws IllegalArgumentException {
-        if (start + length > 31 || length < 0 || start < 0) {
+        if (start > 31 || length < 0 || start < 0 || length > 31 || start + length > 32) {
             throw new IllegalArgumentException();
         }
         int temp = value << (32 - (start + length));

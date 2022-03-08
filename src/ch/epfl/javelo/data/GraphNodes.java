@@ -62,7 +62,7 @@ public record GraphNodes(IntBuffer buffer) {
      */
     public int outDegree(int nodeId) {
         int indexD = NODE_INTS * nodeId + OFFSET_OUT_EDGES;
-        int d = Bits.extractUnsigned(buffer.get(indexD) >> 1, 27, 4);
+        int d = Bits.extractUnsigned(buffer.get(indexD), 28, 4);
         return d;
     }
 
