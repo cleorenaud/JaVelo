@@ -27,15 +27,15 @@ public record Edge(int fromNodeId, int toNodeId, PointCh fromPoint, PointCh toPo
      * Méthode statique retournant une instance de Edge dont les attributs fromNodeId et toNodeId sont ceux donnés, les
      * autres étant ceux de l'arête d'identité edgeId dans le graphe Graph
      *
-     * @param graph      (Graph)
-     * @param edgeId     (int)
-     * @param fromNodeId (int)
-     * @param toNodeId   (int)
-     * @return (Edge) une instance de Edge
+     * @param graph      (Graph) le graph contenant l'arête d'identité edgeId
+     * @param edgeId     (int) l'arête dont les attributs vont être utilisés
+     * @param fromNodeId (int) le point de départ de cette arête
+     * @param toNodeId   (int) la point d'arrivée de cette arête
+     * @return (Edge) une nouvelle instance de Edge
      */
     public static Edge of(Graph graph, int edgeId, int fromNodeId, int toNodeId) {
-
-        //return new Edge(fromNodeId, toNodeId, graph.nodePoint(fromNodeId), graph.nodePoint(toNodeId));
+        return new Edge(fromNodeId, toNodeId, graph.nodePoint(fromNodeId), graph.nodePoint(toNodeId),
+                graph.edgeLength(edgeId), graph.edgeProfile(edgeId));
     }
 
     /**
@@ -45,6 +45,7 @@ public record Edge(int fromNodeId, int toNodeId, PointCh fromPoint, PointCh toPo
      * @return (double) la position le long de l'arête la plus proche (en mètres)
      */
     public double positionClosestToPoint(PointCh point) {
+        
     }
 
     /**
