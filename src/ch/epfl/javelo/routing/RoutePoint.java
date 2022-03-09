@@ -41,7 +41,7 @@ public record RoutePoint(PointCh point, double position, double distanceToRefere
      * @return (RoutePoint) le point le plus proche de la référence
      */
     public RoutePoint min(RoutePoint that) {
-        return (this.distanceToReference() <= that.distanceToReference()) ? this : that;
+        return (Math.abs(this.distanceToReference()) <= Math.abs(that.distanceToReference())) ? this : that;
     }
 
     /**
@@ -54,6 +54,6 @@ public record RoutePoint(PointCh point, double position, double distanceToRefere
      * @return (RoutePoint) le point le plus proche de la référence
      */
     public RoutePoint min(PointCh thatPoint, double thatPosition, double thatDistanceToReference) {
-        return (this.distanceToReference() <= thatDistanceToReference) ? this : new RoutePoint(thatPoint, thatPosition, thatDistanceToReference);
+        return (Math.abs(this.distanceToReference()) <= Math.abs(thatDistanceToReference)) ? this : new RoutePoint(thatPoint, thatPosition, thatDistanceToReference);
     }
 }
