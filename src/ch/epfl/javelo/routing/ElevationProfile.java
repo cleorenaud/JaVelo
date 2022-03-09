@@ -6,6 +6,7 @@ package ch.epfl.javelo.routing;
 
 import ch.epfl.javelo.Functions;
 
+import java.util.DoubleSummaryStatistics;
 import java.util.function.DoubleUnaryOperator;
 
 /**
@@ -41,17 +42,24 @@ public final class ElevationProfile {
     }
 
     /**
+     * méthode qui nous nous aidera à calculer les statistiques de elevationsSamples
+     * @return (DoubleSummaryStatistics) : une instance de la classe DoubleSummaryStatistics avec les valeurs de
+     * elevationsSamples
+     */
+    private DoubleSummaryStatistics getStatistics(){
+        DoubleSummaryStatistics s = new DoubleSummaryStatistics();
+        for (int i = 0; i < elevationsSamples.length; i++) {
+            s.accept(elevationsSamples[i]);
+        }
+        return s;
+    }
+
+    /**
      * méthode qui retourne l'altitude minimum du profil, en mètres
      * @return (double) : l'altitude minimum du profil
      */
     public double minElevation(){
-        double altitudeMin=elevationsSamples[0];
-        for (int i = 1; i < elevationsSamples.length; i++) {
-            if(elevationsSamples[i]<altitudeMin){
-               altitudeMin=elevationsSamples[i];
-            }
-        }
-        return altitudeMin;
+        return getStatistics().getMin();
     }
 
     /**
@@ -59,13 +67,7 @@ public final class ElevationProfile {
      * @return (double) : l'altitude maximum du profil
      */
     public double maxElevation(){
-        double altitudeMax=elevationsSamples[0];
-        for (int i = 1; i < elevationsSamples.length; i++) {
-            if(elevationsSamples[i]>altitudeMax){
-                altitudeMax=elevationsSamples[i];
-            }
-        }
-        return altitudeMax;
+        return getStatistics().getMax();
     }
 
     /**
@@ -83,6 +85,7 @@ public final class ElevationProfile {
         }
         return totalAscent;
     }
+
 
     /**
      * méthode qui retourne le dénivelé négatif total du profil, en mètres
