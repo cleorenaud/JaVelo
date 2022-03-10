@@ -7,6 +7,7 @@ package ch.epfl.javelo.data;
 import java.nio.*;
 
 import ch.epfl.javelo.Bits;
+import ch.epfl.javelo.Q28_4;
 
 /**
  * Enregistrement représentant le tableau de tous les nœuds du graphe JaVelo
@@ -39,7 +40,7 @@ public record GraphNodes(IntBuffer buffer) {
      */
     public double nodeE(int nodeId) {
         int indexE = NODE_INTS * nodeId + OFFSET_E;
-        return buffer.get(indexE);
+        return Q28_4.asDouble(buffer.get(indexE));
     }
 
 
@@ -51,7 +52,7 @@ public record GraphNodes(IntBuffer buffer) {
      */
     public double nodeN(int nodeId) {
         int indexN = NODE_INTS * nodeId + OFFSET_N;
-        return buffer.get(indexN);
+        return Q28_4.asDouble(buffer.get(indexN));
     }
 
     /**

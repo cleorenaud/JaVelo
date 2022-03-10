@@ -18,6 +18,8 @@ public record PointCh(double e, double n) {
      */
     public PointCh { //constructeur compact
         if (!SwissBounds.containsEN(e, n)) {
+            System.out.println(e);
+            System.out.println(n);
             throw new IllegalArgumentException(); //lance une exception si le point n'est pas dans le territoire Suisse
         }
     }
