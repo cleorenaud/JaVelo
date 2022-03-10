@@ -28,7 +28,7 @@ public final class Graph {
      * méthode permettant de charger le graphe depuis un répertoire
      * @param basePath (Path) :
      * @return (Graph) : le graphe chargé grâce au répertoire
-     * @throws IOException en cas d'erreur d'entrée/sortie, p. ex. si l'un des fichiers attendu n'existe pas.
+     * @throws IOException en cas d'erreur d'entrée/sortie, p. ex. si l'un des fichiers attendus n'existe pas.
      */
     public static Graph loadFrom(Path basePath) throws IOException{
         Path attributesPath =basePath.resolve("attributes.bin");
@@ -79,10 +79,10 @@ public final class Graph {
         return new Graph(graphNodes, graphSectors, graphedges, attributeSets);
 
     }
-    private GraphNodes nodes;
-    private GraphSectors sectors;
-    private GraphEdges edges;
-    private List<AttributeSet> attributeSets;
+    private final GraphNodes nodes;
+    private final GraphSectors sectors;
+    private final GraphEdges edges;
+    private final List<AttributeSet> attributeSets;
 
     /**
      *  constructeur public de Graph
@@ -107,13 +107,22 @@ public final class Graph {
     }
 
     /**
-     * méthode qui retourne le nombre d'arêtes sortant du nœud d'identité donnée
+     * méthode qui retourne la position du noeud d'identité donnée
      * @param nodeId (int) : l'identité du nœud
-     * @return le nombre d'arêtes sortant du nœud d'identité donnée
+     * @return la position du noeud d'identité donnée
      */
     public PointCh nodePoint(int nodeId){
         return new PointCh(nodes.nodeE(nodeId), nodes.nodeN(nodeId));
 
+    }
+
+    /**
+     * méthode qui retourne le nombre d'arrêtes sortant du noeud d'identité donnée
+     * @param nodeId (int) : l'identité du nœud
+     * @return le nombre d'arrêtes sortant du noeud d'identité donnée
+     */
+    public int nodeOutDegree(int nodeId){
+        return nodes.outDegree(nodeId);
     }
 
     /**
@@ -177,8 +186,8 @@ public final class Graph {
 
     /**
      * méthode qui retourne la longueur, en mètres, de l'arête d'identité donnée
-     * @param edgeId
-     * @return
+     * @param edgeId (int) : l'identité de l'arête
+     * @return la longueur, en mètres, de l'arête d'identité donnée
      */
     public double edgeLength(int edgeId){
         return edges.length(edgeId);
@@ -206,11 +215,6 @@ public final class Graph {
         return Functions.sampled(edges.profileSamples(edgeId), edgeLength(edgeId));
 
     }
-
-
-
-
-
 
 
 
