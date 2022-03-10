@@ -43,7 +43,7 @@ public interface Route {
      *
      * @return (List < PointCh >) la liste contenant tous les points
      */
-    List<PointCh> point();
+    List<PointCh> points();
 
     /**
      * Méthode retournant le point se trouvant à la position donnée le long de l'itinéraire

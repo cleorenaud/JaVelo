@@ -47,7 +47,7 @@ public record Edge(int fromNodeId, int toNodeId, PointCh fromPoint, PointCh toPo
      * @param point (Pointh) le point donné
      * @return (double) la position le long de l'arête la plus proche (en mètres)
      */
-    public double positionClosestToPoint(PointCh point) {
+    public double positionClosestTo(PointCh point) {
         return Math2.projectionLength(fromPoint().e(), fromPoint().n(), toPoint().e(), toPoint().n(), point.e(), point.n());
     }
 
