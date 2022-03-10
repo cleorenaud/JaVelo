@@ -45,7 +45,6 @@ public record Edge(int fromNodeId, int toNodeId, PointCh fromPoint, PointCh toPo
      * @return (double) la position le long de l'arête la plus proche (en mètres)
      */
     public double positionClosestToPoint(PointCh point) {
-        
     }
 
     /**
