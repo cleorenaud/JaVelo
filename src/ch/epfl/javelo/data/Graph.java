@@ -72,9 +72,9 @@ public final class Graph {
         try (FileChannel channel = FileChannel.open(attributesPath)) {
             attReader = channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size()).asLongBuffer();
         }
-        long[] tab = attReader.array();
-        for (int i = 0; i < tab.length; i++) {
-            AttributeSet attributeSet = new AttributeSet(tab[i]);
+
+        for (int i = 0; i < attReader.capacity(); i++) {
+            AttributeSet attributeSet = new AttributeSet(attReader.get(i));
             attributeSets.add(attributeSet);
         }
 
