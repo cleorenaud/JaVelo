@@ -20,7 +20,8 @@ public final class ElevationProfile {
 
     /**
      * construit le profil en long d'un itinéraire de longueur length (en mètres)
-     * et dont les échantillons d'altitude, répartis uniformément le long de l'itinéraire, sont contenus dans elevationSamples
+     * et dont les échantillons d'altitude, répartis uniformément le long de l'itinéraire, sont contenus dans
+     * elevationSamples
      * @param length (double) : la longueur en mètres
      * @param elevationSamples (float []) :
      * @throws IllegalArgumentException

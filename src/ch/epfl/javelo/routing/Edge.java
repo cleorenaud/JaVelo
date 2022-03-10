@@ -4,9 +4,12 @@
  */
 package ch.epfl.javelo.routing;
 
+import ch.epfl.javelo.Functions;
+import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.data.Graph;
 import ch.epfl.javelo.projection.PointCh;
 
+import javax.swing.text.Position;
 import java.util.function.DoubleUnaryOperator;
 
 /**
@@ -45,6 +48,7 @@ public record Edge(int fromNodeId, int toNodeId, PointCh fromPoint, PointCh toPo
      * @return (double) la position le long de l'arête la plus proche (en mètres)
      */
     public double positionClosestToPoint(PointCh point) {
+        return Math2.projectionLength(fromPoint().e(), fromPoint().n(), toPoint().e(), toPoint().n(), point.e(), point.n());
     }
 
     /**
@@ -67,6 +71,6 @@ public record Edge(int fromNodeId, int toNodeId, PointCh fromPoint, PointCh toPo
      * @return (double) l'altitude à la position donnée (en mètres)
      */
     public double elevationAt(double position) {
-
+        return this.profile.applyAsDouble(position);
     }
 }
