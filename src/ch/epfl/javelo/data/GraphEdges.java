@@ -12,6 +12,10 @@ import java.nio.*;
 /**
  * Enregistrement qui représente le tableau de toutes les arêtes du graphe JaVelo
  *
+ * @param edgesBuffer (ByteBuffer) la mémoire tampon contenant le sens de l'arête, l'identité du nœud de destination,
+ *                    la longueur, le dénivelé positif et l'identité de l'ensemble d'attributs OSM
+ * @param profileIds (IntBuffer) le type de profil et l'identité du premier échantillon du profil
+ * @param elevations (ShortBuffer) la mémoire tampon contenant la totalité des échantillons des profils, compressés ou non
  * @author : Roxanne Chevalley (339716)
  */
 
