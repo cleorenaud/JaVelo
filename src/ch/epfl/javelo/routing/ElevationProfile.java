@@ -11,6 +11,7 @@ import java.util.function.DoubleUnaryOperator;
 
 /**
  * Une classe publique et immuable représentant le profil en long d'un itinéraire simple ou multiple
+ *
  * @author : Roxanne Chevalley (339716)
  */
 
@@ -19,35 +20,38 @@ public final class ElevationProfile {
     private float[] elevationsSamples;
 
     /**
-     * construit le profil en long d'un itinéraire de longueur length (en mètres)
+     * Construit le profil en long d'un itinéraire de longueur length (en mètres)
      * et dont les échantillons d'altitude, répartis uniformément le long de l'itinéraire, sont contenus dans
      * elevationSamples
-     * @param length (double) : la longueur en mètres
-     * @param elevationSamples (float []) :
-     * @throws IllegalArgumentException
+     *
+     * @param length           (double) : la longueur en mètres
+     * @param elevationSamples (float []) : les échantillons d'altitude
+     * @throws IllegalArgumentException when length <= 0 or elevationSample has less than 2 values
      */
-    public ElevationProfile(double length, float[] elevationSamples) throws IllegalArgumentException{
-        this.elevationsSamples= elevationSamples;
-        this.length= length;
-        if(length<=0 || elevationSamples.length<2){
+    public ElevationProfile(double length, float[] elevationSamples) throws IllegalArgumentException {
+        this.elevationsSamples = elevationSamples;
+        this.length = length;
+        if (length <= 0 || elevationSamples.length < 2) {
             throw new IllegalArgumentException();
         }
     }
 
     /**
-     * méthode qui retourne la longueur du profil, en mètres
+     * Méthode qui retourne la longueur du profil, en mètres
+     *
      * @return (double) : la longueur du profil
      */
-    public double length(){
+    public double length() {
         return length;
     }
 
     /**
-     * méthode qui nous nous aidera à calculer les statistiques de elevationsSamples
+     * Méthode qui nous nous aidera à calculer les statistiques de elevationsSamples
+     *
      * @return (DoubleSummaryStatistics) : une instance de la classe DoubleSummaryStatistics avec les valeurs de
      * elevationsSamples
      */
-    private DoubleSummaryStatistics getStatistics(){
+    private DoubleSummaryStatistics getStatistics() {
         DoubleSummaryStatistics s = new DoubleSummaryStatistics();
         for (int i = 0; i < elevationsSamples.length; i++) {
             s.accept(elevationsSamples[i]);
@@ -56,31 +60,34 @@ public final class ElevationProfile {
     }
 
     /**
-     * méthode qui retourne l'altitude minimum du profil, en mètres
+     * Méthode qui retourne l'altitude minimum du profil, en mètres
+     *
      * @return (double) : l'altitude minimum du profil
      */
-    public double minElevation(){
+    public double minElevation() {
         return getStatistics().getMin();
     }
 
     /**
-     * méthode qui retourne l'altitude maximum du profil, en mètres
+     * Méthode qui retourne l'altitude maximum du profil, en mètres
+     *
      * @return (double) : l'altitude maximum du profil
      */
-    public double maxElevation(){
+    public double maxElevation() {
         return getStatistics().getMax();
     }
 
     /**
-     * méthode qui retourne le dénivelé positif total du profil, en mètres
+     * Méthode qui retourne le dénivelé positif total du profil, en mètres
+     *
      * @return (double) : le dénivelé positif total du profil, en mètres
      */
-    public double totalAscent(){
-        double totalAscent=0;
-        for (int i = 0; i < elevationsSamples.length-1; i++) {
-            double dif= elevationsSamples[i+1]-elevationsSamples[i];
-            if(dif>0){
-                totalAscent=totalAscent+dif;
+    public double totalAscent() {
+        double totalAscent = 0;
+        for (int i = 0; i < elevationsSamples.length - 1; i++) {
+            double dif = elevationsSamples[i + 1] - elevationsSamples[i];
+            if (dif > 0) {
+                totalAscent = totalAscent + dif;
             }
 
         }
@@ -89,15 +96,16 @@ public final class ElevationProfile {
 
 
     /**
-     * méthode qui retourne le dénivelé négatif total du profil, en mètres
+     * Méthode qui retourne le dénivelé négatif total du profil, en mètres
+     *
      * @return (double) : le dénivelé négatif total du profil, en mètres
      */
-    public double totalDescent(){
-        double totalDescent=0;
-        for (int i = 0; i < elevationsSamples.length-1; i++) {
-            double dif= elevationsSamples[i+1]-elevationsSamples[i];
-            if(dif<0){
-                totalDescent=totalDescent+dif;
+    public double totalDescent() {
+        double totalDescent = 0;
+        for (int i = 0; i < elevationsSamples.length - 1; i++) {
+            double dif = elevationsSamples[i + 1] - elevationsSamples[i];
+            if (dif < 0) {
+                totalDescent = totalDescent + dif;
             }
 
         }
@@ -105,20 +113,15 @@ public final class ElevationProfile {
     }
 
     /**
-     * méthode qui retourne l'altitude du profil à la position donnée,
+     * Méthode qui retourne l'altitude du profil à la position donnée,
+     *
      * @param position (double) : la position donnée
      * @return l'altitude du profil à la position donnée
      */
-    public double elevationAt(double position){
-        DoubleUnaryOperator function= Functions.sampled(elevationsSamples, length);
+    public double elevationAt(double position) {
+        DoubleUnaryOperator function = Functions.sampled(elevationsSamples, length);
         return function.applyAsDouble(position);
 
     }
-
-
-
-
-
-
 
 }
