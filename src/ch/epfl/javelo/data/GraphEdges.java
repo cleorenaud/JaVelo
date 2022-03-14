@@ -93,7 +93,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
         if (!hasProfile(edgeId)) {
             return new float[0];
         }
-        int nbEch = 1 + (int) Math.ceil(length(edgeId) / 2.0); //calcul le nombre d'échantillons
+        int nbEch = 1 + (int) Math.ceil(length(edgeId) / 2.0); //calcul le nombre d'échantillons dont on aura besoin
         float[] tabTemp = new float[nbEch]; //créations de deux tableaux
         float[] tabFin = new float[nbEch]; //tableau au cas où la route est inversée
         int firstIndex = Bits.extractUnsigned(profileIds.get(edgeId),0,30); //savoir le type de profil
