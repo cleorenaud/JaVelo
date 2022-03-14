@@ -91,7 +91,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
         }
         int nbEch = 1 + (int) Math.ceil(length(edgeId) / 2.0); //calcul le nombre d'échantillons
         float[] tabTemp = new float[nbEch]; //créations de deux tableaux
-        float[] tabFin = new float[nbEch]; //tableau au cas ou la route est inversée
+        float[] tabFin = new float[nbEch]; //tableau au cas où la route est inversée
         int firstIndex = Bits.extractUnsigned(profileIds.get(edgeId),0,30); //savoir le type de profil
         double m = Bits.extractUnsigned(profileIds.get(edgeId),30,2);; //identité du premier échantillon
         tabTemp[0] = Q28_4.asFloat(Bits.extractUnsigned(elevations.get(firstIndex),0,16)); //remplit avec le premier échantillon
