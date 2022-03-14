@@ -90,7 +90,7 @@ public final class Graph {
     /**
      * Constructeur public de Graph
      *
-     * @param nodes         (GraphNodes) : représente l'ensemble de noeuds du graphe
+     * @param nodes         (GraphNodes) : représente l'ensemble de nœuds du graphe
      * @param sectors       (GraphSectors) : représente l'ensemble des secteurs du graphe
      * @param edges         (GraphEdges) : représente l'ensemble des arêtes du graphe
      * @param attributeSets (List<AttributeSet>) : représente l'ensemble des attributs du graphe
@@ -112,10 +112,10 @@ public final class Graph {
     }
 
     /**
-     * Méthode qui retourne la position du noeud d'identité donnée
+     * Méthode qui retourne la position du nœud d'identité donnée
      *
      * @param nodeId (int) : l'identité du nœud
-     * @return la position du noeud d'identité donnée
+     * @return la position du nœud d'identité donnée
      */
     public PointCh nodePoint(int nodeId) {
         return new PointCh(nodes.nodeE(nodeId), nodes.nodeN(nodeId));
@@ -123,10 +123,10 @@ public final class Graph {
     }
 
     /**
-     * Méthode qui retourne le nombre d'arrêtes sortant du noeud d'identité donnée
+     * Méthode qui retourne le nombre d'arêtes sortant du nœud d'identité donnée
      *
      * @param nodeId (int) : l'identité du nœud
-     * @return le nombre d'arrêtes sortant du noeud d'identité donnée
+     * @return le nombre d'arêtes sortant du nœud d'identité donnée
      */
     public int nodeOutDegree(int nodeId) {
         return nodes.outDegree(nodeId);

@@ -4,6 +4,8 @@ import ch.epfl.javelo.Math2;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.nio.LongBuffer;
+import java.nio.channels.FileChannel;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 
@@ -11,36 +13,33 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GraphTest {
 
+
+
     @Test
-    void loadFromDoesNotThrowsIOException() {
-        Path basePath = FileSystems.getDefault().getPath("lausanne");
-        assertThrows(IOException.class, () -> {
-            Graph.loadFrom(basePath);
-        });
+    void loadFromDoesNotThrowsIOException() throws IOException{
+        Graph graph= Graph.loadFrom(Path.of("Lausanne"));
+
     }
 
     @Test
     void loadFromThrowsIOException() {
-        Path basePath = FileSystems.getDefault().getPath("src");        assertThrows(IOException.class, () -> {
-            Graph.loadFrom(basePath);
+        assertThrows(IOException.class, () -> {
+            Graph graph= Graph.loadFrom(Path.of("src"));
         });
     }
 
-    /*
     @Test
-    void loadFromWorksWithKnownInput() {
-        Path basePath = FileSystems.getDefault().getPath("lausanne");
-        Graph.loadFrom(basePath);
-    }
-    */
-
-    @Test
-    void nodeCountWorksOnKnownValues() {
+    void nodeCountWorksOnKnownValues() throws IOException {
+        Graph graph= Graph.loadFrom(Path.of("Lausanne"));
+        //assertEquals(,graph.nodeCount());
     }
 
     @Test
-    void nodePointWorksOnKnownInput() {
+    void nodePointWorksOnKnownInput() throws IOException {
+        Graph graph= Graph.loadFrom(Path.of("Lausanne"));
+        assertEquals(new PointCh(), graph.nodePoint(2022));
 
+        46.6326106, 6.6013034
     }
 
     @Test
