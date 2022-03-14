@@ -48,12 +48,25 @@ class GraphTest {
     }
 
     @Test
-    void nodeOutDegreeWorksOnKnownInput() {
+    void nodeOutDegreeWorksOnKnownInput() throws IOException {
+        Graph graph = Graph.loadFrom(Path.of("Lausanne"));
+
+        Path filePath = Path.of("lausanne/nodes_osmid.bin");
+        LongBuffer osmIdBuffer;
+        try (FileChannel channel = FileChannel.open(filePath)) {
+            osmIdBuffer = channel
+                    .map(FileChannel.MapMode.READ_ONLY, 0, channel.size())
+                    .asLongBuffer();
+        }
+        System.out.println(osmIdBuffer.get(2022));
+
+        //assertEquals(2, graph.nodeOutDegree(2022));
 
     }
 
     @Test
-    void nodeOutEdgeIdWorksOnKnownInput() {
+    void nodeOutEdgeIdWorksOnKnownInput() throws IOException {
+        Graph graph = Graph.loadFrom(Path.of("Lausanne"));
 
     }
 
