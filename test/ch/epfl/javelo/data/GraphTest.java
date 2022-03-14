@@ -4,24 +4,35 @@ import ch.epfl.javelo.Math2;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class GraphTest {
 
-    /*
     @Test
-    void loadFromThrowsIOException() {
+    void loadFromDoesNotThrowsIOException() {
+        Path basePath = FileSystems.getDefault().getPath("lausanne");
         assertThrows(IOException.class, () -> {
-            Graph.loadFrom();
+            Graph.loadFrom(basePath);
         });
     }
-    */
 
     @Test
-    void loadFromWorksWithKnownInput() {
-
+    void loadFromThrowsIOException() {
+        Path basePath = FileSystems.getDefault().getPath("src");        assertThrows(IOException.class, () -> {
+            Graph.loadFrom(basePath);
+        });
     }
+
+    /*
+    @Test
+    void loadFromWorksWithKnownInput() {
+        Path basePath = FileSystems.getDefault().getPath("lausanne");
+        Graph.loadFrom(basePath);
+    }
+    */
 
     @Test
     void nodeCountWorksOnKnownValues() {

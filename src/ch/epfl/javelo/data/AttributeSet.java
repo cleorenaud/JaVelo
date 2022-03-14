@@ -9,6 +9,7 @@ import java.util.StringJoiner;
 /**
  * Enregistrement qui représente un ensemble d'attributs OpenStreetMap à l'aide d'une séquence de bits
  *
+ * @param bits (long) la séquence de bits représentant un ensemble d'attributs OpenStreetMap
  * @author : Roxanne Chevalley (339716)
  */
 
