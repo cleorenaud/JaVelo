@@ -54,7 +54,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      * @return la longueur, en mètres, de l'arête d'identité donnée
      */
     public double length(int edgeId) {
-        return Q28_4.asDouble(edgesBuffer.getShort(edgeId * EDGES_INTS + OFFSET_L));
+        return Q28_4.asDouble(Bits.extractUnsigned(edgesBuffer.getShort(edgeId * EDGES_INTS + OFFSET_L),0,16));
     }
 
     /**
@@ -64,7 +64,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      * @return le dénivelé positif, en mètres, de l'arête d'identité donnée
      */
     public double elevationGain(int edgeId) {
-        return Q28_4.asDouble(edgesBuffer.getShort(edgeId * EDGES_INTS + OFFSET_E));
+        return Q28_4.asDouble(Bits.extractUnsigned(edgesBuffer.getShort(edgeId * EDGES_INTS + OFFSET_E),0,16));
     }
 
     /**
@@ -94,18 +94,19 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
         float[] tabFin = new float[nbEch]; //tableau au cas ou la route est inversée
         int firstIndex = Bits.extractUnsigned(profileIds.get(edgeId),0,30); //savoir le type de profil
         double m = Bits.extractUnsigned(profileIds.get(edgeId),30,2);; //identité du premier échantillon
-        tabTemp[0] = Q28_4.asFloat(elevations.get(firstIndex)); //remplit avec le premier échantillon
+        tabTemp[0] = Q28_4.asFloat(Bits.extractUnsigned(elevations.get(firstIndex),0,16)); //remplit avec le premier échantillon
         for (int i = firstIndex + 1; i < firstIndex + nbEch; ++i) { //remplissage du tableau
             int n = i - firstIndex;
             if (m == 1) {
-                tabTemp[n] = Q28_4.asFloat(elevations.get(i));
+                tabTemp[n] = Q28_4.asFloat(Bits.extractUnsigned(elevations.get(i),0,16));
             }
             if (m == 2) {
                 double k = Math.ceil(((double) n) / 2.0); //savoir quel index chercher dans elevations
                 int fact = n % 2; //permettra de savoir ce qu'il faut extraire de "info"
                 short info = elevations.get(firstIndex + (int) k);
-                short dif = (short) Bits.extractSigned(info, 8 * fact, 8);
-                dif = (short) Q28_4.asFloat(dif);
+                float dif = (float) Bits.extractSigned(info, 8 * fact, 8);
+                dif = (float) Q28_4.asDouble((int)dif);
+                System.out.println(dif);
                 tabTemp[n] = tabTemp[n - 1] + dif; //remplissage du tableau
             }
             if (m == 3) {
