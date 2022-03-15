@@ -109,7 +109,7 @@ public final class ElevationProfile {
             }
 
         }
-        return totalDescent;
+        return Math.abs(totalDescent);
     }
 
     /**
