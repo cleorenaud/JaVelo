@@ -54,6 +54,13 @@ public interface Route {
     PointCh pointAt(double position);
 
     /**
+     * Méthode retournant l'altitude à la position donnée le long de l'itinéraire
+     * @param position (double) la position donnée le long de l'itinéraire
+     * @return l'altitude à la position donnée le long de l'itinéraire
+     */
+    double elevationAt(double position);
+
+    /**
      * Méthode retournant l'identité du nœud appartenant à l'itinéraire et se trouvant le plus proche de la position
      * donnée
      *

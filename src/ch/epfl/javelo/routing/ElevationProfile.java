@@ -16,8 +16,8 @@ import java.util.function.DoubleUnaryOperator;
  */
 
 public final class ElevationProfile {
-    private double length;
-    private float[] elevationsSamples;
+    private final double length;
+    private final float[] elevationsSamples;
 
     /**
      * Construit le profil en long d'un itinéraire de longueur length (en mètres)
