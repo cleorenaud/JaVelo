@@ -7,10 +7,13 @@ import ch.epfl.javelo.projection.PointWebMercator;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.List;
 
 import static ch.epfl.javelo.projection.Ch1903.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -49,7 +52,7 @@ class GraphTest {
 
     @Test
     void nodeOutDegreeWorksOnKnownInput() throws IOException {
-        Graph graph = Graph.loadFrom(Path.of("Lausanne"));
+        //Graph graph = Graph.loadFrom(Path.of("Lausanne"));
 
         Path filePath = Path.of("lausanne/nodes_osmid.bin");
         LongBuffer osmIdBuffer;
@@ -80,10 +83,26 @@ class GraphTest {
         assertEquals(-1, graph.nodeClosestTo((new PointCh(e, n)), 0)); // retourne bien -1 quand il n'y a pas de node à la distance donnée
     }
 
+    /*
     @Test
     void edgeTargetNodeIdWorksOnKnownInput() {
+        IntBuffer ib = IntBuffer.wrap(new int[]{
+                2_600_000 << 4, // correspond aux coordonnées de la nodes
+                1_200_000 << 4, // e = 2_600_000 et n = 1_200_000
+                0x2_000_1234 // 2 le nombre d'arêtes sortantes et le reste est l'identité de celle ci
+        });
+        ByteBuffer bb = ByteBuffer.wrap(new byte[] {
+
+        });
+        GraphNodes gn = new GraphNodes(ib);
+        GraphSectors gs = new GraphSectors(bb);
+        GraphEdges ge = new GraphEdges();
+        List<AttributeSet> attributeSets = ;
+        Graph graph = new Graph(gn, gs, ge, attributeSets);
 
     }
+
+     */
 
     @Test
     void edgeIsInvertedWorksOnKnownInput() {
