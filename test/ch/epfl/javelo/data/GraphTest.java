@@ -10,9 +10,11 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
+import java.nio.ShortBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 import static ch.epfl.javelo.projection.Ch1903.*;
@@ -52,7 +54,8 @@ class GraphTest {
 
     @Test
     void nodeOutDegreeWorksOnKnownInput() throws IOException {
-        //Graph graph = Graph.loadFrom(Path.of("Lausanne"));
+        Graph graph = Graph.loadFrom(Path.of("Lausanne"));
+        assertEquals(2, graph.nodeOutDegree(2022));
 
         Path filePath = Path.of("lausanne/nodes_osmid.bin");
         LongBuffer osmIdBuffer;
@@ -62,9 +65,6 @@ class GraphTest {
                     .asLongBuffer();
         }
         System.out.println(osmIdBuffer.get(2022));
-
-        //assertEquals(2, graph.nodeOutDegree(2022));
-
     }
 
     @Test
@@ -83,30 +83,80 @@ class GraphTest {
         assertEquals(-1, graph.nodeClosestTo((new PointCh(e, n)), 0)); // retourne bien -1 quand il n'y a pas de node à la distance donnée
     }
 
-    /*
+
     @Test
     void edgeTargetNodeIdWorksOnKnownInput() {
         IntBuffer ib = IntBuffer.wrap(new int[]{
                 2_600_000 << 4, // correspond aux coordonnées de la nodes
                 1_200_000 << 4, // e = 2_600_000 et n = 1_200_000
-                0x2_000_1234 // 2 le nombre d'arêtes sortantes et le reste est l'identité de celle ci
+                0x2_000_1234, // 2 le nombre d'arêtes sortantes et le reste est l'identité de la première sortant
         });
-        ByteBuffer bb = ByteBuffer.wrap(new byte[] {
+
+        ByteBuffer bb= ByteBuffer.wrap(new byte[]{0b000,
+                0b000,0b000,0b001,0b000,0b001
 
         });
+
+        ByteBuffer edgesBuffer = ByteBuffer.allocate(10);
+
+        IntBuffer profileIds = IntBuffer.wrap(new int[]{
+                // Type : 3. Index du premier échantillon : 1.
+                (3 << 30) | 1
+        });
+
+        ShortBuffer elevations = ShortBuffer.wrap(new short[]{
+                (short) 0,
+                (short) 0x180C, (short) 0xFEFF,
+                (short) 0xFFFE, (short) 0xF000
+        });
+
         GraphNodes gn = new GraphNodes(ib);
         GraphSectors gs = new GraphSectors(bb);
-        GraphEdges ge = new GraphEdges();
-        List<AttributeSet> attributeSets = ;
+        GraphEdges ge = new GraphEdges(edgesBuffer, profileIds, elevations);
+        AttributeSet attribute = new AttributeSet(0);
+        List<AttributeSet> attributeSets = new ArrayList<AttributeSet>();
+        attributeSets.add(attribute);
         Graph graph = new Graph(gn, gs, ge, attributeSets);
+
+        assertEquals(graph.edgeTargetNodeId(0), 0);
 
     }
 
-     */
-
     @Test
     void edgeIsInvertedWorksOnKnownInput() {
+        IntBuffer ib = IntBuffer.wrap(new int[]{
+                2_600_000 << 4, // correspond aux coordonnées de la nodes
+                1_200_000 << 4, // e = 2_600_000 et n = 1_200_000
+                0x2_000_1234, // 2 le nombre d'arêtes sortantes et le reste est l'identité de la première sortant
+        });
 
+        ByteBuffer bb= ByteBuffer.wrap(new byte[]{0b000,
+                0b000,0b000,0b001,0b000,0b001
+
+        });
+
+        ByteBuffer edgesBuffer = ByteBuffer.allocate(10);
+
+        IntBuffer profileIds = IntBuffer.wrap(new int[]{
+                // Type : 3. Index du premier échantillon : 1.
+                (3 << 30) | 1
+        });
+
+        ShortBuffer elevations = ShortBuffer.wrap(new short[]{
+                (short) 0,
+                (short) 0x180C, (short) 0xFEFF,
+                (short) 0xFFFE, (short) 0xF000
+        });
+
+
+        GraphNodes gn = new GraphNodes(ib);
+        GraphSectors gs = new GraphSectors(bb);
+        GraphEdges ge = new GraphEdges(edgesBuffer, profileIds, elevations);
+        AttributeSet attribute = new AttributeSet(0);
+        List<AttributeSet> attributeSets = new ArrayList<AttributeSet>();
+        attributeSets.add(attribute);
+        Graph graph = new Graph(gn, gs, ge, attributeSets);
+        assertFalse(graph.edgeIsInverted(0));
     }
 
     @Test
