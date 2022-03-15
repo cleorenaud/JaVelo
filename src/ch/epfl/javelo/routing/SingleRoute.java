@@ -1,7 +1,9 @@
 package ch.epfl.javelo.routing;
 
+import ch.epfl.javelo.data.GraphNodes;
 import ch.epfl.javelo.projection.PointCh;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -11,13 +13,16 @@ import java.util.List;
  * @author Cléo Renaud (325156)
  */
 public final class SingleRoute implements Route {
+
+    private final List<Edge> edges;
+
     /**
      * Constructeur retournant l'itinéraire simple composé des arêtes données
      *
      * @param edges (List<Edge>) les arêtes données
      */
     public SingleRoute(List<Edge> edges) {
-
+        this.edges = edges;
     }
 
     /**
@@ -70,7 +75,12 @@ public final class SingleRoute implements Route {
      */
     @Override
     public PointCh pointAt(double position) {
-        return null;
+        int node = Arrays.binarySearch(new List[]{this.edges}, position);
+        if (node < 0) {
+            return null;
+        } else {
+            return null;
+        }
     }
 
     /**
