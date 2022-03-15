@@ -38,24 +38,40 @@ class GraphTest {
 
     @Test
     void nodeCountWorksOnKnownValues() throws IOException {
-        Graph graph = Graph.loadFrom(Path.of("Lausanne"));
-        //assertEquals(,graph.nodeCount());
+        Path filePath = Path.of("lausanne");
+        Graph graph = Graph.loadFrom(filePath);
+
+        Path path = Path.of("lausanne/nodes_osmid.bin");
+        LongBuffer osmIdBuffer;
+        try (FileChannel channel = FileChannel.open(path)) {
+            osmIdBuffer = channel
+                    .map(FileChannel.MapMode.READ_ONLY, 0, channel.size())
+                    .asLongBuffer();
+        }
+        assertEquals(osmIdBuffer.capacity(), graph.nodeCount());
     }
 
     @Test
         // Fonctionne, juste un petit delta entre les deux valeurs, dû aux calculs
     void nodePointWorksOnKnownInput() throws IOException {
+
         Graph graph = Graph.loadFrom(Path.of("Lausanne"));
         double e = Ch1903.e(Math.toRadians(6.6013034), Math.toRadians(46.6326106));
         double n = Ch1903.n(Math.toRadians(6.6013034), Math.toRadians(46.6326106));
-        //assertEquals(new PointCh(e, n), graph.nodePoint(2022));
-
+        PointCh p1 = graph.nodePoint(2022);
+        PointCh p2 = new PointCh(e, n);
+        assertTrue(p2.squaredDistanceTo(p1) < 0.01); // On calcule la distance entre le vrai point et celui attendu
+        // Du au arrondis il n'y a pas d'égalité parfaite donc on cherche à être précis à 0,1 mètre près
     }
 
     @Test
     void nodeOutDegreeWorksOnKnownInput() throws IOException {
         Graph graph = Graph.loadFrom(Path.of("Lausanne"));
-        assertEquals(2, graph.nodeOutDegree(2022));
+        assertEquals(1, graph.nodeOutDegree(2022));
+        assertEquals(2, graph.nodeOutDegree(3));
+        assertEquals(1, graph.nodeOutDegree(2021));
+
+
 
         Path filePath = Path.of("lausanne/nodes_osmid.bin");
         LongBuffer osmIdBuffer;
@@ -64,12 +80,14 @@ class GraphTest {
                     .map(FileChannel.MapMode.READ_ONLY, 0, channel.size())
                     .asLongBuffer();
         }
-        System.out.println(osmIdBuffer.get(2022));
+        System.out.println(osmIdBuffer.get(2021));
+
     }
 
     @Test
     void nodeOutEdgeIdWorksOnKnownInput() throws IOException {
         Graph graph = Graph.loadFrom(Path.of("Lausanne"));
+        assertEquals(2, graph.nodeOutDegree(2022));
 
     }
 
@@ -92,8 +110,8 @@ class GraphTest {
                 0x2_000_1234, // 2 le nombre d'arêtes sortantes et le reste est l'identité de la première sortant
         });
 
-        ByteBuffer bb= ByteBuffer.wrap(new byte[]{0b000,
-                0b000,0b000,0b001,0b000,0b001
+        ByteBuffer bb = ByteBuffer.wrap(new byte[]{0b000,
+                0b000, 0b000, 0b001, 0b000, 0b001
 
         });
 
@@ -130,8 +148,8 @@ class GraphTest {
                 0x2_000_1234, // 2 le nombre d'arêtes sortantes et le reste est l'identité de la première sortant
         });
 
-        ByteBuffer bb= ByteBuffer.wrap(new byte[]{0b000,
-                0b000,0b000,0b001,0b000,0b001
+        ByteBuffer bb = ByteBuffer.wrap(new byte[]{0b000,
+                0b000, 0b000, 0b001, 0b000, 0b001
 
         });
 

@@ -119,7 +119,6 @@ public final class Graph {
      */
     public PointCh nodePoint(int nodeId) {
         return new PointCh(nodes.nodeE(nodeId), nodes.nodeN(nodeId));
-
     }
 
     /**
