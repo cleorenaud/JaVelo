@@ -3,6 +3,7 @@ package ch.epfl.javelo.routing;
 import ch.epfl.javelo.data.GraphNodes;
 import ch.epfl.javelo.projection.PointCh;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -58,7 +59,7 @@ public final class SingleRoute implements Route {
      */
     @Override
     public List<Edge> edges() {
-        return null;
+        return this.edges;
     }
 
     /**
@@ -68,7 +69,12 @@ public final class SingleRoute implements Route {
      */
     @Override
     public List<PointCh> points() {
-        return null;
+        List<PointCh> points = new ArrayList<>();
+        for(int i =0; i < this.edges.size(); i++) {
+            points.add(edges.get(i).fromPoint());
+            points.add(edges.get(i).toPoint());
+        }
+        return points;
     }
 
     /**
