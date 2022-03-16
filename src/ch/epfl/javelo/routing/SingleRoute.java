@@ -87,9 +87,9 @@ public final class SingleRoute implements Route {
     public PointCh pointAt(double position) {
         int node = Arrays.binarySearch(new List[]{this.edges}, position);
         if (node < 0) {
-            return null;
+            return ;
         } else {
-            return null;
+            return (this.edges.get(node)).pointAt(0);
         }
     }
 
