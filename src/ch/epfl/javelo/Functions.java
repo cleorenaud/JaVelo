@@ -49,7 +49,7 @@ public final class Functions {
     }
 
     /**
-     * Méthode retournant une fonction obtenue pas interpolation linéaire entre les échantillons
+     * Méthode retournant une fonction obtenue par interpolation linéaire entre les échantillons
      *
      * @param samples (float[]) échantillons espacés régulièrement
      * @param xMax    (double) valeur maximale de la plage dans laquelle on a nos échantillons

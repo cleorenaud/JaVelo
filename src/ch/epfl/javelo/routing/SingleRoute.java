@@ -87,9 +87,11 @@ public final class SingleRoute implements Route {
     public PointCh pointAt(double position) {
         int node = Arrays.binarySearch(new List[]{this.edges}, position);
         if (node < 0) {
-            return ;
+            // calculer la position du point fromPoint de la logne suivante ?
+            this.edges.get(Math.abs(node) - 2); // donne le numéro de l'edge contenant la position passée en paramètre
+            return null;
         } else {
-            return (this.edges.get(node)).pointAt(0);
+            return (this.edges.get(node)).fromPoint();
         }
     }
 
