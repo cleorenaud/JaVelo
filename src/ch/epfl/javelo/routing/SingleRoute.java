@@ -34,7 +34,7 @@ public final class SingleRoute implements Route {
      */
     @Override
     public int indexOfSegmentAt(double position) {
-        return 0;
+        return 0; // car il s'agit d'une route simple
     }
 
     /**
@@ -44,7 +44,11 @@ public final class SingleRoute implements Route {
      */
     @Override
     public double length() {
-        return 0;
+        double length = 0;
+        for(int i =0; i < this.edges.size(); i++) {
+            length = length + edges.get(i).length();
+        }
+        return length;
     }
 
     /**
