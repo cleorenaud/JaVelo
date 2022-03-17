@@ -84,11 +84,23 @@ public final class SingleRoute implements Route {
      */
     @Override
     public PointCh pointAt(double position) {
+        // On créé un tableau contenant la position au debut de la node i dans l'index i
         double[] tableau = new double[edges.size() + 1];
         tableau[0] = 0;
         for (int i = 0; i < tableau.length; i++) {
             tableau[i] = tableau[i - 1] = edges.get(i).length();
         }
+
+        // Si la position est négative, elle est considérée comme étant équivalente à zéro
+        if (position < 0) {
+            position = 0;
+        }
+        // Si la position est plus grande que la longueur de l'itinéraire elle est considérée comme étant équivalente
+        // à la longueur de l'itinéraire
+        if (position > ((tableau.length - 1) + this.edges.get(edges.size() - 1).length())) {
+            position = (tableau.length - 1) + this.edges.get(edges.size() - 1).length();
+        }
+
         int node = Arrays.binarySearch(tableau, position);
 
         if (node < 0) {
@@ -109,7 +121,32 @@ public final class SingleRoute implements Route {
      */
     @Override
     public double elevationAt(double position) {
-        return 0;
+        // On créé un tableau contenant la position au debut de la node i dans l'index i
+        double[] tableau = new double[edges.size() + 1];
+        tableau[0] = 0;
+        for (int i = 0; i < tableau.length; i++) {
+            tableau[i] = tableau[i - 1] = edges.get(i).length();
+        }
+
+        // Si la position est négative, elle est considérée comme étant équivalente à zéro
+        if (position < 0) {
+            position = 0;
+        }
+        // Si la position est plus grande que la longueur de l'itinéraire elle est considérée comme étant équivalente
+        // à la longueur de l'itinéraire
+        if (position > ((tableau.length - 1) + this.edges.get(edges.size() - 1).length())) {
+            position = (tableau.length - 1) + this.edges.get(edges.size() - 1).length();
+        }
+
+        int node = Arrays.binarySearch(tableau, position);
+
+        if (node < 0) {
+            int newNode = Math.abs(node) - 2;
+            double posOnEdge = position - tableau[newNode];
+            return this.edges.get(newNode).elevationAt(posOnEdge);
+        } else {
+            return (this.edges.get(node)).elevationAt(0);
+        }
     }
 
     /**
@@ -120,7 +157,32 @@ public final class SingleRoute implements Route {
      */
     @Override
     public int nodeClosestTo(double position) {
-        return 0;
+        // On créé un tableau contenant la position au debut de la node i dans l'index i
+        double[] tableau = new double[edges.size() + 1];
+        tableau[0] = 0;
+        for (int i = 0; i < tableau.length; i++) {
+            tableau[i] = tableau[i - 1] = edges.get(i).length();
+        }
+
+        // Si la position est négative, elle est considérée comme étant équivalente à zéro
+        if (position < 0) {
+            position = 0;
+        }
+        // Si la position est plus grande que la longueur de l'itinéraire elle est considérée comme étant équivalente
+        // à la longueur de l'itinéraire
+        if (position > ((tableau.length - 1) + this.edges.get(edges.size() - 1).length())) {
+            position = (tableau.length - 1) + this.edges.get(edges.size() - 1).length();
+        }
+
+        int node = Arrays.binarySearch(tableau, position);
+
+        if (node < 0) {
+            int newNode = Math.abs(node) - 2;
+            double posOnEdge = position - tableau[newNode];
+            return (int) this.edges.get(newNode).positionClosestTo(pointAt(posOnEdge));
+        } else {
+            return (int) (this.edges.get(node)).positionClosestTo(this.edges.get(node).fromPoint());
+        }
     }
 
     /**
