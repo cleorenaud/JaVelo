@@ -1,6 +1,5 @@
 package ch.epfl.javelo.routing;
 
-import ch.epfl.javelo.data.GraphNodes;
 import ch.epfl.javelo.projection.PointCh;
 
 import java.util.ArrayList;
@@ -46,7 +45,7 @@ public final class SingleRoute implements Route {
     @Override
     public double length() {
         double length = 0;
-        for(int i =0; i < this.edges.size(); i++) {
+        for (int i = 0; i < this.edges.size(); i++) {
             length = length + edges.get(i).length();
         }
         return length;
@@ -70,7 +69,7 @@ public final class SingleRoute implements Route {
     @Override
     public List<PointCh> points() {
         List<PointCh> points = new ArrayList<>();
-        for(int i =0; i < this.edges.size(); i++) {
+        for (int i = 0; i < this.edges.size(); i++) {
             points.add(edges.get(i).fromPoint());
             points.add(edges.get(i).toPoint());
         }
@@ -85,11 +84,17 @@ public final class SingleRoute implements Route {
      */
     @Override
     public PointCh pointAt(double position) {
-        int node = Arrays.binarySearch(new List[]{this.edges}, position);
+        double[] tableau = new double[edges.size() + 1];
+        tableau[0] = 0;
+        for (int i = 0; i < tableau.length; i++) {
+            tableau[i] = tableau[i - 1] = edges.get(i).length();
+        }
+        int node = Arrays.binarySearch(tableau, position);
+
         if (node < 0) {
-            // calculer la position du point fromPoint de la logne suivante ?
-            this.edges.get(Math.abs(node) - 2); // donne le numéro de l'edge contenant la position passée en paramètre
-            return null;
+            int newNode = Math.abs(node) - 2;
+            double posOnEdge = position - tableau[newNode];
+            return this.edges.get(newNode).pointAt(posOnEdge);
         } else {
             return (this.edges.get(node)).fromPoint();
         }
