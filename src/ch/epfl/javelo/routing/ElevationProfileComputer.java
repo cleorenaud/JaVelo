@@ -9,7 +9,7 @@ import java.util.List;
  * @author : Roxanne Chevalley (339716)
  */
 
-public final class ElevationProfileComputer {
+public final class  ElevationProfileComputer {
     /**
      * Méthode qui retourne le profil en long de l'itinéraire route,
      * en garantissant un espacement maximal entre les échantillons du profil.
@@ -23,7 +23,6 @@ public final class ElevationProfileComputer {
         if (maxStepLength <= 0) {
             throw new IllegalArgumentException();
         }
-        List<Edge> edges = route.edges();
         int nbEch = (int) Math.ceil(route.length() / maxStepLength) + 1;
         double dis = route.length() / (double) nbEch;
 
