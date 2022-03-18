@@ -193,6 +193,22 @@ public final class SingleRoute implements Route {
      */
     @Override
     public RoutePoint pointClosestTo(PointCh point) {
-        return null;
+        double position = this.edges.get(0).positionClosestTo(point);
+        // On initialise la distance comme étant la différence de point, et de sa projection sur l'arête 0
+        double distance = point.distanceTo(this.edges.get(0).pointAt(position));
+        // On initialise le numéro de l'edge contenant le point le plus proche de point
+        int edgeCloser = 0;
+        // On parcourt la liste des arêtes restantes, et pour chacune d'entre elles on projette point
+        // Si la distance entre point et sa projection est plus petite que l'ancienne valeur de distance, alors on stock
+        // la nouvelle valeur de distance et on stock la position sur l'edge de la projection de point dans position
+        // edgeCloser permet de garder en mémoire l'indice de l'edge contenant la meilleure projection de point
+        for (int i = 1; i < this.edges.size(); i++) {
+            if (this.edges.get(i).positionClosestTo(point) < distance) {
+                distance = point.distanceTo(this.edges.get(i).pointAt(position));
+                position = (this.edges.get(i).positionClosestTo(point));
+                edgeCloser = i;
+            }
+        }
+        return new RoutePoint(this.edges.get(edgeCloser).pointAt(position), position, distance);
     }
 }
