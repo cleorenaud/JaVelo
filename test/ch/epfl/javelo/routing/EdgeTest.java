@@ -77,6 +77,9 @@ class EdgeTest {
         assertEquals(new PointCh(2500002,1100000) ,edge1.pointAt(2));
         assertEquals(new PointCh(2499999,1100000) ,edge1.pointAt(-1));
         assertEquals(new PointCh(2500007,1100000) ,edge1.pointAt(7));
+        assertEquals(2,edge1.elevationAt(2));
+        assertEquals(0,edge1.elevationAt(-1));
+        assertEquals(4,edge1.elevationAt(7));
 
 
 

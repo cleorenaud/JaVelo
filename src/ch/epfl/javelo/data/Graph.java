@@ -153,12 +153,16 @@ public final class Graph {
     public int nodeClosestTo(PointCh point, double searchDistance) {
         double distanceMax = searchDistance * searchDistance;
         int identyMemory = -1;
-        for (int i = 0; i < nodeCount(); i++) {
-            PointCh nodePoint = nodePoint(i);
-            double distance = point.squaredDistanceTo(nodePoint);
-            if (distance <= distanceMax) {
-                distanceMax = distance;
-                identyMemory = i;
+        List<GraphSectors.Sector> sectorsInArea= sectors.sectorsInArea(point,searchDistance);
+        for (int i = 0; i < sectorsInArea.size(); i++) {
+            GraphSectors.Sector secteur = sectorsInArea.get(i);
+            for (int j = secteur.startNodeId(); j < secteur.endNodeId() ; j++) {
+                PointCh nodePoint = nodePoint(j);
+                double distance = point.squaredDistanceTo(nodePoint);
+                if (distance <= distanceMax) {
+                    distanceMax = distance;
+                    identyMemory = j;
+                }
             }
         }
         return identyMemory;
