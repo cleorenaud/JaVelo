@@ -22,7 +22,12 @@ public final class SingleRoute implements Route {
      * @param edges (List<Edge>) les arêtes données
      */
     public SingleRoute(List<Edge> edges) {
-        this.edges = edges;
+        if (edges.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        else {
+            this.edges = edges;
+        }
     }
 
     /**
