@@ -24,8 +24,7 @@ public class MultiRoute implements Route {
     public MultiRoute(List<Route> segments) throws IllegalArgumentException {
         if (segments.isEmpty()) {
             throw new IllegalArgumentException();
-        }
-        else {
+        } else {
             this.segments = segments;
         }
     }
@@ -38,6 +37,7 @@ public class MultiRoute implements Route {
      */
     @Override
     public int indexOfSegmentAt(double position) {
+
         return 0;
     }
 
@@ -78,7 +78,13 @@ public class MultiRoute implements Route {
      */
     @Override
     public List<PointCh> points() {
-        return null;
+        List<PointCh> points = new ArrayList<>();
+        List<Edge> edges = this.edges();
+        for (int i = 0; i < edges().size(); i++) {
+            points.add(edges.get(i).fromPoint());
+        }
+        points.add((edges.get(edges().size() - 1)).toPoint());
+        return points;
     }
 
     /**

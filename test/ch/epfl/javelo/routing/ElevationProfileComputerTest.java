@@ -50,7 +50,7 @@ class ElevationProfileComputerTest {
         SingleRoute route = new SingleRoute(edges);
         double maxStepLength = 1; // L'espacement maximal entre les échantillons du profil
         assertEquals(0, ElevationProfileComputer.elevationProfile(route, maxStepLength));
-        
+
          */
     }
 
