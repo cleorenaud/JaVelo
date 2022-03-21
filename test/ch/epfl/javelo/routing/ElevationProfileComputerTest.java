@@ -34,27 +34,11 @@ class ElevationProfileComputerTest {
 
     @Test
     void elevationProfileComputerWorksWithKnownInput() throws IOException {
-        Path filePath = Path.of("lausanne");
-        Graph graph = Graph.loadFrom(filePath);
 
-        /*
-        Path path = Path.of("lausanne/nodes_osmid.bin");
-        LongBuffer osmIdBuffer;
-        try (FileChannel channel = FileChannel.open(path)) {
-            osmIdBuffer = channel
-                    .map(FileChannel.MapMode.READ_ONLY, 0, channel.size())
-                    .asLongBuffer();
-        }
-        System.out.println(osmIdBuffer.get(0));
-        System.out.println(osmIdBuffer.get(1));
-        System.out.println(osmIdBuffer.get(2));
-        */
-
-        Edge edge1 = Edge.of(graph,0,0,1);
-        Edge edge2 = Edge.of(graph,0,1,2);
         List<Edge> edges = new ArrayList<>(); // Implémenter la liste pour pouvoir tester proprement
-        edges.add(edge1);
-        edges.add(edge2);
+        edges.add(new Edge());
+        edges.add(new Edge());
+        edges.add(new Edge())
         SingleRoute route = new SingleRoute(edges);
         double maxStepLength = 1; // L'espacement maximal entre les échantillons du profil
         assertEquals(0, ElevationProfileComputer.elevationProfile(route, maxStepLength));
