@@ -16,7 +16,7 @@ public final class  ElevationProfileComputer {
      *
      * @param route         (Route) : l'itinéraire sur lequel on se base pour le profil en long
      * @param maxStepLength (double) : l'espacement maximal entre les échantillons du profil
-     * @return le profil en long de l'itinéraire route
+     * @return (ElevationProfile) le profil en long de l'itinéraire route
      * @throws IllegalArgumentException si maxStepLength n'est pas strictement positif
      */
     public static ElevationProfile elevationProfile(Route route, double maxStepLength) throws IllegalArgumentException {
@@ -24,7 +24,7 @@ public final class  ElevationProfileComputer {
             throw new IllegalArgumentException();
         }
         int nbEch = (int) Math.ceil(route.length() / maxStepLength) + 1;
-        double dis = route.length() / (double) nbEch;
+        double dis = route.length() / (double) (nbEch-1);
 
         float[] elevationSamples = new float[nbEch];
         for (int i = 0; i < nbEch; i++) {

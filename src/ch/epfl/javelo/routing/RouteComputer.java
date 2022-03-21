@@ -27,6 +27,6 @@ public class RouteComputer {
      * @throws IllegalArgumentException si le nœud de départ et d'arrivée sont identiques
      */
     public Route bestRouteBetween(int startNodeId, int endNodeId) throws IllegalArgumentException {
-
+        return null;
     }
 }
