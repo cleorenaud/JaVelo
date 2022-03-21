@@ -53,14 +53,6 @@ class ElevationProfileComputerTest {
         });
          */
 
-        var edgesCount = 10;
-        var edgesBuffer = ByteBuffer.allocate(10 * edgesCount);
-        var profileIds = IntBuffer.allocate(edgesCount);
-        var elevations = ShortBuffer.allocate(10);
-        var graphSectors = new GraphSectors(SECTORS_BUFFER);
-        var graphEdges = new GraphEdges(edgesBuffer, profileIds, elevations);
-        var attributeSets = List.<AttributeSet>of();
-
     }
 
     @Test

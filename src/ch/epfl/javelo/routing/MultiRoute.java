@@ -2,15 +2,18 @@ package ch.epfl.javelo.routing;
 
 import ch.epfl.javelo.projection.PointCh;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Classe publique et immuable représentant un itinéraire multiple, c'est à dire composé d'une séquence d'itinéraires
  * contigus nommés segments
  *
- * @author
+ * @author Cléo Renaud (325156)
  */
 public class MultiRoute implements Route {
+
+    private final List<Route> segments;
 
     /**
      * Construit un itinéraire multiple composé des segments donnés
@@ -19,7 +22,12 @@ public class MultiRoute implements Route {
      * @throws IllegalArgumentException si la liste des segments est nulle
      */
     public MultiRoute(List<Route> segments) throws IllegalArgumentException {
-
+        if (segments.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        else {
+            this.segments = segments;
+        }
     }
 
     /**
@@ -40,7 +48,11 @@ public class MultiRoute implements Route {
      */
     @Override
     public double length() {
-        return 0;
+        double totalLength = 0;
+        for (int i = 0; i < this.segments.size(); i++) {
+            totalLength = totalLength + (this.segments.get(i)).length();
+        }
+        return totalLength;
     }
 
     /**
@@ -50,7 +62,13 @@ public class MultiRoute implements Route {
      */
     @Override
     public List<Edge> edges() {
-        return null;
+        List<Edge> edges = new ArrayList<>();
+        for (int i = 0; i < this.segments.size(); i++) {
+            for (int j = 0; j < this.segments.get(i).edges().size(); j++) {
+                edges.add(this.segments.get(i).edges().get(j));
+            }
+        }
+        return edges;
     }
 
     /**
