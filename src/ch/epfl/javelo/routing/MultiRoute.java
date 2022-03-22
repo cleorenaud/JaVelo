@@ -108,22 +108,18 @@ public class MultiRoute implements Route {
      */
     @Override
     public PointCh pointAt(double position) {
-        // Si la position est négative, elle est considérée comme étant équivalente à zéro
-        // Si la position est considérée comme étant 0, on retourne le point de départ de notre MultiRoute
-        if (position <= 0) {
-            return (this.segments.get(0).edges().get(0)).fromPoint();
+        /// Si la position est négative, elle est considérée comme étant équivalente à zéro
+        if (position < 0) {
+            position = 0;
         }
         // Si la position est plus grande que la longueur de l'itinéraire elle est considérée comme étant équivalente
         // à la longueur de l'itinéraire
-        // Si la position est considérée comme étant la longueur de l'itinéraire, on retourne le point d'arrivée de notre
-        // MultiRoute
-        if (position >= this.length()) {
-            return (this.segments.get(segments.size()).edges().get(edges().size())).toPoint();
+        if (position > this.length()) {
+            position = this.length();
         }
 
         // On isole le segment contenant la position donnée
         Route segment = this.segments.get(indexOfSegmentAt(position));
-        // On cherche maintenant sur quel edge se trouve notre point au moyen de la méthode PointAt
         // La position à passer en paramètre est la position donnée, moins la position du début du segment sur lequel
         // se trouve le point voulu
         return segment.pointAt(position - positionSegment[indexOfSegmentAt(position)]);
@@ -138,8 +134,22 @@ public class MultiRoute implements Route {
      */
     @Override
     public double elevationAt(double position) {
-        return 0;
-    }
+// Si la position est négative, elle est considérée comme étant équivalente à zéro
+        // Si la position est négative, elle est considérée comme étant équivalente à zéro
+        if (position < 0) {
+            position = 0;
+        }
+        // Si la position est plus grande que la longueur de l'itinéraire elle est considérée comme étant équivalente
+        // à la longueur de l'itinéraire
+        if (position > this.length()) {
+            position = this.length();
+        }
+
+        // On isole le segment contenant la position donnée
+        Route segment = this.segments.get(indexOfSegmentAt(position));
+        // La position à passer en paramètre est la position donnée, moins la position du début du segment sur lequel
+        // se trouve le point voulu
+        return segment.elevationAt(position - positionSegment[indexOfSegmentAt(position)]);    }
 
     /**
      * Méthode retournant l'identité du nœud appartenant à l'itinéraire et se trouvant le plus proche de la position donnée
