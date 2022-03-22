@@ -184,6 +184,16 @@ public class MultiRoute implements Route {
      */
     @Override
     public RoutePoint pointClosestTo(PointCh point) {
-        return null;
+        // On initialise le point de l'itinéraire le plus proche comme étant celui le plus proche du premier segment
+        RoutePoint routePoint = (this.segments.get(0).pointClosestTo(point));
+        // On parcourt la liste de segments de notre MultiRoute
+        for (Route segment : segments) {
+            // On crée un RoutePoint étant le plus proche du segment sur lequel on est en train d'itérer
+            RoutePoint newRoutePoint = (segment.pointClosestTo(point));
+            // On utilise la méthode min de RoutePoint pour comparer le point obtenu avec celui qu'on avait pour l'edge
+            // précédente
+            routePoint.min(newRoutePoint);
+        }
+        return routePoint;
     }
 }
