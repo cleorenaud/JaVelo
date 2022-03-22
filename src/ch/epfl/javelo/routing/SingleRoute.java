@@ -152,8 +152,6 @@ public final class SingleRoute implements Route {
         }
     }
 
-
-
     /**
      * Méthode retournant l'identité du nœud appartenant à l'itinéraire et se trouvant le plus proche de la position donnée
      *
