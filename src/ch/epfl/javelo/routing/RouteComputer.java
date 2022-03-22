@@ -13,7 +13,7 @@ public class RouteComputer {
     private final CostFunction costFunction;
 
     /**
-     * Construit in planificateur d'itinéraire pour le graphe et la fonction de coût donnée
+     * Construit un planificateur d'itinéraire pour le graphe et la fonction de coût donnée
      *
      * @param graph        (Graph) le graphe donné
      * @param costFunction (CostFunction) la fonction de coût donnée
