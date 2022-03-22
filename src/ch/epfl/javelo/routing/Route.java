@@ -55,6 +55,7 @@ public interface Route {
 
     /**
      * Méthode retournant l'altitude à la position donnée le long de l'itinéraire
+     *
      * @param position (double) la position donnée le long de l'itinéraire
      * @return l'altitude à la position donnée le long de l'itinéraire
      */

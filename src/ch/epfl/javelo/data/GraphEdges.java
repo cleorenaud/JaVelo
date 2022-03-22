@@ -18,7 +18,6 @@ import java.nio.*;
  * @param elevations (ShortBuffer) la mémoire tampon contenant la totalité des échantillons des profils, compressés ou non
  * @author : Roxanne Chevalley (339716)
  */
-
 public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuffer elevations) {
     private static final int OFFSET_W = 0;
     private static final int OFFSET_L = OFFSET_W + Integer.BYTES;
@@ -31,7 +30,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      * de la voie OSM dont elle provient et retourne faux sinon.
      *
      * @param edgeId (int) : l'identité de l'arête
-     * @return vrai si l'arête d'identité donnée va dans le sens inverse
+     * @return (boolean) vrai si l'arête d'identité donnée va dans le sens inverse
      * de la voie OSM dont elle provient et retourne faux sinon (boolean)
      */
     public boolean isInverted(int edgeId) {
@@ -42,7 +41,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      * Méthode qui retourne l'identité du nœud destination de l'arête d'identité donnée
      *
      * @param edgeId (int) : l'identité de l'arête
-     * @return l'identité du nœud destination de l'arête d'identité donnée (int)
+     * @return (int) l'identité du nœud destination de l'arête d'identité donnée (int)
      */
     public int targetNodeId(int edgeId) {
         if (isInverted(edgeId)) {
@@ -55,7 +54,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      * Méthode qui retourne la longueur, en mètres, de l'arête d'identité donnée.
      *
      * @param edgeId (int) : l'identité de l'arête
-     * @return la longueur, en mètres, de l'arête d'identité donnée
+     * @return (double) la longueur, en mètres, de l'arête d'identité donnée
      */
     public double length(int edgeId) {
         return Q28_4.asDouble(Bits.extractUnsigned(edgesBuffer.getShort(edgeId * EDGES_INTS + OFFSET_L),0,16));
@@ -65,7 +64,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      * Méthode qui retourne le dénivelé positif, en mètres, de l'arête d'identité donnée
      *
      * @param edgeId (int) : l'identité de l'arête
-     * @return le dénivelé positif, en mètres, de l'arête d'identité donnée
+     * @return (double) le dénivelé positif, en mètres, de l'arête d'identité donnée
      */
     public double elevationGain(int edgeId) {
         return Q28_4.asDouble(Bits.extractUnsigned(edgesBuffer.getShort(edgeId * EDGES_INTS + OFFSET_E),0,16));
@@ -75,7 +74,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      * Méthode qui retourne vrai si l'arête d'identité donnée possède un profil et faux sinon.
      *
      * @param edgeId (int) : l'identité de l'arête
-     * @return vrai si l'arête d'identité donnée possède un profil et faux sinon
+     * @return (boolean) vrai si l'arête d'identité donnée possède un profil et faux sinon
      */
     public boolean hasProfile(int edgeId) {
         double m = Bits.extractUnsigned(profileIds.get(edgeId) ,30,2);
@@ -87,7 +86,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      * qui est vide si l'arête ne possède pas de profil
      *
      * @param edgeId (int) : l'identité de l'arête
-     * @return le tableau des échantillons du profil de l'arête d'identité donnée
+     * @return (float[]) le tableau des échantillons du profil de l'arête d'identité donnée
      */
     public float[] profileSamples(int edgeId) {
         if (!hasProfile(edgeId)) {
@@ -142,10 +141,10 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     }
 
     /**
-     * méthode qui retourne l'identité de l'ensemble d'attributs attaché à l'arête d'identité donnée.
+     * Méthode qui retourne l'identité de l'ensemble d'attributs attaché à l'arête d'identité donnée.
      *
      * @param edgeId (int) : l'identité de l'arête
-     * @return l'identité de l'ensemble d'attributs attaché à l'arête d'identité donnée
+     * @return (int) l'identité de l'ensemble d'attributs attaché à l'arête d'identité donnée
      */
     public int attributesIndex(int edgeId) {
         return Short.toUnsignedInt(edgesBuffer.getShort(edgeId * EDGES_INTS + OFFSET_ATT));

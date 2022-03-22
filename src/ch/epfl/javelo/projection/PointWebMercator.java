@@ -12,7 +12,7 @@ import ch.epfl.javelo.Preconditions;
 public record PointWebMercator(double x, double y) {
 
     /**
-     * Constructeur compact validant les coordonées qu'il recoit et levant une exception si elles n'appartiennent pas à
+     * Constructeur compact validant les coordinates qu'il reçoit et levant une exception si elles n'appartiennent pas à
      * l'intervalle [0;1]
      *
      * @param x (double) la coordonnée x reçue
@@ -41,7 +41,7 @@ public record PointWebMercator(double x, double y) {
      * Méthode de construction retournant le point Web Mercator correspondant au point du système de coordonnées suisse
      * donné
      *
-     * @param pointCh (PointCh) le point exprimé dans le système de coordonées suisse
+     * @param pointCh (PointCh) le point exprimé dans le système de coordinates suisse
      * @return (PointWebMercator) le point Web Mercator correpondant aux paramètres donnés
      */
     public static PointWebMercator ofPointCh(PointCh pointCh) {
