@@ -95,7 +95,7 @@ public final class Functions {
             // On utilise l'interpolation en prenant samples[a] et samples[a+1]
             int a = (int) (x / interval);
             double remainder = x % interval;
-            // Si x est hors de l'intervalle [0 ; xMax] on retroune la valeur de 0 ou de xMax
+            // Si x est hors de l'intervalle [0 ; xMax] on retourne la valeur de 0 ou de xMax
             if (x <= 0) {
                 return samples[0];
             }

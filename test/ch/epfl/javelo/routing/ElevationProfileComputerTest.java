@@ -42,31 +42,67 @@ class ElevationProfileComputerTest {
     }
 
     @Test
-    void elevationProfileComputerWorksWithKnownInput() throws IOException {
+    void elevationProfileComputerWorksWithFullProfile() throws IOException {
         PointCh point = new PointCh(2500000, 1100000);
         PointCh point2 = new PointCh(2500003, 1100000);
+        PointCh point3 = new PointCh(2500003, 1100003);
         float[] tab = {0, 1, 2, 3};
         float[] tab2 = {3, 5, 4};
+        float[] tab3 = {4, 6};
         DoubleUnaryOperator function = Functions.sampled(tab, 3);
         DoubleUnaryOperator function2 = Functions.sampled(tab2, 2);
+        DoubleUnaryOperator function3 = Functions.sampled(tab3, 1);
         Edge edge1 = new Edge(1, 4, point, point2, 3, function);
         Edge edge2 = new Edge(4, 6, point, point2, 2, function2);
+        Edge edge3 = new Edge(6, 7, point2, point3, 1, function3);
         List<Edge> edges = new ArrayList<>();
         edges.add(edge1);
         edges.add(edge2);
+        edges.add(edge3);
         SingleRoute route = new SingleRoute(edges);
         double maxStepLength = 1; // L'espacement maximal entre les échantillons du profil
-        float[] elevationSample = {0, 1, 2, 3, 5, 4};
-        ElevationProfile example = new ElevationProfile(5, elevationSample);
+        float[] elevationSample = {0, 1, 2, 3, 5, 4, 6};
+        ElevationProfile example = new ElevationProfile(7, elevationSample);
         ElevationProfile example2 = ElevationProfileComputer.elevationProfile(route, maxStepLength);
 
-        //assertEquals(example.length(), example2.length());
+        assertEquals(example.length(), example2.length());
         assertEquals(example.minElevation(), example2.minElevation());
         assertEquals(example.maxElevation(), example2.maxElevation());
         assertEquals(example.totalAscent(), example2.totalAscent());
         assertEquals(example.totalDescent(), example2.totalDescent());
         assertEquals(example.elevationAt(0), example2.elevationAt(0));
+    }
 
+    @Test
+    void elevationProfileComputerWorksWithUncompleteProfile() throws IOException {
+        PointCh point = new PointCh(2500000, 1100000);
+        PointCh point2 = new PointCh(2500003, 1100000);
+        PointCh point3 = new PointCh(2500003, 1100003);
+        float[] tab = {0, 1, 2, 3};
+        float[] tab2 = {3, 5, 4};
+        float[] tab3 = {4, 6};
+        DoubleUnaryOperator function = Functions.sampled(tab, 3);
+        DoubleUnaryOperator function2 = Functions.sampled(tab2, 2);
+        DoubleUnaryOperator function3 = Functions.sampled(tab3, 1);
+        Edge edge1 = new Edge(1, 4, point, point2, 3, function);
+        Edge edge2 = new Edge(4, 6, point, point2, 2, function2);
+        Edge edge3 = new Edge(6, 7, point2, point3, 1, function3);
+        List<Edge> edges = new ArrayList<>();
+        edges.add(edge1);
+        edges.add(edge2);
+        edges.add(edge3);
+        SingleRoute route = new SingleRoute(edges);
+        double maxStepLength = 1; // L'espacement maximal entre les échantillons du profil
+        float[] elevationSample = {0, 1, 2, 3, 5, 4, 6};
+        ElevationProfile example = new ElevationProfile(7, elevationSample);
+        ElevationProfile example2 = ElevationProfileComputer.elevationProfile(route, maxStepLength);
+
+        assertEquals(example.length(), example2.length());
+        assertEquals(example.minElevation(), example2.minElevation());
+        assertEquals(example.maxElevation(), example2.maxElevation());
+        assertEquals(example.totalAscent(), example2.totalAscent());
+        assertEquals(example.totalDescent(), example2.totalDescent());
+        assertEquals(example.elevationAt(0), example2.elevationAt(0));
     }
 
 }
