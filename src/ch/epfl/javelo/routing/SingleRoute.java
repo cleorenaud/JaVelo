@@ -34,7 +34,6 @@ public final class SingleRoute implements Route {
             tableau[i] = tableau[i - 1] + edges.get(i - 1).length();
         }
         this.tableau = tableau;
-
     }
 
     /**

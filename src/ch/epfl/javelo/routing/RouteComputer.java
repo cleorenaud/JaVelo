@@ -67,8 +67,6 @@ public class RouteComputer {
                     noeudsTrajet.add(k);
                     k=predecesseur[k];
                 }
-                System.out.println("ok");
-                System.out.println(noeudsTrajet.size());
 
                 List<Edge> edges = new ArrayList<>();
 
@@ -78,16 +76,17 @@ public class RouteComputer {
                     int edgeId=-1;
                     int outEdge;
                     for (int i = 0; i < graph.nodeOutDegree(noeud1); i++) { //trouver l'index de l'arrête
+
                         outEdge=graph.nodeOutEdgeId(noeud1,i);
                         if(graph.edgeTargetNodeId(outEdge)==noeud2){
                             edgeId= outEdge;
                         }
+
                     }
                     Edge edge = Edge.of(graph, edgeId, noeud1, noeud2);
                     edges.add(edge);
                     noeudsTrajet.remove(noeudsTrajet.size()-1);
                 }
-                System.out.println("oui");
                 return new SingleRoute(edges);
             }
 
