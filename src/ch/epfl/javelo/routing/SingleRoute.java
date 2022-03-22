@@ -1,5 +1,6 @@
 package ch.epfl.javelo.routing;
 
+import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.Preconditions;
 import ch.epfl.javelo.projection.PointCh;
 
@@ -95,15 +96,7 @@ public final class SingleRoute implements Route {
      */
     @Override
     public PointCh pointAt(double position) {
-        // Si la position est négative, elle est considérée comme étant équivalente à zéro
-        if (position < 0) {
-            position = 0;
-        }
-        // Si la position est plus grande que la longueur de l'itinéraire elle est considérée comme étant équivalente
-        // à la longueur de l'itinéraire
-        if (position > this.length()) {
-            position = this.length();
-        }
+        position = Math2.clamp(0, position, this.length());
 
         int node = Arrays.binarySearch(tableau, position);
 
@@ -127,15 +120,7 @@ public final class SingleRoute implements Route {
      */
     @Override
     public double elevationAt(double position) {
-        // Si la position est négative, elle est considérée comme étant équivalente à zéro
-        if (position < 0) {
-            position = 0;
-        }
-        // Si la position est plus grande que la longueur de l'itinéraire elle est considérée comme étant équivalente
-        // à la longueur de l'itinéraire
-        if (position > this.length()) {
-            position = this.length();
-        }
+        position = Math2.clamp(0, position, this.length());
 
         int node = Arrays.binarySearch(tableau, position);
 
@@ -158,15 +143,7 @@ public final class SingleRoute implements Route {
      */
     @Override
     public int nodeClosestTo(double position) {
-        // Si la position est négative, elle est considérée comme étant équivalente à zéro
-        if (position < 0) {
-            position = 0;
-        }
-        // Si la position est plus grande que la longueur de l'itinéraire elle est considérée comme étant équivalente
-        // à la longueur de l'itinéraire
-        if (position > this.length()) {
-            position = this.length();
-        }
+        position = Math2.clamp(0, position, this.length());
 
         int node = Arrays.binarySearch(tableau, position);
 
@@ -195,12 +172,7 @@ public final class SingleRoute implements Route {
     public RoutePoint pointClosestTo(PointCh point) {
         double position = this.edges.get(0).positionClosestTo(point);
         double lengthBefore = 0;
-        if (position < 0) {
-            position = 0;
-        }
-        if (position > this.edges.get(0).length()) {
-            position = this.edges.get(0).length();
-        }
+        position = Math2.clamp(0,position, this.edges.get(0).length());
         double positionGen = position;
         // On initialise la distance comme étant la différence de point, et de sa projection sur l'arête 0
         double distance = point.distanceTo(this.edges.get(0).pointAt(position));
@@ -213,12 +185,7 @@ public final class SingleRoute implements Route {
         for (int i = 1; i < this.edges.size(); i++) {
             lengthBefore = lengthBefore + edges.get(i - 1).length();
             double position2 = this.edges.get(i).positionClosestTo(point);
-            if (position2 < 0) {
-                position2 = 0;
-            }
-            if (position2 > this.edges.get(i).length()) {
-                position2 = this.edges.get(i).length();
-            }
+            position2 = Math2.clamp(0, position2, this.edges.get(i).length());
             double distance2 = point.distanceTo(this.edges.get(i).pointAt(position2));
             if (distance2 < distance) {
                 distance = distance2;

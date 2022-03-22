@@ -1,5 +1,6 @@
 package ch.epfl.javelo.routing;
 
+import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.Preconditions;
 import ch.epfl.javelo.projection.PointCh;
 
@@ -44,14 +45,19 @@ public class MultiRoute implements Route {
      */
     @Override
     public int indexOfSegmentAt(double position) {
-        int i = 0;
-        int index = 0;
-        while (positionSegment[i] <= position) {
-            index = i;
-            i++;
+        Math2.clamp(0, position, this.length());
+        if (position < 0) {
+            return 0;
         }
-        return index;
-
+        double currentPosition = 0;
+        int i = 0;
+        while (currentPosition <= position) {
+            currentPosition = positionSegment[i];
+            i++;
+            //(positionSegment[i] + edges().get(i).length())
+        }
+        segments.get(i).indexOfSegmentAt(currentPosition);
+        return 0;
     }
 
     /**
@@ -71,7 +77,7 @@ public class MultiRoute implements Route {
     /**
      * Méthode retournant la totalité des arêtes de l'itinéraire
      *
-     * @return (List < Edge >) la totatlité des arêtes de l'itinéraire
+     * @return (List < Edge >) la totalité des arêtes de l'itinéraire
      */
     @Override
     public List<Edge> edges() {
@@ -196,4 +202,5 @@ public class MultiRoute implements Route {
         }
         return routePoint;
     }
+
 }
