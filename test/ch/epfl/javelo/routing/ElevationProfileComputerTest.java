@@ -62,7 +62,7 @@ class ElevationProfileComputerTest {
         SingleRoute route = new SingleRoute(edges);
         double maxStepLength = 1; // L'espacement maximal entre les échantillons du profil
         float[] elevationSample = {0, 1, 2, 3, 5, 4, 6};
-        ElevationProfile example = new ElevationProfile(7, elevationSample);
+        ElevationProfile example = new ElevationProfile(6, elevationSample);
         ElevationProfile example2 = ElevationProfileComputer.elevationProfile(route, maxStepLength);
 
         assertEquals(example.length(), example2.length());
@@ -79,8 +79,8 @@ class ElevationProfileComputerTest {
         PointCh point2 = new PointCh(2500003, 1100000);
         PointCh point3 = new PointCh(2500003, 1100003);
         float[] tab = {0, 1, 2, 3};
-        float[] tab2 = {3, 5, 4};
-        float[] tab3 = {4, 6};
+        float[] tab2 = {Float.NaN, Float.NaN, Float.NaN};
+        float[] tab3 = {5, 6};
         DoubleUnaryOperator function = Functions.sampled(tab, 3);
         DoubleUnaryOperator function2 = Functions.sampled(tab2, 2);
         DoubleUnaryOperator function3 = Functions.sampled(tab3, 1);
@@ -93,8 +93,8 @@ class ElevationProfileComputerTest {
         edges.add(edge3);
         SingleRoute route = new SingleRoute(edges);
         double maxStepLength = 1; // L'espacement maximal entre les échantillons du profil
-        float[] elevationSample = {0, 1, 2, 3, 5, 4, 6};
-        ElevationProfile example = new ElevationProfile(7, elevationSample);
+        float[] elevationSample = {0, 1, 2, 3, 4, 5, 6};
+        ElevationProfile example = new ElevationProfile(6, elevationSample);
         ElevationProfile example2 = ElevationProfileComputer.elevationProfile(route, maxStepLength);
 
         assertEquals(example.length(), example2.length());
@@ -102,7 +102,7 @@ class ElevationProfileComputerTest {
         assertEquals(example.maxElevation(), example2.maxElevation());
         assertEquals(example.totalAscent(), example2.totalAscent());
         assertEquals(example.totalDescent(), example2.totalDescent());
-        assertEquals(example.elevationAt(0), example2.elevationAt(0));
+        assertEquals(example.elevationAt(4), example2.elevationAt(4));
     }
 
 }

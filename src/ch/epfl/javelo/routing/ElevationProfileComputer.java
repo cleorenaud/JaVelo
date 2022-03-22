@@ -1,5 +1,7 @@
 package ch.epfl.javelo.routing;
 
+import ch.epfl.javelo.Preconditions;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -9,7 +11,7 @@ import java.util.List;
  * @author : Roxanne Chevalley (339716)
  */
 
-public final class  ElevationProfileComputer {
+public final class ElevationProfileComputer {
     /**
      * Méthode qui retourne le profil en long de l'itinéraire route,
      * en garantissant un espacement maximal entre les échantillons du profil.
@@ -20,16 +22,13 @@ public final class  ElevationProfileComputer {
      * @throws IllegalArgumentException si maxStepLength n'est pas strictement positif
      */
     public static ElevationProfile elevationProfile(Route route, double maxStepLength) throws IllegalArgumentException {
-        if (maxStepLength <= 0) {
-            throw new IllegalArgumentException();
-        }
+        Preconditions.checkArgument(maxStepLength > 0);
         int nbEch = (int) Math.ceil(route.length() / maxStepLength) + 1;
-        double dis = route.length() / (double) (nbEch-1);
+        double dis = route.length() / (double) (nbEch - 1);
 
         float[] elevationSamples = new float[nbEch];
         for (int i = 0; i < nbEch; i++) {
             elevationSamples[i] = (float) route.elevationAt(i * dis);
-
         }
 
         if (Float.isNaN(elevationSamples[0])) { //gère si les premières valeurs sont NaN ou si elles sont toutes NaN
@@ -41,7 +40,7 @@ public final class  ElevationProfileComputer {
                     elevationSamples[k] = 0;
                 }
             }
-            Arrays.fill(elevationSamples, 0, k - 1, elevationSamples[k]);
+            Arrays.fill(elevationSamples, 0, k , elevationSamples[k]);
         }
 
         if (Float.isNaN(elevationSamples[nbEch - 1])) { //gère si les dernières valeurs sont NaN
@@ -52,7 +51,7 @@ public final class  ElevationProfileComputer {
                     elevationSamples[nbEch - k] = 0;
                 }
             }
-            Arrays.fill(elevationSamples, nbEch - k + 1, nbEch - 1, elevationSamples[nbEch - k]);
+            Arrays.fill(elevationSamples, nbEch - k, nbEch , elevationSamples[nbEch - k]);
         }
 
         for (int i = 1; i < nbEch - 1; i++) { //gère si des valeurs intermédiaires sont NaN
@@ -67,7 +66,7 @@ public final class  ElevationProfileComputer {
                 float fin = elevationSamples[j];
                 double delta = (double) (fin - debut) / (compteur + 1);
                 for (int k = i; k < j; k++) {
-                    elevationSamples[i] = debut + (float) delta * k;
+                    elevationSamples[k] = debut + (float) delta * (k - i + 1);
                 }
                 i = j + 1;
             }

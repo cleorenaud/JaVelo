@@ -15,6 +15,7 @@ import java.util.List;
 public final class SingleRoute implements Route {
 
     private final List<Edge> edges;
+    private final double[] tableau;
 
     /**
      * Constructeur retournant l'itinéraire simple composé des arêtes données
@@ -24,9 +25,16 @@ public final class SingleRoute implements Route {
     public SingleRoute(List<Edge> edges) {
         if (edges.isEmpty()) {
             throw new IllegalArgumentException();
-        }
-        else {
+        } else {
             this.edges = edges;
+
+            // On crée un tableau contenant la position au debut de la node i dans l'index i
+            double[] tableau = new double[edges.size() + 1];
+            tableau[0] = 0;
+            for (int i = 1; i < tableau.length; i++) {
+                tableau[i] = tableau[i - 1] + edges.get(i - 1).length();
+            }
+            this.tableau = tableau;
         }
     }
 
@@ -89,20 +97,13 @@ public final class SingleRoute implements Route {
      */
     @Override
     public PointCh pointAt(double position) {
-        // On crée un tableau contenant la position au debut de la node i dans l'index i
-        double[] tableau = new double[edges.size() + 1];
-        tableau[0] = 0;
-        for (int i = 1; i < tableau.length; i++) {
-            tableau[i] = tableau[i - 1] + edges.get(i-1).length();
-        }
-
         // Si la position est négative, elle est considérée comme étant équivalente à zéro
         if (position < 0) {
             position = 0;
         }
         // Si la position est plus grande que la longueur de l'itinéraire elle est considérée comme étant équivalente
         // à la longueur de l'itinéraire
-        if (position > this.length()){
+        if (position > this.length()) {
             position = this.length();
         }
 
@@ -112,9 +113,9 @@ public final class SingleRoute implements Route {
             int newNode = Math.abs(node) - 2;
             double posOnEdge = position - tableau[newNode];
             return this.edges.get(newNode).pointAt(posOnEdge);
-        } else if (node==edges.size()) {
-            return (this.edges.get(node-1)).toPoint();
-        }else{
+        } else if (node == edges.size()) {
+            return (this.edges.get(node - 1)).toPoint();
+        } else {
             return (this.edges.get(node)).fromPoint();
         }
     }
@@ -128,13 +129,6 @@ public final class SingleRoute implements Route {
      */
     @Override
     public double elevationAt(double position) {
-        // On crée un tableau contenant la position au debut de la node i dans l'index i
-        double[] tableau = new double[edges.size() + 1];
-        tableau[0] = 0;
-        for (int i = 1; i < tableau.length; i++) {
-            tableau[i] = tableau[i - 1] + edges.get(i-1).length();
-        }
-
         // Si la position est négative, elle est considérée comme étant équivalente à zéro
         if (position < 0) {
             position = 0;
@@ -151,12 +145,14 @@ public final class SingleRoute implements Route {
             int newNode = Math.abs(node) - 2;
             double posOnEdge = position - tableau[newNode];
             return this.edges.get(newNode).elevationAt(posOnEdge);
-        } else if (node==edges.size()) {
-            return (this.edges.get(node-1)).elevationAt(this.edges.get(node-1).length());
-        }else{
+        } else if (node!=0 && (node == edges.size() || Float.isNaN((float)(this.edges.get(node)).elevationAt(0)))) {
+            return (this.edges.get(node - 1)).elevationAt(this.edges.get(node - 1).length());
+        } else {
             return (this.edges.get(node)).elevationAt(0);
         }
     }
+
+
 
     /**
      * Méthode retournant l'identité du nœud appartenant à l'itinéraire et se trouvant le plus proche de la position donnée
@@ -166,13 +162,6 @@ public final class SingleRoute implements Route {
      */
     @Override
     public int nodeClosestTo(double position) {
-        // On crée un tableau contenant la position au debut de la node i dans l'index i
-        double[] tableau = new double[edges.size() + 1];
-        tableau[0] = 0;
-        for (int i = 1; i < tableau.length; i++) {
-            tableau[i] = tableau[i - 1] + edges.get(i-1).length();
-        }
-
         // Si la position est négative, elle est considérée comme étant équivalente à zéro
         if (position < 0) {
             position = 0;
@@ -188,14 +177,14 @@ public final class SingleRoute implements Route {
         if (node < 0) {
             int newNode = Math.abs(node) - 2;
             double posOnEdge = position - tableau[newNode];
-            if (posOnEdge<=(edges.get(newNode).length())/2){
+            if (posOnEdge <= (edges.get(newNode).length()) / 2) {
                 return edges.get(newNode).fromNodeId();
-            }else{
+            } else {
                 return edges.get(newNode).toNodeId();
             }
-        } else if (node==edges.size()) {
-            return this.edges.get(node-1).toNodeId();
-        }else {
+        } else if (node == edges.size()) {
+            return this.edges.get(node - 1).toNodeId();
+        } else {
             return this.edges.get(node).fromNodeId();
         }
     }
@@ -209,14 +198,14 @@ public final class SingleRoute implements Route {
     @Override
     public RoutePoint pointClosestTo(PointCh point) {
         double position = this.edges.get(0).positionClosestTo(point);
-        double lengthBefore=0;
-        if(position<0){
-            position=0;
+        double lengthBefore = 0;
+        if (position < 0) {
+            position = 0;
         }
-        if(position>this.edges.get(0).length()){
-          position = this.edges.get(0).length();
+        if (position > this.edges.get(0).length()) {
+            position = this.edges.get(0).length();
         }
-        double positionGen= position;
+        double positionGen = position;
         // On initialise la distance comme étant la différence de point, et de sa projection sur l'arête 0
         double distance = point.distanceTo(this.edges.get(0).pointAt(position));
         // On initialise le numéro de l'arrête contenant le point le plus proche de point
@@ -226,20 +215,20 @@ public final class SingleRoute implements Route {
         // la nouvelle valeur de distance et on stocke la position sur l'arrête de la projection de point dans position
         // edgeCloser permet de garder en mémoire l'indice de l'arrête contenant la meilleure projection de point
         for (int i = 1; i < this.edges.size(); i++) {
-            lengthBefore= lengthBefore + edges.get(i-1).length();
+            lengthBefore = lengthBefore + edges.get(i - 1).length();
             double position2 = this.edges.get(i).positionClosestTo(point);
-            if(position2<0){
-                position2=0;
+            if (position2 < 0) {
+                position2 = 0;
             }
-            if(position2>this.edges.get(i).length()){
+            if (position2 > this.edges.get(i).length()) {
                 position2 = this.edges.get(i).length();
             }
             double distance2 = point.distanceTo(this.edges.get(i).pointAt(position2));
-            if (distance2< distance) {
+            if (distance2 < distance) {
                 distance = distance2;
                 position = position2;
                 edgeCloser = i;
-                positionGen= position + lengthBefore;
+                positionGen = position + lengthBefore;
             }
         }
         return new RoutePoint(this.edges.get(edgeCloser).pointAt(position), positionGen, distance);
