@@ -37,14 +37,18 @@ public class RouteComputer {
         //pour chaque noeud de graphe, définir une distance et un noeud prédecesseur
         double [] distance= new double[graph.nodeCount()];
         int [] predecesseur = new int [graph.nodeCount()];
+
         for (int i = 0; i < graph.nodeCount() ; i++) {
             distance[i]=Double.POSITIVE_INFINITY;
             predecesseur[i]=0;
         }
+
         distance[startNodeId]=0;
         Set<Integer> enExploration= new TreeSet<Integer>();
         enExploration.add(startNodeId);
+
         while(!enExploration.isEmpty()){
+
             double mini= Double.POSITIVE_INFINITY;
             int retenir=-1;
             for (int l : enExploration) {
@@ -53,16 +57,20 @@ public class RouteComputer {
                     retenir=l;
                 }
             }
+
             enExploration.remove(retenir);
 
             if(retenir==endNodeId){ //on a trouvé on construit maintentant la route
+
                 List<Integer> noeudsTrajet= new ArrayList<>();
                 int k=endNodeId;
                 while(k!=0){ //remplissage des noeuds du trajet (de la fin vers le début)
                     noeudsTrajet.add(k);
                     k=predecesseur[k];
                 }
+
                 List<Edge> edges = new ArrayList<>();
+
                 while(noeudsTrajet.size()>=2){ //construction des arrêtes à partir des noeuds
                     int noeud1=noeudsTrajet.get(noeudsTrajet.size()-1);
                     int noeud2=noeudsTrajet.get(noeudsTrajet.size()-2);
@@ -76,6 +84,7 @@ public class RouteComputer {
                     Edge edge = Edge.of(graph, edgeId, noeud1, noeud2);
                     edges.add(edge);
                 }
+
                 return new SingleRoute(edges);
             }
 
