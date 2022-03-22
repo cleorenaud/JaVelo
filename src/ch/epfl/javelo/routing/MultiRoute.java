@@ -46,9 +46,9 @@ public class MultiRoute implements Route {
     public int indexOfSegmentAt(double position) {
         int i = 0;
         int index = 0;
-        while (positionSegment[i] < position) {
-            i++;
+        while (positionSegment[i] <= position) {
             index = i;
+            i++;
         }
         return index;
 
