@@ -110,7 +110,6 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
                 short info = elevations.get(firstIndex + (int) k);
                 float dif = (float) Bits.extractSigned(info, 8 * fact, 8);
                 dif = (float) Q28_4.asDouble((int)dif);
-                System.out.println(dif);
                 tabTemp[n] = tabTemp[n - 1] + dif; //remplissage du tableau
             }
             if (m == 3) {

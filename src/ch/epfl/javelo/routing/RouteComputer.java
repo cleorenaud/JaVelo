@@ -60,14 +60,15 @@ public class RouteComputer {
 
             enExploration.remove(retenir);
 
-            if(retenir==endNodeId){ //on a trouvé on construit maintentant la route
-
+            if(retenir==endNodeId){//on a trouvé on construit maintentant la route
                 List<Integer> noeudsTrajet= new ArrayList<>();
                 int k=endNodeId;
                 while(k!=0){ //remplissage des noeuds du trajet (de la fin vers le début)
                     noeudsTrajet.add(k);
                     k=predecesseur[k];
                 }
+                System.out.println("ok");
+                System.out.println(noeudsTrajet.size());
 
                 List<Edge> edges = new ArrayList<>();
 
@@ -75,16 +76,18 @@ public class RouteComputer {
                     int noeud1=noeudsTrajet.get(noeudsTrajet.size()-1);
                     int noeud2=noeudsTrajet.get(noeudsTrajet.size()-2);
                     int edgeId=-1;
+                    int outEdge;
                     for (int i = 0; i < graph.nodeOutDegree(noeud1); i++) { //trouver l'index de l'arrête
-                        int outEdge=graph.nodeOutEdgeId(retenir,i);
+                        outEdge=graph.nodeOutEdgeId(noeud1,i);
                         if(graph.edgeTargetNodeId(outEdge)==noeud2){
                             edgeId= outEdge;
                         }
                     }
                     Edge edge = Edge.of(graph, edgeId, noeud1, noeud2);
                     edges.add(edge);
+                    noeudsTrajet.remove(noeudsTrajet.size()-1);
                 }
-
+                System.out.println("oui");
                 return new SingleRoute(edges);
             }
 
@@ -98,7 +101,7 @@ public class RouteComputer {
                 if(distanceN<minimum){
                     distance[nPrime]=distanceN;
                     predecesseur[nPrime]= retenir;
-                    enExploration.add(nodesOut[i]);
+                    enExploration.add(nPrime);
 
                 }
             }

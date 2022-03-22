@@ -24,7 +24,7 @@ public final class SingleRoute implements Route {
      * @param edges (List<Edge>) les arêtes données
      */
     public SingleRoute(List<Edge> edges) {
-        Preconditions.checkArgument(!edges().isEmpty());
+        Preconditions.checkArgument(!edges.isEmpty());
         this.edges = edges;
 
         // On crée un tableau contenant la position au debut de la node i dans l'index i
