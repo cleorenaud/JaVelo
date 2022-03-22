@@ -17,6 +17,7 @@ public class MultiRoute implements Route {
 
     private final List<Route> segments;
     private final double[] positionSegment;
+    private final double[] positionEndSegment;
 
     /**
      * Construit un itinéraire multiple composé des segments donnés
@@ -35,6 +36,13 @@ public class MultiRoute implements Route {
             positionSegment[i] = positionSegment[i - 1] + segments.get(i - 1).length();
         }
         this.positionSegment = positionSegment;
+
+        //On crée un tableau contenant la position à la fin de la Route / du segment i dans l'index i
+        double[] positionEndSegment = new double[segments.size() + 1];
+        for (int i = 0; i < positionEndSegment.length; i++) {
+            positionEndSegment[i] = positionEndSegment[i - 1] + segments.get(i).length();
+        }
+        this.positionEndSegment = positionEndSegment;
     }
 
     /**
@@ -52,12 +60,12 @@ public class MultiRoute implements Route {
         double currentPosition = 0;
         int i = 0;
         while (currentPosition <= position) {
-            currentPosition = positionSegment[i];
-            i++;
-            //(positionSegment[i] + edges().get(i).length())
+            if (positionEndSegment[i] <= currentPosition) {
+                currentPosition = positionEndSegment[i];
+                i++;
+            }
         }
-        segments.get(i).indexOfSegmentAt(currentPosition);
-        return 0;
+        return segments.get(i).indexOfSegmentAt(currentPosition - positionSegment[i]);
     }
 
     /**
