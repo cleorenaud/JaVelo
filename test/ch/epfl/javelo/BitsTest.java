@@ -38,9 +38,9 @@ class BitsTest {
 
     @Test
     void bitsExtractUnsignedThrowsOnInvalidInputs() {
-        // Vérifie que start + length > 31 lance un IllegalArgumentException()
+        // Vérifie que start + length > 33 lance un IllegalArgumentException()
         assertThrows(IllegalArgumentException.class, () -> {
-            Bits.extractUnsigned(0, 30, 2);
+            Bits.extractUnsigned(0, 30, 3);
         });
         // Vérifie que length < 0 lance un IllegalArgumentException()
         assertThrows(IllegalArgumentException.class, () -> {

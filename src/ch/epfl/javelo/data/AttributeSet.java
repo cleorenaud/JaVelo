@@ -4,6 +4,8 @@
  */
 package ch.epfl.javelo.data;
 
+import ch.epfl.javelo.Preconditions;
+
 import java.util.StringJoiner;
 
 /**
@@ -17,25 +19,25 @@ public record AttributeSet(long bits) {
 
     /**
      * Le constructeur
+     *
      * @param bits la séquence de bits représentant un ensemble d'attributs OpenStreetMap
      * @throws IllegalArgumentException si la valeur passée au constructeur contient un bit à 1 qui ne correspond à
-     * aucun attribut valide
+     *                                  aucun attribut valide
      */
-    public AttributeSet{ //constructeur compact
-        if ((bits>>>Attribute.ALL.size())!=0){
-            throw new IllegalArgumentException();
-        }
+    public AttributeSet { //constructeur compact
+        Preconditions.checkArgument((bits >>> Attribute.ALL.size()) == 0);
     }
 
     /**
      * Méthode de construction qui retourne un ensemble contenant uniquement les attributs donnés en argument.
+     *
      * @param attributes (Attribute) : les attributs contenus par l'ensemble
      * @return un nouvel ensemble d'attributs OpenStreetMap (AttributeSet)
      */
-    public static AttributeSet of(Attribute... attributes){
-        long bits=0;
-        for (int i = 0; i < attributes.length ; i++) {
-            long mask= 1L<<attributes[i].ordinal();
+    public static AttributeSet of(Attribute... attributes) {
+        long bits = 0;
+        for (int i = 0; i < attributes.length; i++) {
+            long mask = 1L << attributes[i].ordinal();
             bits = bits + mask;
         }
         return new AttributeSet(bits);
@@ -43,30 +45,32 @@ public record AttributeSet(long bits) {
 
     /**
      * Méthode qui retourne vrai si et seulement si l'ensemble récepteur (this) contient l'attribut donné
+     *
      * @param attribute (Attribute) : l'attribut "cherché"
      * @return vrai si l'ensemble récepteur (this) contient l'attribut donné et faux sinon (boolean)
      */
-    public boolean contains(Attribute attribute){
-        int index= attribute.ordinal();
-        long newBits= bits()<<63-index;
-        newBits= newBits>>>63;
-        return (newBits==1);
+    public boolean contains(Attribute attribute) {
+        int index = attribute.ordinal();
+        long newBits = bits() << 63 - index;
+        newBits = newBits >>> 63;
+        return (newBits == 1);
     }
 
     /**
      * Méthode qui retourne vrai ssi l'intersection de l'ensemble récepteur (this)
      * avec celui passé en argument (that) n'est pas vide.
+     *
      * @param that (AttributeSet) : un autre ensemble d'attributs
      * @return vrai si l'intersection de l'ensemble récepteur (this)
      * avec celui passé en argument (that) n'est pas vide, faux sinon
      */
-    public boolean intersects(AttributeSet that){
-        for (int i=0; i<62 ; ++i){
-            long newThis= bits<<(63-i);
-            newThis= newThis>>>63;
-            long newThat = that.bits()<<(63-i);
-            newThat=newThat>>>63;
-            if(newThis==1 && newThat==1){
+    public boolean intersects(AttributeSet that) {
+        for (int i = 0; i < 62; ++i) {
+            long newThis = bits << (63 - i);
+            newThis = newThis >>> 63;
+            long newThat = that.bits() << (63 - i);
+            newThat = newThat >>> 63;
+            if (newThis == 1 && newThat == 1) {
                 return true;
             }
         }
@@ -77,15 +81,16 @@ public record AttributeSet(long bits) {
     /**
      * Cette méthode redéfinit la méthode toString afin qu'elle retourne
      * une chaîne composée de la représentation textuelle des éléments de l'ensemble
+     *
      * @return une chaîne composée de la représentation textuelle des éléments de l'ensemble
      */
     @Override
-    public String toString(){
+    public String toString() {
         StringJoiner j = new StringJoiner(",", "{", "}");
-        for (int i= 0; i<62; ++i){
-            if (this.contains(Attribute.ALL.get(i))){
-               String message= Attribute.ALL.get(i).toString();
-               j.add(message);
+        for (int i = 0; i < 62; ++i) {
+            if (this.contains(Attribute.ALL.get(i))) {
+                String message = Attribute.ALL.get(i).toString();
+                j.add(message);
             }
         }
         return j.toString();

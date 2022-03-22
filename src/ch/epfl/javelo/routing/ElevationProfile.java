@@ -5,6 +5,7 @@
 package ch.epfl.javelo.routing;
 
 import ch.epfl.javelo.Functions;
+import ch.epfl.javelo.Preconditions;
 
 import java.util.DoubleSummaryStatistics;
 import java.util.function.DoubleUnaryOperator;
@@ -26,7 +27,8 @@ public final class ElevationProfile {
      *
      * @param length           (double) : la longueur en mètres
      * @param elevationSamples (float []) : les échantillons d'altitude
-     * @throws IllegalArgumentException when length <= 0 or elevationSample has less than 2 values
+     * @throws IllegalArgumentException si la longueur est négative ou nulle, ou si le tableau d'échantillons contient
+     *                                  moins de deux éléments
      */
     public ElevationProfile(double length, float[] elevationSamples) throws IllegalArgumentException {
         this.elevationsSamples = elevationSamples;
@@ -34,6 +36,7 @@ public final class ElevationProfile {
         if (length <= 0 || elevationSamples.length < 2) {
             throw new IllegalArgumentException();
         }
+        Preconditions.checkArgument(length > 0 && elevationSamples.length >= 2);
     }
 
     /**

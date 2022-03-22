@@ -1,6 +1,7 @@
 package ch.epfl.javelo.projection;
 
 import ch.epfl.javelo.Math2;
+import ch.epfl.javelo.Preconditions;
 
 /**
  * Un enregistrement d'un point sur la carte suisse
@@ -17,9 +18,7 @@ public record PointCh(double e, double n) {
      * @throws IllegalArgumentException si les coordonnées fournies ne sont pas dans les limites de la Suisse
      */
     public PointCh { //constructeur compact
-        if (!SwissBounds.containsEN(e, n)) {
-            throw new IllegalArgumentException(); //lance une exception si le point n'est pas dans le territoire Suisse
-        }
+        Preconditions.checkArgument(SwissBounds.containsEN(e, n));
     }
 
     /**

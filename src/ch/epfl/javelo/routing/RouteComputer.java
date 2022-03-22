@@ -1,5 +1,6 @@
 package ch.epfl.javelo.routing;
 
+import ch.epfl.javelo.Preconditions;
 import ch.epfl.javelo.data.Graph;
 import java.util.*;
 
@@ -34,6 +35,7 @@ public class RouteComputer {
      * @throws IllegalArgumentException si le nœud de départ et d'arrivée sont identiques
      */
     public Route bestRouteBetween(int startNodeId, int endNodeId) throws IllegalArgumentException {
+        Preconditions.checkArgument(startNodeId != endNodeId);
         //pour chaque noeud de graphe, définir une distance et un noeud prédecesseur
         double [] distance= new double[graph.nodeCount()];
         int [] predecesseur = new int [graph.nodeCount()];

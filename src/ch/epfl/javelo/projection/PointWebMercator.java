@@ -1,5 +1,7 @@
 package ch.epfl.javelo.projection;
 
+import ch.epfl.javelo.Preconditions;
+
 /**
  * Représente un point dans le système Web Mercator
  *
@@ -15,11 +17,10 @@ public record PointWebMercator(double x, double y) {
      *
      * @param x (double) la coordonnée x reçue
      * @param y (double) la coordonnée y reçue
+     * @throws IllegalArgumentException si les coordonnées qu'il reçoit ne sont pas toutes comprises dans l'intervalle [0,1]
      */
     public PointWebMercator { //constructeur compact
-        if (!((x <= 1) && (x >= 0) && (y <= 1) && (y >= 0))) {
-            throw new IllegalArgumentException(); //lance une exception si le point n'est pas dans le territoire Suisse
-        }
+        Preconditions.checkArgument((x <= 1) && (x >= 0) && (y <= 1) && (y >= 0));
     }
 
     /**

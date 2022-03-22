@@ -1,7 +1,7 @@
 package ch.epfl.javelo;
 
 /**
- * Une classe permettant certains calculs, non instanciable
+ * Une classe permettant certains calculs, non instantiable
  *
  * @author Roxanne Chevalley (339716)
  */
@@ -12,25 +12,21 @@ public final class Math2 {
     private Math2() {
     }
 
-    ;
-
     /**
-     * Méthode qui permet d'avoir la division x/y arrondi à l'entier suppérieur
+     * Méthode qui permet d'avoir la division x/y arrondi à l'entier supérieur
      *
      * @param x (int) : le dividende
      * @param y (int) : le diviseur
      * @return le résultat de la division
-     * @throws IllegalArgumentException si y<=0 ou si x<0
+     * @throws IllegalArgumentException si y <= 0 ou si x < 0
      */
     public static int ceilDiv(int x, int y) throws IllegalArgumentException {
-        if (x < 0 || y <= 0) {
-            throw new IllegalArgumentException();
-        }
+        Preconditions.checkArgument((x >= 0) && (y > 0));
         return (x + y - 1) / y;
     }
 
     /**
-     * Méthode qui retourne la coordonée y de la droite passant par (y0,0) et (y1,1) et ayant x comme coordonnée
+     * Méthode qui retourne la coordonnée y de la droite passant par (y0,0) et (y1,1) et ayant x comme coordonnée
      *
      * @param y0 (double) : l'ordonnée au point 0
      * @param y1 (double) : l'ordonnée au point 1
@@ -42,7 +38,7 @@ public final class Math2 {
     }
 
     /**
-     * Retourne v, si v appartient à l'intervalle (min,max), min si v est plus petit que min et max si v est plus grand
+     * Retourne v, si v appartient à l'intervalle (min, max), min si v est plus petit que min et max si v est plus grand
      * que max
      *
      * @param min (int) : le minimum de l'intervalle
