@@ -11,9 +11,7 @@ import java.util.function.DoubleUnaryOperator;
 import static org.junit.jupiter.api.Assertions.*;
 
 class MultiRouteTest {
-    public static void main(String[] args) {
 
-    }
 
     //DONE
     @Test
