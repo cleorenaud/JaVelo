@@ -1,12 +1,13 @@
 package ch.epfl.javelo.routing;
 
+import ch.epfl.javelo.Preconditions;
 import ch.epfl.javelo.projection.PointCh;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Classe publique et immuable représentant un itinéraire multiple, c'est à dire composé d'une séquence d'itinéraires
+ * Classe publique et immuable représentant un itinéraire multiple, c'est-à-dire composé d'une séquence d'itinéraires
  * contigus nommés segments
  *
  * @author Cléo Renaud (325156)
@@ -14,6 +15,7 @@ import java.util.List;
 public class MultiRoute implements Route {
 
     private final List<Route> segments;
+    private final double[] positionSegment;
 
     /**
      * Construit un itinéraire multiple composé des segments donnés
@@ -22,11 +24,16 @@ public class MultiRoute implements Route {
      * @throws IllegalArgumentException si la liste des segments est nulle
      */
     public MultiRoute(List<Route> segments) throws IllegalArgumentException {
-        if (segments.isEmpty()) {
-            throw new IllegalArgumentException();
-        } else {
-            this.segments = segments;
+        Preconditions.checkArgument(!segments.isEmpty());
+        this.segments = segments;
+
+        //On crée un tableau contenant la position au début de la Route / du segment i dans l'index i
+        double[] positionSegment = new double[segments.size() + 1];
+        positionSegment[0] = 0;
+        for (int i = 1; i < positionSegment.length; i++) {
+            positionSegment[i] = positionSegment[i - 1] + segments.get(i - 1).length();
         }
+        this.positionSegment = positionSegment;
     }
 
     /**
@@ -37,8 +44,14 @@ public class MultiRoute implements Route {
      */
     @Override
     public int indexOfSegmentAt(double position) {
+        int i = 0;
+        int index = 0;
+        while (positionSegment[i] < position) {
+            i++;
+            index = i;
+        }
+        return index;
 
-        return 0;
     }
 
     /**
@@ -95,7 +108,21 @@ public class MultiRoute implements Route {
      */
     @Override
     public PointCh pointAt(double position) {
-        return null;
+        /// Si la position est négative, elle est considérée comme étant équivalente à zéro
+        if (position < 0) {
+            position = 0;
+        }
+        // Si la position est plus grande que la longueur de l'itinéraire elle est considérée comme étant équivalente
+        // à la longueur de l'itinéraire
+        if (position > this.length()) {
+            position = this.length();
+        }
+
+        // On isole le segment contenant la position donnée
+        Route segment = this.segments.get(indexOfSegmentAt(position));
+        // La position à passer en paramètre est la position donnée, moins la position du début du segment sur lequel
+        // se trouve le point voulu
+        return segment.pointAt(position - positionSegment[indexOfSegmentAt(position)]);
     }
 
     /**
@@ -107,7 +134,22 @@ public class MultiRoute implements Route {
      */
     @Override
     public double elevationAt(double position) {
-        return 0;
+// Si la position est négative, elle est considérée comme étant équivalente à zéro
+        // Si la position est négative, elle est considérée comme étant équivalente à zéro
+        if (position < 0) {
+            position = 0;
+        }
+        // Si la position est plus grande que la longueur de l'itinéraire elle est considérée comme étant équivalente
+        // à la longueur de l'itinéraire
+        if (position > this.length()) {
+            position = this.length();
+        }
+
+        // On isole le segment contenant la position donnée
+        Route segment = this.segments.get(indexOfSegmentAt(position));
+        // La position à passer en paramètre est la position donnée, moins la position du début du segment sur lequel
+        // se trouve le point voulu
+        return segment.elevationAt(position - positionSegment[indexOfSegmentAt(position)]);
     }
 
     /**
@@ -118,7 +160,20 @@ public class MultiRoute implements Route {
      */
     @Override
     public int nodeClosestTo(double position) {
-        return 0;
+        // Si la position est négative, elle est considérée comme étant équivalente à zéro
+        if (position < 0) {
+            position = 0;
+        }
+        // Si la position est plus grande que la longueur de l'itinéraire elle est considérée comme étant équivalente
+        // à la longueur de l'itinéraire
+        if (position > this.length()) {
+            position = this.length();
+        }
+        // On isole le segment contenant la position donnée
+        Route segment = this.segments.get(indexOfSegmentAt(position));
+        // La position à passer en paramètre est la position donnée, moins la position du début du segment sur lequel
+        // se trouve le point voulu
+        return segment.nodeClosestTo(position - positionSegment[indexOfSegmentAt(position)]);
     }
 
     /**
@@ -129,6 +184,16 @@ public class MultiRoute implements Route {
      */
     @Override
     public RoutePoint pointClosestTo(PointCh point) {
-        return null;
+        // On initialise le point de l'itinéraire le plus proche comme étant celui le plus proche du premier segment
+        RoutePoint routePoint = (this.segments.get(0).pointClosestTo(point));
+        // On parcourt la liste de segments de notre MultiRoute
+        for (Route segment : segments) {
+            // On crée un RoutePoint étant le plus proche du segment sur lequel on est en train d'itérer
+            RoutePoint newRoutePoint = (segment.pointClosestTo(point));
+            // On utilise la méthode min de RoutePoint pour comparer le point obtenu avec celui qu'on avait pour l'edge
+            // précédente
+            routePoint.min(newRoutePoint);
+        }
+        return routePoint;
     }
 }

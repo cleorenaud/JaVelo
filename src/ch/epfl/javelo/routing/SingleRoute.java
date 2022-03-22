@@ -1,5 +1,6 @@
 package ch.epfl.javelo.routing;
 
+import ch.epfl.javelo.Preconditions;
 import ch.epfl.javelo.projection.PointCh;
 
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ import java.util.List;
 public final class SingleRoute implements Route {
 
     private final List<Edge> edges;
-    private final double[] tableau;
+    private final double[] tableau; // tableau contenant la position au debut de la node i dans l'index i
 
     /**
      * Constructeur retournant l'itinéraire simple composé des arêtes données
@@ -23,19 +24,17 @@ public final class SingleRoute implements Route {
      * @param edges (List<Edge>) les arêtes données
      */
     public SingleRoute(List<Edge> edges) {
-        if (edges.isEmpty()) {
-            throw new IllegalArgumentException();
-        } else {
-            this.edges = edges;
+        Preconditions.checkArgument(!edges().isEmpty());
+        this.edges = edges;
 
-            // On crée un tableau contenant la position au debut de la node i dans l'index i
-            double[] tableau = new double[edges.size() + 1];
-            tableau[0] = 0;
-            for (int i = 1; i < tableau.length; i++) {
-                tableau[i] = tableau[i - 1] + edges.get(i - 1).length();
-            }
-            this.tableau = tableau;
+        // On crée un tableau contenant la position au debut de la node i dans l'index i
+        double[] tableau = new double[edges.size() + 1];
+        tableau[0] = 0;
+        for (int i = 1; i < tableau.length; i++) {
+            tableau[i] = tableau[i - 1] + edges.get(i - 1).length();
         }
+        this.tableau = tableau;
+
     }
 
     /**
@@ -145,14 +144,12 @@ public final class SingleRoute implements Route {
             int newNode = Math.abs(node) - 2;
             double posOnEdge = position - tableau[newNode];
             return this.edges.get(newNode).elevationAt(posOnEdge);
-        } else if (node!=0 && (node == edges.size() || Float.isNaN((float)(this.edges.get(node)).elevationAt(0)))) {
+        } else if (node != 0 && (node == edges.size() || Float.isNaN((float) (this.edges.get(node)).elevationAt(0)))) {
             return (this.edges.get(node - 1)).elevationAt(this.edges.get(node - 1).length());
         } else {
             return (this.edges.get(node)).elevationAt(0);
         }
     }
-
-
 
     /**
      * Méthode retournant l'identité du nœud appartenant à l'itinéraire et se trouvant le plus proche de la position donnée
