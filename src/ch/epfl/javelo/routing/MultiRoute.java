@@ -149,7 +149,8 @@ public class MultiRoute implements Route {
         Route segment = this.segments.get(indexOfSegmentAt(position));
         // La position à passer en paramètre est la position donnée, moins la position du début du segment sur lequel
         // se trouve le point voulu
-        return segment.elevationAt(position - positionSegment[indexOfSegmentAt(position)]);    }
+        return segment.elevationAt(position - positionSegment[indexOfSegmentAt(position)]);
+    }
 
     /**
      * Méthode retournant l'identité du nœud appartenant à l'itinéraire et se trouvant le plus proche de la position donnée
@@ -159,7 +160,20 @@ public class MultiRoute implements Route {
      */
     @Override
     public int nodeClosestTo(double position) {
-        return 0;
+        // Si la position est négative, elle est considérée comme étant équivalente à zéro
+        if (position < 0) {
+            position = 0;
+        }
+        // Si la position est plus grande que la longueur de l'itinéraire elle est considérée comme étant équivalente
+        // à la longueur de l'itinéraire
+        if (position > this.length()) {
+            position = this.length();
+        }
+        // On isole le segment contenant la position donnée
+        Route segment = this.segments.get(indexOfSegmentAt(position));
+        // La position à passer en paramètre est la position donnée, moins la position du début du segment sur lequel
+        // se trouve le point voulu
+        return segment.nodeClosestTo(position - positionSegment[indexOfSegmentAt(position)]);
     }
 
     /**
