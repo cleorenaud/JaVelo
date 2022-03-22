@@ -1,7 +1,7 @@
 package ch.epfl.javelo;
 
 /**
- * Non instanciable
+ * Non instantiable
  *
  * @author Cléo Renaud (325156)
  */

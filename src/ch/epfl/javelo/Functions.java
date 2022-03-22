@@ -5,7 +5,7 @@ import ch.epfl.javelo.projection.SwissBounds;
 import java.util.function.DoubleUnaryOperator;
 
 /**
- * Non instanciable, contient des méthodes permettant de créer des objets représentants des fonctions mathémathiques
+ * Non instantiable, contient des méthodes permettant de créer des objets représentants des fonctions mathémathiques
  * des réels vers les réels
  *
  * @author Cléo Renaud (325156)
@@ -58,7 +58,7 @@ public final class Functions {
      *                                  ou égal à 0
      */
     public static DoubleUnaryOperator sampled(float[] samples, double xMax) throws IllegalArgumentException {
-        Preconditions.checkArgument((samples.length >=2) && (xMax > 0));
+        Preconditions.checkArgument((samples.length >= 2) && (xMax > 0));
         return new Sampled(samples, xMax);
     }
 

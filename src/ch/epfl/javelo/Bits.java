@@ -26,7 +26,7 @@ public final class Bits {
      *                                  ou si start est supérieur à 31
      */
     public static int extractSigned(int value, int start, int length) throws IllegalArgumentException {
-        Preconditions.checkArgument((start + length <= 32) && (start <= 31)  && (length >=0) && (start >= 0));
+        Preconditions.checkArgument((start + length <= 32) && (start <= 31) && (length >= 0) && (start >= 0));
 
         int temp = value << (32 - (length + start));
         return temp >> (32 - length);

@@ -17,7 +17,7 @@ public final class Q28_4 {
      * Retourne la valeur Q28.4 correspondant à l'entier donné
      *
      * @param i (int) : l'entier donné
-     * @return la valeur Q28.4 correspondant à l'entier donné (int)
+     * @return (int) la valeur Q28.4 correspondant à l'entier donné (int)
      */
     public static int ofInt(int i) {
         return i << 4;
@@ -27,7 +27,7 @@ public final class Q28_4 {
      * Retourne la valeur de type double égale à la valeur Q28.4 donnée
      *
      * @param q28_4 (int) : la valeur Q28.4 donnée
-     * @return la valeur de type double égale à la valeur Q28.4 donnée (double)
+     * @return (double) la valeur de type double égale à la valeur Q28.4 donnée (double)
      */
     public static double asDouble(int q28_4) {
         return Math.scalb((double) q28_4, -4);
@@ -37,7 +37,7 @@ public final class Q28_4 {
      * Retourne la valeur de type float correspondant à la valeur Q28.4 donnée.
      *
      * @param q28_4 (int) : la valeur Q28.4 donnée
-     * @return la valeur de type double égale à la valeur Q28.4 donnée (float)
+     * @return (float) la valeur de type double égale à la valeur Q28.4 donnée (float)
      */
     public static float asFloat(int q28_4) {
         return Math.scalb((float) q28_4, -4);
