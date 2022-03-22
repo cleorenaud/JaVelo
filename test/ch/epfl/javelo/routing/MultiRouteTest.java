@@ -26,6 +26,28 @@ class MultiRouteTest {
     //TO DO
     @Test
     void indexOfSegmentAtTest(){
+        MultiRoute multiRoute= this.getMulti();
+        assertEquals(0,multiRoute.indexOfSegmentAt(0));
+        assertEquals(0,multiRoute.indexOfSegmentAt(1));
+        assertEquals(0,multiRoute.indexOfSegmentAt(2));
+        assertEquals(0,multiRoute.indexOfSegmentAt(3));
+        assertEquals(0,multiRoute.indexOfSegmentAt(4));
+        assertEquals(1,multiRoute.indexOfSegmentAt(5));
+        assertEquals(1,multiRoute.indexOfSegmentAt(6));
+        assertEquals(1,multiRoute.indexOfSegmentAt(7));
+        assertEquals(1,multiRoute.indexOfSegmentAt(8));
+        assertEquals(1,multiRoute.indexOfSegmentAt(9));
+        assertEquals(2,multiRoute.indexOfSegmentAt(10));
+        assertEquals(2,multiRoute.indexOfSegmentAt(11));
+        assertEquals(2,multiRoute.indexOfSegmentAt(12));
+        assertEquals(2,multiRoute.indexOfSegmentAt(13));
+        assertEquals(2,multiRoute.indexOfSegmentAt(14));
+        assertEquals(3,multiRoute.indexOfSegmentAt(15));
+        assertEquals(3,multiRoute.indexOfSegmentAt(16));
+        assertEquals(3,multiRoute.indexOfSegmentAt(17));
+        assertEquals(3,multiRoute.indexOfSegmentAt(18));
+        assertEquals(3,multiRoute.indexOfSegmentAt(19));
+        assertEquals(3,multiRoute.indexOfSegmentAt(20));
 
     }
 
@@ -87,7 +109,6 @@ class MultiRouteTest {
             PointCh point1= new PointCh(e, n);
             PointCh point2 = multiRoute.pointAt(i);
             boolean b = point1.equals(point2);
-            System.out.println("ok");
         }
 
     }
@@ -95,18 +116,124 @@ class MultiRouteTest {
     //TO DO
     @Test
     void elevationAtTest(){
+        MultiRoute multiRoute= this.getMulti();
+        for (int i = 0; i < 11; i++) {
+            assertEquals(i, multiRoute.elevationAt(i));
+        }
+        for (int i = 11; i <21 ; i++) {
+            assertEquals(20-i,multiRoute.elevationAt(i));
+        }
 
     }
 
     //TO DO
     @Test
     void nodeClosestToTest(){
+        MultiRoute multiRoute= this.getMulti();
+        for (double i = -2; i <=1.5 ; i=i+0.5) {
+            assertEquals(1,multiRoute.nodeClosestTo(i));
+        }
+        for (double i = 2; i <=4 ; i=i+0.5) {
+            assertEquals(4,multiRoute.nodeClosestTo(i));
+        }
+        for (double i = 4.5; i <=6.5 ; i=i+0.5) {
+            assertEquals(6,multiRoute.nodeClosestTo(i));
+        }
+        for (double i = 7; i <=9 ; i=i+0.5) {
+            assertEquals(9,multiRoute.nodeClosestTo(i));
+        }
+        for (double i = 9.5; i <=11.5 ; i=i+0.5) {
+            assertEquals(11,multiRoute.nodeClosestTo(i));
+        }
+        for (double i = 12; i <=14 ; i=i+0.5) {
+            assertEquals(14,multiRoute.nodeClosestTo(i));
+        }
+        for (double i = 14.5; i <=16.5 ; i=i+0.5) {
+            assertEquals(16,multiRoute.nodeClosestTo(i));
+        }
+        for (double i = 17; i <=19 ; i=i+0.5) {
+            assertEquals(19,multiRoute.nodeClosestTo(i));
+        }
+        for (double i = 19.5; i <=24 ; i=i+0.5) {
+            assertEquals(21,multiRoute.nodeClosestTo(i));
+        }
+
 
     }
 
     //TO DO
     @Test
     void pointClosestTo(){
+        MultiRoute multiRoute= this.getMulti();
+        PointCh point= new PointCh(2500000,1100000);
+        PointCh point2 =new PointCh(2500003,1100000);
+        PointCh point3= new PointCh(2500012,1100000);
+        PointCh point5= new PointCh(2500003, 1100001);
+        PointCh point6= new PointCh(2499998,1100000);
+        PointCh point7 = new PointCh(2500023,1100004);
+        PointCh point8= new PointCh(2500020,1100000);
+        PointCh point9=new PointCh(2500026,1100000);
+
+        //point égaux
+        RoutePoint routePoint1 = new RoutePoint(point,0,0);
+        boolean b1 =routePoint1.point().equals(multiRoute.pointClosestTo(point).point());
+        boolean b2= routePoint1.position()==multiRoute.pointClosestTo(point).position();
+        boolean b3= routePoint1.distanceToReference()==multiRoute.pointClosestTo(point).distanceToReference();
+        assertTrue(b1);
+        assertTrue(b2);
+        assertTrue(b3);
+
+        RoutePoint routePoint2 = new RoutePoint(point3,12,0);
+        boolean c1 =routePoint2.point().equals(multiRoute.pointClosestTo(point3).point());
+        boolean c2= routePoint2.position()==multiRoute.pointClosestTo(point3).position();
+        boolean c3= routePoint2.distanceToReference()==multiRoute.pointClosestTo(point3).distanceToReference();
+        assertTrue(c1);
+        assertTrue(c2);
+        assertTrue(c3);
+
+        RoutePoint routePoint3 = new RoutePoint(point8,20,0);
+        boolean d1 =routePoint3.point().equals(multiRoute.pointClosestTo(point8).point());
+        boolean d2= routePoint3.position()==multiRoute.pointClosestTo(point8).position();
+        boolean d3= routePoint3.distanceToReference()==multiRoute.pointClosestTo(point8).distanceToReference();
+        assertTrue(d1);
+        assertTrue(d2);
+        assertTrue(d3);
+
+        //points plus loins qu'extrémité
+        RoutePoint routePoint4 = new RoutePoint(point8,20,6);
+        boolean e1 =routePoint4.point().equals(multiRoute.pointClosestTo(point9).point());
+        boolean e2= routePoint4.position()==multiRoute.pointClosestTo(point9).position();
+        boolean e3= routePoint4.distanceToReference()==multiRoute.pointClosestTo(point9).distanceToReference();
+        assertTrue(e1);
+        assertTrue(e2);
+        assertTrue(e3);
+
+        RoutePoint routePoint5 = new RoutePoint(point,0,2);
+        boolean f1 =routePoint5.point().equals(multiRoute.pointClosestTo(point6).point());
+        boolean f2= routePoint5.position()==multiRoute.pointClosestTo(point6).position();
+        boolean f3= routePoint5.distanceToReference()==multiRoute.pointClosestTo(point6).distanceToReference();
+        assertTrue(f1);
+        assertTrue(f2);
+        assertTrue(f3);
+
+        //points avec distance orthogonole
+        RoutePoint routePoint6 = new RoutePoint(point2,3,1);
+        boolean g1 =routePoint6.point().equals(multiRoute.pointClosestTo(point5).point());
+        boolean g2= routePoint6.position()==multiRoute.pointClosestTo(point5).position();
+        boolean g3= routePoint6.distanceToReference()==multiRoute.pointClosestTo(point5).distanceToReference();
+        assertTrue(g1);
+        assertTrue(g2);
+        assertTrue(g3);
+
+        RoutePoint routePoint7 = new RoutePoint(point8,20,5);
+        boolean h1 =routePoint7.point().equals(multiRoute.pointClosestTo(point7).point());
+        boolean h2= routePoint7.position()==multiRoute.pointClosestTo(point7).position();
+        boolean h3= routePoint7.distanceToReference()==multiRoute.pointClosestTo(point7).distanceToReference();
+        assertTrue(h1);
+        assertTrue(h2);
+        assertTrue(h3);
+
+
 
     }
 
