@@ -3,14 +3,11 @@ package ch.epfl.javelo.projection;
 import ch.epfl.javelo.Math2;
 
 /**
- * Non instanciable, offre des méthodes permettant de convertir entre des coordonnées WGS84 et une projection WebMercator
+ * Non instantiable, offre des méthodes permettant de convertir entre des coordonnées WGS84 et une projection WebMercator
  *
  * @author Cléo Renaud (325156)
  */
 public final class WebMercator {
-    /**
-     *
-     */
     private WebMercator() {
     }
 
@@ -18,14 +15,14 @@ public final class WebMercator {
      * Méthode permettant de trouver la coordonnée x de la projection d'un point
      *
      * @param lon (double) la longitude du point
-     * @return (double) la coordonée x du point
+     * @return (double) la coordonnée x du point
      */
     public static double x(double lon) {
         return (lon + Math.PI) / (Math.PI*2);
     }
 
     /**
-     * Méthode permettant de trouver la coordonée y de la projection d'un point
+     * Méthode permettant de trouver la coordonnée y de la projection d'un point
      *
      * @param lat (double) la latitude du point
      * @return (double) la coordonnée y du point

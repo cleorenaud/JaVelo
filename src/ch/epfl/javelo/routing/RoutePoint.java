@@ -13,8 +13,8 @@ import static java.lang.Double.POSITIVE_INFINITY;
  * Enregistrement représentant le point d'un itinéraire le plus proche d'un point de référence donné, qui se trouve dans
  * le voisinage de l'itinéraire
  *
- * @param point (pointCh) le point sur l'itinéraire
- * @param position (double) la position du point le long de l'itinéraire (en mètres)
+ * @param point               (pointCh) le point sur l'itinéraire
+ * @param position            (double) la position du point le long de l'itinéraire (en mètres)
  * @param distanceToReference (double) la distance entre le point et la référence (en mètres)
  * @author Cléo Renaud (325156)
  */
@@ -31,7 +31,7 @@ public record RoutePoint(PointCh point, double position, double distanceToRefere
      * @return (RoutePoint) le point décalé
      */
     public RoutePoint withPositionShiftedBy(double positionDifference) {
-      return new RoutePoint(this.point(), this.position() + positionDifference, this.distanceToReference());
+        return new RoutePoint(this.point(), this.position() + positionDifference, this.distanceToReference());
     }
 
     /**

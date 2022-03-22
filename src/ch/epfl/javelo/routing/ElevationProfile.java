@@ -119,7 +119,7 @@ public final class ElevationProfile {
      * Méthode qui retourne l'altitude du profil à la position donnée,
      *
      * @param position (double) : la position donnée
-     * @return l'altitude du profil à la position donnée
+     * @return (double) : l'altitude du profil à la position donnée
      */
     public double elevationAt(double position) {
         DoubleUnaryOperator function = Functions.sampled(elevationsSamples, length);

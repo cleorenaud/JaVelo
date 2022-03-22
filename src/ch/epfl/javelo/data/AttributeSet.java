@@ -32,7 +32,7 @@ public record AttributeSet(long bits) {
      * Méthode de construction qui retourne un ensemble contenant uniquement les attributs donnés en argument.
      *
      * @param attributes (Attribute) : les attributs contenus par l'ensemble
-     * @return un nouvel ensemble d'attributs OpenStreetMap (AttributeSet)
+     * @return (AttributeSet) un nouvel ensemble d'attributs OpenStreetMap
      */
     public static AttributeSet of(Attribute... attributes) {
         long bits = 0;
@@ -47,7 +47,7 @@ public record AttributeSet(long bits) {
      * Méthode qui retourne vrai si et seulement si l'ensemble récepteur (this) contient l'attribut donné
      *
      * @param attribute (Attribute) : l'attribut "cherché"
-     * @return vrai si l'ensemble récepteur (this) contient l'attribut donné et faux sinon (boolean)
+     * @return (boolean) vrai si l'ensemble récepteur (this) contient l'attribut donné et faux sinon
      */
     public boolean contains(Attribute attribute) {
         int index = attribute.ordinal();
@@ -61,7 +61,7 @@ public record AttributeSet(long bits) {
      * avec celui passé en argument (that) n'est pas vide.
      *
      * @param that (AttributeSet) : un autre ensemble d'attributs
-     * @return vrai si l'intersection de l'ensemble récepteur (this)
+     * @return (boolean) vrai si l'intersection de l'ensemble récepteur (this)
      * avec celui passé en argument (that) n'est pas vide, faux sinon
      */
     public boolean intersects(AttributeSet that) {
@@ -82,7 +82,7 @@ public record AttributeSet(long bits) {
      * Cette méthode redéfinit la méthode toString afin qu'elle retourne
      * une chaîne composée de la représentation textuelle des éléments de l'ensemble
      *
-     * @return une chaîne composée de la représentation textuelle des éléments de l'ensemble
+     * @return (String) une chaîne composée de la représentation textuelle des éléments de l'ensemble
      */
     @Override
     public String toString() {
