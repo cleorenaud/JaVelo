@@ -51,7 +51,7 @@ public final class ElevationProfileComputer {
                     elevationSamples[nbEch - k] = 0;
                 }
             }
-            Arrays.fill(elevationSamples, nbEch - k, nbEch , elevationSamples[nbEch - k]);
+            Arrays.fill(elevationSamples, nbEch - k + 1, nbEch , elevationSamples[nbEch - k]);
         }
 
         for (int i = 1; i < nbEch - 1; i++) { //gère si des valeurs intermédiaires sont NaN
