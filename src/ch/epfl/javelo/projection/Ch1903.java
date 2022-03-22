@@ -1,7 +1,7 @@
 package ch.epfl.javelo.projection;
 
 /**
- * Non instanciable, offre des méthodes permettant de convertir entre les coordonnées WGS 84 et les coordonnées Suisse
+ * Non instantiable, offre des méthodes permettant de convertir entre les coordonnées WGS 84 et les coordonnées Suisse
  *
  * @author Cléo Renaud (325156)
  */

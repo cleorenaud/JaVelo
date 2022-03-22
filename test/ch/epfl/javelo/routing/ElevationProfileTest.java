@@ -66,9 +66,9 @@ class ElevationProfileTest {
     @Test
     void totalDescentWorksWithKnownInput() {
         float[] sample1 = {0, 1, 50, 3, 4};
-        assertEquals(-47, (new ElevationProfile(4, sample1)).totalDescent());
+        assertEquals(47, (new ElevationProfile(4, sample1)).totalDescent());
         float[] sample2 = {0, 1, -50, 3, 4};
-        assertEquals(-51, (new ElevationProfile(4, sample2)).totalDescent());
+        assertEquals(51, (new ElevationProfile(4, sample2)).totalDescent());
     }
 
     @Test

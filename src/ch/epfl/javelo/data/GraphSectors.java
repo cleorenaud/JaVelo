@@ -8,14 +8,14 @@ import ch.epfl.javelo.projection.PointCh;
 import ch.epfl.javelo.projection.SwissBounds;
 
 import java.nio.ByteBuffer;
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Enregistrement représentant un tableau contenant les 16384 secteurs de JaVelo avec pour seul attribut buffer
- * (ByteBuffer), la mémoire tampon contenant la valeur des attributs de la totalité des secteurs
+ * (ByteBuffer)
  *
+ * @param buffer (ByteBuffer) la mémoire tampon contenant la valeur des attributs de la totalité des secteurs
  * @author Cléo Renaud (325156)
  */
 public record GraphSectors(ByteBuffer buffer) {
@@ -30,6 +30,9 @@ public record GraphSectors(ByteBuffer buffer) {
     /**
      * Enregistrement représentant un secteur uniquement doté de deux attributs : l'identité du premier nœud du secteur
      * et l'identité du nœud situé après le dernier nœud du secteur
+     *
+     * @param startNodeId (int) l'identité du premier nœud du secteur
+     * @param endNodeId (int) l'identité du dernier nœud du secteur
      */
     public record Sector(int startNodeId, int endNodeId) {
     }
@@ -45,28 +48,28 @@ public record GraphSectors(ByteBuffer buffer) {
 
     public List<Sector> sectorsInArea(PointCh center, double distance) {
         // On déclare la liste de tous les secteurs ayant une intersection avec le carré défini dans les paramètres
-        // Elle sera implémentée a la fin de la méthode
+        // elle sera implémentée à la fin de la méthode
         ArrayList<Sector> intersect = new ArrayList<>();
 
         ArrayList<PointCh> sommets = new ArrayList<>();
-        // On cherche a calculer les coordonnées des 4 sommets du carré (en coordonées suisses).
+        // On cherche à calculer les coordonnées des 4 sommets du carré (en coordonnées suisses).
         // On les stock dans un ArrayList pour simplifier les calculs suivants au moyen d'une boucle for
-        distance= Math.abs(distance);
-        double estMoinDis= center.e()-distance;
-        if(estMoinDis<SwissBounds.MIN_E){
-            estMoinDis= SwissBounds.MIN_E;
+        distance = Math.abs(distance);
+        double estMoinDis = center.e() - distance;
+        if (estMoinDis < SwissBounds.MIN_E) {
+            estMoinDis = SwissBounds.MIN_E;
         }
-        double estPlusDis = center.e()+distance;
-        if(estPlusDis>SwissBounds.MAX_E){
-            estPlusDis= SwissBounds.MAX_E;
+        double estPlusDis = center.e() + distance;
+        if (estPlusDis > SwissBounds.MAX_E) {
+            estPlusDis = SwissBounds.MAX_E;
         }
-        double nordMoinDis= center.n()-distance;
-        if(nordMoinDis<SwissBounds.MIN_N){
-            nordMoinDis= SwissBounds.MIN_N;
+        double nordMoinDis = center.n() - distance;
+        if (nordMoinDis < SwissBounds.MIN_N) {
+            nordMoinDis = SwissBounds.MIN_N;
         }
-        double nordPlusDis = center.n()+distance;
-        if(nordPlusDis>SwissBounds.MAX_N){
-            nordPlusDis= SwissBounds.MAX_N;
+        double nordPlusDis = center.n() + distance;
+        if (nordPlusDis > SwissBounds.MAX_N) {
+            nordPlusDis = SwissBounds.MAX_N;
         }
 
         sommets.add(new PointCh(estMoinDis, nordPlusDis)); // Sommet en haut à gauche (assurément dans SwissBounds)
@@ -87,7 +90,7 @@ public record GraphSectors(ByteBuffer buffer) {
         }
 
         // Maintenant on cherche
-        int hauteur = (secteurs[0] - secteurs[2])/128;
+        int hauteur = (secteurs[0] - secteurs[2]) / 128;
         int largeur = secteurs[3] - secteurs[2];
         for (int i = 0; i <= hauteur; i++) {
             for (int j = 0; j <= largeur; j++) {
@@ -96,7 +99,7 @@ public record GraphSectors(ByteBuffer buffer) {
                 // On cherche la première et la dernière node du secteur grace au ByteBuffer buffer
                 int startNode = buffer.getInt(SECTORS_INTS * secteur);
                 int numberNode = Short.toUnsignedInt(buffer.getShort(SECTORS_INTS * secteur + OFFSET_SECOND));
-                int endNode= startNode + numberNode;
+                int endNode = startNode + numberNode;
                 // On peut maintenant créer un secteur et l'ajouter à notre ArrayList contenant tous les secteurs ayant
                 // une intersection avec le carré passé en paramètres
                 intersect.add(new Sector(startNode, endNode));

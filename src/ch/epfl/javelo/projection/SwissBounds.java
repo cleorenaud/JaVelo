@@ -1,7 +1,7 @@
 package ch.epfl.javelo.projection;
 
 /**
- * Non instanciable contenant des méthodes et des constantes liées aux limites de la Suisse
+ * Non instantiable contenant des méthodes et des constantes liées aux limites de la Suisse
  *
  * @author Cléo Renaud (325156)
  */
@@ -21,7 +21,7 @@ public final class SwissBounds {
      *
      * @param e (double) coordonnée est du point donné
      * @param n (double) coordonnée nord du point donné
-     * @return (boolean)
+     * @return (boolean) true si les coordonnées du point sont bien dans les limites de la Suisse, et false autrement
      */
     public static boolean containsEN(double e, double n) {
         if ((MIN_E <= e) && (e <= MAX_E) && (MIN_N <= n) && (MAX_N >= n)) {

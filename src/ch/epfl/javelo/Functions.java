@@ -5,7 +5,7 @@ import ch.epfl.javelo.projection.SwissBounds;
 import java.util.function.DoubleUnaryOperator;
 
 /**
- * Non instanciable, contient des méthodes permettant de créer des objets représentants des fonctions mathémathiques
+ * Non instantiable, contient des méthodes permettant de créer des objets représentants des fonctions mathémathiques
  * des réels vers les réels
  *
  * @author Cléo Renaud (325156)
@@ -54,11 +54,11 @@ public final class Functions {
      * @param samples (float[]) échantillons espacés régulièrement
      * @param xMax    (double) valeur maximale de la plage dans laquelle on a nos échantillons
      * @return (DoubleUnaryOperator) une fonction qui permet d'interpoler
+     * @throws IllegalArgumentException si le tableau samples contient moins de deux éléments, ou si xMax est inférieur
+     *                                  ou égal à 0
      */
-    public static DoubleUnaryOperator sampled(float[] samples, double xMax) {
-        if ((samples.length < 2) || (xMax <= 0)) {
-            throw new IllegalArgumentException();
-        }
+    public static DoubleUnaryOperator sampled(float[] samples, double xMax) throws IllegalArgumentException {
+        Preconditions.checkArgument((samples.length >= 2) && (xMax > 0));
         return new Sampled(samples, xMax);
     }
 
@@ -100,7 +100,7 @@ public final class Functions {
                 return samples[0];
             }
             if (x >= xMax) {
-                return samples[nSamples-1];
+                return samples[nSamples - 1];
             }
             return Math2.interpolate(samples[a], samples[a + 1], remainder / interval);
         }

@@ -11,9 +11,9 @@ import ch.epfl.javelo.Q28_4;
 
 /**
  * Enregistrement représentant le tableau de tous les nœuds du graphe JaVelo
- * avec comme unique argument buffer (IntBuffer), la mémoire tampon
- * contenant la valeur des attributs de la totalité des nœuds du graphe.
+ * avec comme unique argument buffer (IntBuffer)
  *
+ * @param buffer (IntBuffer) la mémoire tampon contenant la valeur des attributs de la totalité des nœuds du graphe
  * @author: Roxanne Chevalley (339716)
  */
 
@@ -26,7 +26,7 @@ public record GraphNodes(IntBuffer buffer) {
     /**
      * Méthode qui retourne le nombre total de nœuds
      *
-     * @return le nombre total de nœuds (int)
+     * @return (int) le nombre total de nœuds
      */
     public int count() {
         return buffer.capacity() / NODE_INTS;
@@ -36,7 +36,7 @@ public record GraphNodes(IntBuffer buffer) {
      * Méthode qui retourne la coordonnée E du nœud d'identité donnée.
      *
      * @param nodeId (int) : l'identité du nœud
-     * @return la coordonnée E du nœud d'identité donnée (double)
+     * @return (double) la coordonnée E du nœud d'identité donnée
      */
     public double nodeE(int nodeId) {
         int indexE = NODE_INTS * nodeId + OFFSET_E;
@@ -48,7 +48,7 @@ public record GraphNodes(IntBuffer buffer) {
      * Méthode qui retourne la coordonnée N du nœud d'identité donnée.
      *
      * @param nodeId (int) : l'identité du nœud
-     * @return la coordonnée N du nœud d'identité donnée (double)
+     * @return (double) la coordonnée N du nœud d'identité donnée
      */
     public double nodeN(int nodeId) {
         int indexN = NODE_INTS * nodeId + OFFSET_N;
@@ -56,10 +56,10 @@ public record GraphNodes(IntBuffer buffer) {
     }
 
     /**
-     * Méthode qui retourne le nombre d'arrêtes sortant du nœud d'identité donnée
+     * Méthode qui retourne le nombre d'arêtes sortant du nœud d'identité donnée
      *
      * @param nodeId (int) : l'identité du nœud
-     * @return le nombre d'arêtes sortant du nœud d'identité donnée (int)
+     * @return (int) le nombre d'arêtes sortant du nœud d'identité donnée
      */
     public int outDegree(int nodeId) {
         int indexD = NODE_INTS * nodeId + OFFSET_OUT_EDGES;
@@ -72,15 +72,12 @@ public record GraphNodes(IntBuffer buffer) {
      *
      * @param nodeId    (int) : l'identité du nœud
      * @param edgeIndex (int) : l'index de l'arrête recherchée
-     * @return l'identité de la edgeIndex-ième arrête sortant du nœud d'identité nodeId
+     * @return (int) l'identité de la edgeIndex-ième arrête sortant du nœud d'identité nodeId
      */
     public int edgeId(int nodeId, int edgeIndex) {
         assert 0 <= edgeIndex && edgeIndex < outDegree(nodeId);
         int indexD = NODE_INTS * nodeId + OFFSET_OUT_EDGES;
         int d = Bits.extractUnsigned(buffer.get(indexD), 0, 28);
         return d + edgeIndex;
-
     }
-
-
 }

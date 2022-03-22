@@ -20,15 +20,13 @@ public final class Bits {
      * @param value  (int) : la valeur d'origine
      * @param start  (int) : l'index du premier bit à extraire
      * @param length (int) : le nombre de bit à extraire
-     * @return la nouvelle valeur extraite à partir de la séquence de bits (int)
+     * @return (int) la nouvelle valeur extraite à partir de la séquence de bits (int)
      * @throws IllegalArgumentException si l'intervalle (start, start+length-1) n'est pas totalement
      *                                  incluse dans l'intervalle allant de 0 à 31 (inclus), ou si start ou length est négatif,
      *                                  ou si start est supérieur à 31
      */
     public static int extractSigned(int value, int start, int length) throws IllegalArgumentException {
-        if (start + length > 32 || start > 31 || length < 0 || start < 0) {
-            throw new IllegalArgumentException();
-        }
+        Preconditions.checkArgument((start + length <= 32) && (start <= 31) && (length >= 0) && (start >= 0));
 
         int temp = value << (32 - (length + start));
         return temp >> (32 - length);
@@ -39,15 +37,13 @@ public final class Bits {
      *
      * @param value  (int) : la valeur d'origine
      * @param start  (int) : l'index du premier bit à extraire
-     * @param length (int): le nombre de bit à extraire
-     * @return la nouvelle valeur extraite à partir de la séquence de bits (int)
+     * @param length (int) : le nombre de bit à extraire
+     * @return (int) la nouvelle valeur extraite à partir de la séquence de bits (int)
      * @throws IllegalArgumentException si l'intervalle (start, start+length-1) n'est pas totalement
      *                                  incluse dans l'intervalle allant de 0 à 30 (inclus), ou si start ou length est négatif
      */
     public static int extractUnsigned(int value, int start, int length) throws IllegalArgumentException {
-        if (start > 31 || length < 0 || start < 0 || length > 31 || start + length > 32) {
-            throw new IllegalArgumentException();
-        }
+        Preconditions.checkArgument((start <= 31) && (start >= 0) && (length >= 0) && (length <= 31) && (start + length <= 32));
         int temp = value << (32 - (start + length));
         return temp >>> (32 - length);
     }

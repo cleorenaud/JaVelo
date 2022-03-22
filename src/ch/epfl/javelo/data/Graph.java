@@ -28,7 +28,7 @@ public final class Graph {
     /**
      * Méthode permettant de charger le graphe depuis un répertoire
      *
-     * @param basePath (Path) :
+     * @param basePath (Path) : chemin d'accès du répertoire
      * @return (Graph) : le graphe chargé grâce au répertoire
      * @throws IOException en cas d'erreur d'entrée/sortie, p. ex. si l'un des fichiers attendus n'existe pas.
      */
@@ -115,7 +115,7 @@ public final class Graph {
      * Méthode qui retourne la position du nœud d'identité donnée
      *
      * @param nodeId (int) : l'identité du nœud
-     * @return la position du nœud d'identité donnée
+     * @return (PointCh) la position du nœud d'identité donnée
      */
     public PointCh nodePoint(int nodeId) {
         return new PointCh(nodes.nodeE(nodeId), nodes.nodeN(nodeId));
@@ -125,7 +125,7 @@ public final class Graph {
      * Méthode qui retourne le nombre d'arêtes sortant du nœud d'identité donnée
      *
      * @param nodeId (int) : l'identité du nœud
-     * @return le nombre d'arêtes sortant du nœud d'identité donnée
+     * @return (int) le nombre d'arêtes sortant du nœud d'identité donnée
      */
     public int nodeOutDegree(int nodeId) {
         return nodes.outDegree(nodeId);
@@ -148,15 +148,15 @@ public final class Graph {
      *
      * @param point          (PointCh) : le point autour duquel on cherche
      * @param searchDistance (double) : la distance maximale à laquelle on cherche
-     * @return (int) : le noeud le plus proche du point donné (ou -1)
+     * @return (int) : le nœud le plus proche du point donné (ou -1)
      */
     public int nodeClosestTo(PointCh point, double searchDistance) {
         double distanceMax = searchDistance * searchDistance;
         int identyMemory = -1;
-        List<GraphSectors.Sector> sectorsInArea= sectors.sectorsInArea(point,searchDistance);
+        List<GraphSectors.Sector> sectorsInArea = sectors.sectorsInArea(point, searchDistance);
         for (int i = 0; i < sectorsInArea.size(); i++) {
             GraphSectors.Sector secteur = sectorsInArea.get(i);
-            for (int j = secteur.startNodeId(); j < secteur.endNodeId() ; j++) {
+            for (int j = secteur.startNodeId(); j < secteur.endNodeId(); j++) {
                 PointCh nodePoint = nodePoint(j);
                 double distance = point.squaredDistanceTo(nodePoint);
                 if (distance <= distanceMax) {
@@ -203,7 +203,7 @@ public final class Graph {
      * Méthode qui retourne la longueur, en mètres, de l'arête d'identité donnée
      *
      * @param edgeId (int) : l'identité de l'arête
-     * @return la longueur, en mètres, de l'arête d'identité donnée
+     * @return (double) la longueur, en mètres, de l'arête d'identité donnée
      */
     public double edgeLength(int edgeId) {
         return edges.length(edgeId);
@@ -231,8 +231,5 @@ public final class Graph {
             return Functions.constant(Double.NaN);
         }
         return Functions.sampled(edges.profileSamples(edgeId), edgeLength(edgeId));
-
     }
-
-
 }
