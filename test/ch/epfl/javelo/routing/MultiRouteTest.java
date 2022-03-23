@@ -332,8 +332,6 @@ class MultiRouteTest {
         edges.add(edge3);
         edges.add(edge4);
 
-
-
         PointCh point6= new PointCh(2500013,1100000);
         PointCh point7 =new PointCh(2500015,1100000);
         PointCh point8= new PointCh(2500018,1100000);
