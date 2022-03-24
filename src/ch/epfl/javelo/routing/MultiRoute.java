@@ -61,7 +61,7 @@ public class MultiRoute implements Route {
             n=segments.get(i).indexOfSegmentAt(position)+1;
             ++i;
         }
-        i=Math2.clamp(0,i,positionEndSegment.length-1 );
+        i=Math2.clamp(0,i,positionEndSegment.length-1);
 
         return n + segments.get(i).indexOfSegmentAt(position - positionSegment[i]);
     }

@@ -23,8 +23,9 @@ public final class SingleRoute implements Route {
      * Constructeur retournant l'itinéraire simple composé des arêtes données
      *
      * @param edges (List<Edge>) les arêtes données
+     * @throws IllegalArgumentException si la liste d'arêtes est vide
      */
-    public SingleRoute(List<Edge> edges) {
+    public SingleRoute(List<Edge> edges) throws IllegalArgumentException{
         Preconditions.checkArgument(!edges.isEmpty());
         this.edges = edges;
 

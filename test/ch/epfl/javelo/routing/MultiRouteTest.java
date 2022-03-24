@@ -379,4 +379,50 @@ class MultiRouteTest {
         return points;
     }
 
+    public MultiRoute testMultiRoute() {
+        PointCh point= new PointCh(2500000,1100000);
+        PointCh point2 =new PointCh(2500003,1100000);
+        PointCh point3= new PointCh(2500005,1100000);
+        PointCh point4= new PointCh(2500008,1100000);
+        PointCh point5= new PointCh(2500010,1100000);
+        float [] tab= {0,1,2,3};
+        float [] tab2= {3,4,5};
+        DoubleUnaryOperator function= Functions.sampled(tab, 3);
+        DoubleUnaryOperator function2= Functions.sampled(tab2, 2);
+        float [] tab3= {5,6,7,8};
+        float [] tab4= {8,9,10};
+        DoubleUnaryOperator function3= Functions.sampled(tab3, 3);
+        DoubleUnaryOperator function4= Functions.sampled(tab4, 2);
+        Edge edge1=new Edge(1,4,point,point2, 3, function);
+        Edge edge2=new Edge(4,6,point2,point3, 2, function2);
+
+        List<Edge> edges= new ArrayList<>();
+        edges.add(edge1);
+        edges.add(edge2);
+        SingleRoute route = new SingleRoute(edges);
+        List<Route> list = new ArrayList<>();
+        list.add(route);
+
+        MultiRoute multiRoute = new MultiRoute(list);
+        boolean isEmpty = list.isEmpty();
+        System.out.println(isEmpty);
+        return multiRoute;
+    }
+
+    @Test
+    void indexOfSegmentAtWorksWithKnownInput() {
+        MultiRoute multiRoute= this.testMultiRoute();
+        assertEquals(0,multiRoute.indexOfSegmentAt(0));
+        assertEquals(0,multiRoute.indexOfSegmentAt(1));
+        assertEquals(0,multiRoute.indexOfSegmentAt(2));
+        assertEquals(0,multiRoute.indexOfSegmentAt(3));
+        assertEquals(0,multiRoute.indexOfSegmentAt(4));
+        assertEquals(1,multiRoute.indexOfSegmentAt(5));
+        assertEquals(1,multiRoute.indexOfSegmentAt(6));
+        assertEquals(1,multiRoute.indexOfSegmentAt(7));
+        assertEquals(1,multiRoute.indexOfSegmentAt(8));
+        assertEquals(1,multiRoute.indexOfSegmentAt(9));
+        assertEquals(1,multiRoute.indexOfSegmentAt(10));
+    }
+
 }
