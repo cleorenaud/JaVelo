@@ -383,8 +383,6 @@ class MultiRouteTest {
         PointCh point= new PointCh(2500000,1100000);
         PointCh point2 =new PointCh(2500003,1100000);
         PointCh point3= new PointCh(2500005,1100000);
-        PointCh point4= new PointCh(2500008,1100000);
-        PointCh point5= new PointCh(2500010,1100000);
         float [] tab= {0,1,2,3};
         float [] tab2= {3,4,5};
         DoubleUnaryOperator function= Functions.sampled(tab, 3);
@@ -404,8 +402,6 @@ class MultiRouteTest {
         list.add(route);
 
         MultiRoute multiRoute = new MultiRoute(list);
-        boolean isEmpty = list.isEmpty();
-        System.out.println(isEmpty);
         return multiRoute;
     }
 
@@ -417,12 +413,12 @@ class MultiRouteTest {
         assertEquals(0,multiRoute.indexOfSegmentAt(2));
         assertEquals(0,multiRoute.indexOfSegmentAt(3));
         assertEquals(0,multiRoute.indexOfSegmentAt(4));
-        assertEquals(1,multiRoute.indexOfSegmentAt(5));
-        assertEquals(1,multiRoute.indexOfSegmentAt(6));
-        assertEquals(1,multiRoute.indexOfSegmentAt(7));
-        assertEquals(1,multiRoute.indexOfSegmentAt(8));
-        assertEquals(1,multiRoute.indexOfSegmentAt(9));
-        assertEquals(1,multiRoute.indexOfSegmentAt(10));
+        assertEquals(0,multiRoute.indexOfSegmentAt(5));
+        assertEquals(0,multiRoute.indexOfSegmentAt(6));
+        assertEquals(0,multiRoute.indexOfSegmentAt(7));
+        assertEquals(0,multiRoute.indexOfSegmentAt(8));
+        assertEquals(0,multiRoute.indexOfSegmentAt(9));
+        assertEquals(0,multiRoute.indexOfSegmentAt(10));
     }
 
 }

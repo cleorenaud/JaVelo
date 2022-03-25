@@ -39,7 +39,7 @@ public class MultiRoute implements Route {
 
         //On crée un tableau contenant la position à la fin de la Route / du segment i dans l'index i
         double[] positionEndSegment = new double[segments.size()];
-        positionEndSegment[0] =  segments.get(0).length();
+        positionEndSegment[0] = segments.get(0).length();
         for (int i = 1; i < positionEndSegment.length; i++) {
             positionEndSegment[i] = positionEndSegment[i - 1] + segments.get(i).length();
         }
@@ -55,14 +55,17 @@ public class MultiRoute implements Route {
     @Override
     public int indexOfSegmentAt(double position) {
         position = Math2.clamp(0, position, this.length());
-        int n=0;
+        int n = 0;
         int i = 0;
-        while (i<positionEndSegment.length && positionEndSegment[i] <= position) {
-            n=segments.get(i).indexOfSegmentAt(position)+1;
+        if (segments.size() == 1) {
+            return 0;
+        }
+        while (i < positionEndSegment.length && positionEndSegment[i] <= position) {
+            n = segments.get(i).indexOfSegmentAt(position) + 1;
             ++i;
         }
-        i=Math2.clamp(0,i,positionEndSegment.length-1);
 
+        i = Math2.clamp(0, i, positionEndSegment.length - 1);
         return n + segments.get(i).indexOfSegmentAt(position - positionSegment[i]);
     }
 
@@ -121,14 +124,14 @@ public class MultiRoute implements Route {
         /// Si la position est négative, elle est considérée comme étant équivalente à zéro
         // Si la position est plus grande que la longueur de l'itinéraire elle est considérée comme étant équivalente
         // à la longueur de l'itinéraire
-        position=Math2.clamp(0,position,this.length());
+        position = Math2.clamp(0, position, this.length());
 
         // On isole le segment contenant la position donnée
-        int i=0;
-        while(i<segments.size() && positionEndSegment[i]<=position){
+        int i = 0;
+        while (i < segments.size() && positionEndSegment[i] <= position) {
             ++i;
         }
-        i=Math2.clamp(0,i,segments.size()-1);
+        i = Math2.clamp(0, i, segments.size() - 1);
         Route segment = this.segments.get(i);
         // La position à passer en paramètre est la position donnée, moins la position du début du segment sur lequel
         // se trouve le point voulu
@@ -147,15 +150,15 @@ public class MultiRoute implements Route {
         // Si la position est négative, elle est considérée comme étant équivalente à zéro
         // Si la position est plus grande que la longueur de l'itinéraire elle est considérée comme étant équivalente
         // à la longueur de l'itinéraire
-        position=Math2.clamp(0,position,this.length());
+        position = Math2.clamp(0, position, this.length());
 
 
         // On isole le segment contenant la position donnée
-        int i=0;
-        while(i<segments.size() && positionEndSegment[i]<=position){
+        int i = 0;
+        while (i < segments.size() && positionEndSegment[i] <= position) {
             ++i;
         }
-        i=Math2.clamp(0,i,segments.size()-1);
+        i = Math2.clamp(0, i, segments.size() - 1);
         Route segment = this.segments.get(i);
         // La position à passer en paramètre est la position donnée, moins la position du début du segment sur lequel
         // se trouve le point voulu
@@ -173,14 +176,14 @@ public class MultiRoute implements Route {
         // Si la position est négative, elle est considérée comme étant équivalente à zéro
         // Si la position est plus grande que la longueur de l'itinéraire elle est considérée comme étant équivalente
         // à la longueur de l'itinéraire
-        position=Math2.clamp(0,position,this.length());
+        position = Math2.clamp(0, position, this.length());
 
         // On isole le segment contenant la position donnée
-        int i=0;
-        while(i<segments.size() && positionEndSegment[i]<=position){
+        int i = 0;
+        while (i < segments.size() && positionEndSegment[i] <= position) {
             ++i;
         }
-        i=Math2.clamp(0,i,segments.size()-1);
+        i = Math2.clamp(0, i, segments.size() - 1);
         Route segment = this.segments.get(i);
         // La position à passer en paramètre est la position donnée, moins la position du début du segment sur lequel
         // se trouve le point voulu
@@ -203,8 +206,8 @@ public class MultiRoute implements Route {
             RoutePoint newRoutePoint = (segment.pointClosestTo(point));
             // On utilise la méthode min de RoutePoint pour comparer le point obtenu avec celui qu'on avait pour l'edge
             // précédente
-            if(routePoint!=routePoint.min(newRoutePoint)){
-                routePoint= newRoutePoint.withPositionShiftedBy(segment.length());
+            if (routePoint != routePoint.min(newRoutePoint)) {
+                routePoint = newRoutePoint.withPositionShiftedBy(segment.length());
             }
 
         }
