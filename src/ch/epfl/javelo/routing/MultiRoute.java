@@ -57,15 +57,16 @@ public class MultiRoute implements Route {
         position = Math2.clamp(0, position, this.length());
         int n = 0;
         int i = 0;
-        if (segments.size() == 1) {
-            return 0;
-        }
         while (i < positionEndSegment.length && positionEndSegment[i] <= position) {
             n = segments.get(i).indexOfSegmentAt(position) + 1;
             ++i;
         }
-
-        i = Math2.clamp(0, i, positionEndSegment.length - 1);
+        if (segments.size() == 1) {
+            i=0;
+            n=0;
+        }else{
+            i = Math2.clamp(0, i, positionEndSegment.length - 1);
+        }
         return n + segments.get(i).indexOfSegmentAt(position - positionSegment[i]);
     }
 

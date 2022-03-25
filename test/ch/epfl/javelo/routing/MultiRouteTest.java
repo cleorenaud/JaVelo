@@ -48,6 +48,7 @@ class MultiRouteTest {
         assertEquals(3,multiRoute.indexOfSegmentAt(18));
         assertEquals(3,multiRoute.indexOfSegmentAt(19));
         assertEquals(3,multiRoute.indexOfSegmentAt(20));
+        assertEquals(3, multiRoute.indexOfSegmentAt(21));
 
     }
 
@@ -405,6 +406,45 @@ class MultiRouteTest {
         return multiRoute;
     }
 
+    public MultiRoute getMulti2(){
+        PointCh point= new PointCh(2500000,1100000);
+        PointCh point2 =new PointCh(2500003,1100000);
+        PointCh point3= new PointCh(2500005,1100000);
+        PointCh point4= new PointCh(2500008,1100000);
+        PointCh point5= new PointCh(2500010,1100000);
+        float [] tab= {0,1,2,3};
+        float [] tab2= {3,4,5};
+        DoubleUnaryOperator function= Functions.sampled(tab, 3);
+        DoubleUnaryOperator function2= Functions.sampled(tab2, 2);
+        float [] tab3= {5,6,7,8};
+        float [] tab4= {8,9,10};
+        DoubleUnaryOperator function3= Functions.sampled(tab3, 3);
+        DoubleUnaryOperator function4= Functions.sampled(tab4, 2);
+        Edge edge1=new Edge(1,4,point,point2, 3, function);
+        Edge edge2=new Edge(4,6,point2,point3, 2, function2);
+        Edge edge3=new Edge(6,9,point3,point4, 3, function3);
+        Edge edge4=new Edge(9,11,point4,point5, 2, function4);
+
+        List<Edge> edges= new ArrayList<>();
+        edges.add(edge1);
+        edges.add(edge2);
+        SingleRoute route = new SingleRoute(edges);
+        List<Edge> edges2= new ArrayList<>();
+        edges2.add(edge3);
+        edges2.add(edge4);
+        SingleRoute route2= new SingleRoute(edges2);
+        List<Route> listRoute1= new ArrayList<>();
+        listRoute1.add(route);
+        listRoute1.add(route2);
+        MultiRoute multiRoute1= new MultiRoute(listRoute1);
+
+        List<Route> listRoute3= new ArrayList<>();
+        listRoute3.add(multiRoute1);
+        MultiRoute multiRouteFin= new MultiRoute(listRoute3);
+        return multiRouteFin;
+
+    }
+
     @Test
     void indexOfSegmentAtWorksWithKnownInput() {
         MultiRoute multiRoute= this.testMultiRoute();
@@ -419,6 +459,26 @@ class MultiRouteTest {
         assertEquals(0,multiRoute.indexOfSegmentAt(8));
         assertEquals(0,multiRoute.indexOfSegmentAt(9));
         assertEquals(0,multiRoute.indexOfSegmentAt(10));
+    }
+
+    @Test
+    void indexOfSegmentAtWorksOnOneMultiInMulti(){
+        MultiRoute multiRoute= getMulti2();
+        assertEquals(0,multiRoute.indexOfSegmentAt(0));
+        assertEquals(0,multiRoute.indexOfSegmentAt(1));
+        assertEquals(0,multiRoute.indexOfSegmentAt(2));
+        assertEquals(0,multiRoute.indexOfSegmentAt(3));
+        assertEquals(0,multiRoute.indexOfSegmentAt(4));
+        assertEquals(1,multiRoute.indexOfSegmentAt(5));
+        assertEquals(1,multiRoute.indexOfSegmentAt(6));
+        assertEquals(1,multiRoute.indexOfSegmentAt(7));
+        assertEquals(1,multiRoute.indexOfSegmentAt(8));
+        assertEquals(1,multiRoute.indexOfSegmentAt(9));
+        assertEquals(1,multiRoute.indexOfSegmentAt(10));
+        assertEquals(1,multiRoute.indexOfSegmentAt(11));
+        assertEquals(1,multiRoute.indexOfSegmentAt(12));
+        assertEquals(1,multiRoute.indexOfSegmentAt(13));
+
     }
 
 }
