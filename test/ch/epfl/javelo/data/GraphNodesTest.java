@@ -30,12 +30,12 @@ class GraphNodesTest {
 
     @Test
     void nodeEWorksOnKnownNode() {
-        assertEquals(2_600_000 << 4, ns.nodeE(0));
+        assertEquals(2_600_000, ns.nodeE(0));
     }
 
     @Test
     void nodeNWorksOnKnownNode() {
-        assertEquals(1_200_000 << 4, ns.nodeN(0));
+        assertEquals(1_200_000, ns.nodeN(0));
     }
 
     @Test

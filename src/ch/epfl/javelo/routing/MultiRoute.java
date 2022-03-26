@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author Cléo Renaud (325156)
  */
-public class MultiRoute implements Route {
+public final class MultiRoute implements Route {
 
     private final List<Route> segments;
     private final double[] positionSegment;

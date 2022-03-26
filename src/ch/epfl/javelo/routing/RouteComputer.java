@@ -11,7 +11,7 @@ import java.util.*;
  *
  * @author : Roxanne Chevalley (339716)
  */
-public class RouteComputer {
+public final class RouteComputer {
     private final Graph graph;
     private final CostFunction costFunction;
 

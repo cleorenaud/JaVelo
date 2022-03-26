@@ -47,10 +47,8 @@ class GraphSectorsTest {
         GraphSectors.Sector sector2 = new GraphSectors.Sector(3,9);
         GraphSectors.Sector sector3 = new GraphSectors.Sector(256,516);
         List<GraphSectors.Sector> list2 = graph1.sectorsInArea(center2,1800);
-        System.out.println(list2.size());
         boolean b=sector2.equals(list2.get(1));
         boolean c= sector3.equals(list2.get(0));
-        System.out.println(list2.get(0).endNodeId());
         assertEquals(true,b);
         assertEquals(true,c);
 
