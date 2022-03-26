@@ -27,7 +27,7 @@ public class MultiRoute implements Route {
      */
     public MultiRoute(List<Route> segments) throws IllegalArgumentException {
         Preconditions.checkArgument(!segments.isEmpty());
-        this.segments = segments;
+        this.segments = List.copyOf(segments);
 
         //On crée un tableau contenant la position au début de la Route / du segment i dans l'index i
         double[] positionSegment = new double[segments.size()];

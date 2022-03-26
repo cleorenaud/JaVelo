@@ -27,7 +27,7 @@ public final class SingleRoute implements Route {
      */
     public SingleRoute(List<Edge> edges) throws IllegalArgumentException{
         Preconditions.checkArgument(!edges.isEmpty());
-        this.edges = edges;
+        this.edges = List.copyOf(edges);
 
         // On crée un tableau contenant la position au debut de la node i dans l'index i
         double[] tableau = new double[edges.size() + 1];
