@@ -87,7 +87,7 @@ class SingleRouteTest {
         PointCh point2 =new PointCh(2500003,1100000);
         PointCh point3= new PointCh(2500005,1100000);
         PointCh point4= new PointCh(2500004,1100000);
-        float [] tab= {0,1,2,3,};
+        float [] tab= {0,1,2,3};
         float [] tab2= {3,4,5};
         DoubleUnaryOperator function= Functions.sampled(tab, 3);
         DoubleUnaryOperator function2= Functions.sampled(tab2, 3);

@@ -12,15 +12,15 @@ import ch.epfl.javelo.Preconditions;
 public record PointWebMercator(double x, double y) {
 
     /**
-     * Constructeur compact validant les coordinates qu'il reçoit et levant une exception si elles n'appartiennent pas à
-     * l'intervalle [0;1]
+     * Constructeur compact validant les coordinates qu'il reçoit
      *
      * @param x (double) la coordonnée x reçue
      * @param y (double) la coordonnée y reçue
-     * @throws IllegalArgumentException si les coordonnées qu'il reçoit ne sont pas toutes comprises dans l'intervalle [0,1]
+     * @throws IllegalArgumentException si les coordonnées ne sont pas toutes comprises dans l'intervalle [0,1]
      */
-    public PointWebMercator { //constructeur compact
-        Preconditions.checkArgument((x <= 1) && (x >= 0) && (y <= 1) && (y >= 0));
+    public PointWebMercator {
+        Preconditions.checkArgument((x <= 1) && (x >= 0));
+        Preconditions.checkArgument((y <= 1) && (y >= 0));
     }
 
     /**
@@ -42,7 +42,7 @@ public record PointWebMercator(double x, double y) {
      * donné
      *
      * @param pointCh (PointCh) le point exprimé dans le système de coordinates suisse
-     * @return (PointWebMercator) le point Web Mercator correpondant aux paramètres donnés
+     * @return (PointWebMercator) le point Web Mercator correspondant aux paramètres donnés
      */
     public static PointWebMercator ofPointCh(PointCh pointCh) {
         double x = WebMercator.x(pointCh.lon());
@@ -89,15 +89,15 @@ public record PointWebMercator(double x, double y) {
     }
 
     /**
-     * Méthode retournant le point de coordonnées suisses se trouvant a la même position que le recepteur
+     * Méthode retournant le point de coordonnées suisses se trouvant a la même position que le récepteur
      *
      * @return (PointCh) le point de coordonnées suisses
      */
     public PointCh toPointCh() {
-        double n=Ch1903.n(lon(),lat());
-        double e= Ch1903.e(lon(),lat());
-        if (SwissBounds.containsEN(e,n)) {
-            return new PointCh(e,n);
+        double n = Ch1903.n(lon(), lat());
+        double e = Ch1903.e(lon(), lat());
+        if (SwissBounds.containsEN(e, n)) {
+            return new PointCh(e, n);
         }
         return null;
     }

@@ -53,7 +53,7 @@ public record GraphSectors(ByteBuffer buffer) {
 
         ArrayList<PointCh> sommets = new ArrayList<>();
         // On cherche à calculer les coordonnées des 4 sommets du carré (en coordonnées suisses).
-        // On les stock dans un ArrayList pour simplifier les calculs suivants au moyen d'une boucle for
+        // On les stocke dans un ArrayList pour simplifier les calculs suivants au moyen d'une boucle for
         distance = Math.abs(distance);
         double estMoinDis = center.e() - distance;
         if (estMoinDis < SwissBounds.MIN_E) {
@@ -81,7 +81,7 @@ public record GraphSectors(ByteBuffer buffer) {
         // Un point de coordonnées (n, e) se trouve dans le secteur (x, y) (x appartient à [0, 128] et y à [0, 128]
         // comme il y a 128x128 secteurs dans notre repère en coordonnées suisses)
         // Pour determiner le secteur contenant notre point on doit prendre la partie entiere de notre calcul
-        // On stock le numéro du secteur des sommets du carré dans un tableau (plus simple comme dans une boucle fort)
+        // On stocke le numéro du secteur des sommets du carré dans un tableau (plus simple comme dans une boucle fort)
         for (int i = 0; i < sommets.size(); i++) {
             int x = (int) Math.floor(((sommets.get(i)).e() - SwissBounds.MIN_E) / ((SwissBounds.MAX_E - SwissBounds.MIN_E) / 128));
             int y = (int) Math.floor(((sommets.get(i)).n() - SwissBounds.MIN_N) / ((SwissBounds.MAX_N - SwissBounds.MIN_N) / 128));
@@ -107,6 +107,4 @@ public record GraphSectors(ByteBuffer buffer) {
         }
         return intersect;
     }
-
-
 }

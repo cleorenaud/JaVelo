@@ -16,7 +16,7 @@ import java.util.List;
  */
 public final class SingleRoute implements Route {
 
-    private final List<Edge> edges;
+    private final List<Edge> edges; // liste des arêtes dela route
     private final double[] tableau; // tableau contenant la position au debut de la node i dans l'index i
 
     /**
@@ -31,7 +31,7 @@ public final class SingleRoute implements Route {
 
         // On crée un tableau contenant la position au debut de la node i dans l'index i
         double[] tableau = new double[edges.size() + 1];
-        tableau[0] = 0;
+        tableau[0] = 0; // le noeud 0 est a une position 0
         for (int i = 1; i < tableau.length; i++) {
             tableau[i] = tableau[i - 1] + edges.get(i - 1).length();
         }
@@ -71,7 +71,7 @@ public final class SingleRoute implements Route {
      */
     @Override
     public List<Edge> edges() {
-        return List.copyOf(edges);
+        return this.edges;
     }
 
     /**
@@ -80,6 +80,7 @@ public final class SingleRoute implements Route {
      * @return (List < Edge >) la liste contenant la totalité des points situés aux extrémités des arêtes de l'itinéraire
      */
     @Override
+    // TODO: 27/03/2022 voir si ne créé pas de doublons sinon prendre from du point 0 et boucler sur toPoint
     public List<PointCh> points() {
         List<PointCh> points = new ArrayList<>();
         for (int i = 0; i < this.edges.size(); i++) {
@@ -97,17 +98,21 @@ public final class SingleRoute implements Route {
      */
     @Override
     public PointCh pointAt(double position) {
+        // Une position supérieure à la longueur de l'itinéraire est considérée comme équivalente à cette longueur
+        // Une position inférieure à la longueur de l'itinéraire est considérée comme équivalente à zéro
         position = Math2.clamp(0, position, this.length());
 
         int node = Arrays.binarySearch(tableau, position);
 
         if (node < 0) {
+            // Valeur négative donc = -(point d'insertion) -1
             int newNode = Math.abs(node) - 2;
             double posOnEdge = position - tableau[newNode];
             return this.edges.get(newNode).pointAt(posOnEdge);
         } else if (node == edges.size()) {
             return (this.edges.get(node - 1)).toPoint();
         } else {
+            // Valeur positive donc la position correspond à un point
             return (this.edges.get(node)).fromPoint();
         }
     }
@@ -121,11 +126,14 @@ public final class SingleRoute implements Route {
      */
     @Override
     public double elevationAt(double position) {
+        // Une position supérieure à la longueur de l'itinéraire est considérée comme équivalente à cette longueur
+        // Une position inférieure à la longueur de l'itinéraire est considérée comme équivalente à zéro
         position = Math2.clamp(0, position, this.length());
 
         int node = Arrays.binarySearch(tableau, position);
 
         if (node < 0) {
+            // Valeur négative donc = -(point d'insertion) -1
             int newNode = Math.abs(node) - 2;
             double posOnEdge = position - tableau[newNode];
             return this.edges.get(newNode).elevationAt(posOnEdge);
