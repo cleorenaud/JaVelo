@@ -39,7 +39,7 @@ public record AttributeSet(long bits) {
         long bits = 0;
         for ( Attribute i : attributes) {
             long mask = 1L << i.ordinal();
-            bits = bits + mask;
+            bits = bits | mask;
         }
         return new AttributeSet(bits);
     }
@@ -51,11 +51,8 @@ public record AttributeSet(long bits) {
      * @return (boolean) vrai si l'ensemble récepteur (this) contient l'attribut donné et faux sinon
      */
     public boolean contains(Attribute attribute) {
-        int decalage = Attribute.COUNT + 1;
-        int index = attribute.ordinal();
-        long newBits = bits() << decalage - index;
-        newBits = newBits >>> decalage;
-        return (newBits == 1);
+        long bits2= 1L << attribute.ordinal();
+        return ((bits() & bits2) != 0);
     }
 
     /**
@@ -67,17 +64,7 @@ public record AttributeSet(long bits) {
      * avec celui passé en argument (that) n'est pas vide, faux sinon
      */
     public boolean intersects(AttributeSet that) {
-        for (int i = 0; i < Attribute.COUNT ; ++i) {
-            int decalage= Attribute.COUNT + 1;
-            long newThis = bits << (decalage - i);
-            newThis = newThis >>> decalage;
-            long newThat = that.bits() << (decalage - i);
-            newThat = newThat >>> decalage;
-            if (newThis == 1 && newThat == 1) {
-                return true;
-            }
-        }
-        return false;
+        return ((this.bits() & that.bits()) != 0);
     }
 
 
