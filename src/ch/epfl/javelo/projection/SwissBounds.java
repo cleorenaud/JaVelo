@@ -6,6 +6,9 @@ package ch.epfl.javelo.projection;
  * @author Cléo Renaud (325156)
  */
 public final class SwissBounds {
+    /**
+     * Constantes pour stocker les coordonnées min et max, nord et sud de la Suisse.
+     */
     public static final double MIN_E = 2485000;
     public static final double MAX_E = 2834000;
     public static final double MIN_N = 1075000;
@@ -13,6 +16,9 @@ public final class SwissBounds {
     public static final double WIDTH = MAX_E - MIN_E;
     public static final double HEIGHT = MAX_N - MIN_N;
 
+    /**
+     * Constructeur privé pour que la classe ne soit pas instantiable
+     */
     private SwissBounds() {
     }
 

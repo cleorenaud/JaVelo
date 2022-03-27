@@ -6,7 +6,6 @@ package ch.epfl.javelo.routing;
 
 import ch.epfl.javelo.projection.PointCh;
 
-import java.awt.*;
 import java.util.List;
 
 /**
@@ -17,7 +16,7 @@ import java.util.List;
 public interface Route {
 
     /**
-     * Méthode retournant l'index du segment à la position donné
+     * Méthode retournant l'index du segment à la position donnée
      *
      * @param position (double) la position donnée (en mètres)
      * @return (int) l'index du segment

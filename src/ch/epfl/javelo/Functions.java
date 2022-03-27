@@ -1,16 +1,17 @@
 package ch.epfl.javelo;
 
-import ch.epfl.javelo.projection.SwissBounds;
-
 import java.util.function.DoubleUnaryOperator;
 
 /**
- * Non instantiable, contient des méthodes permettant de créer des objets représentants des fonctions mathémathiques
+ * Non instantiable, contient des méthodes permettant de créer des objets représentants des fonctions mathématiques
  * des réels vers les réels
  *
  * @author Cléo Renaud (325156)
  */
 public final class Functions {
+    /**
+     * Constructeur privé pour que la classe ne soit pas instantiable
+     */
     private Functions() {
     }
 
@@ -24,6 +25,9 @@ public final class Functions {
         return new Constant(y);
     }
 
+    /**
+     * Classe imbriquée qui sert à définir la fonction constante
+     */
     private static final class Constant implements DoubleUnaryOperator {
         private double constant;
 
@@ -62,10 +66,13 @@ public final class Functions {
         return new Sampled(samples, xMax);
     }
 
+    /**
+     * Classe imbriquée utilisée pour définir la fonction d'interpolation
+     */
     private static final class Sampled implements DoubleUnaryOperator {
-        private float[] samples;
-        private double xMax;
-        private int nSamples; //le nombre d'échantillons
+        private float[] samples; // tableau d'échantillons
+        private double xMax; // valeur du dernier x pour lequel on a un échantillon
+        private int nSamples; // le nombre d'échantillons
         private double interval; // la longueur de l'intervalle entre deux échantillons
 
         /**
@@ -89,11 +96,6 @@ public final class Functions {
          */
         @Override
         public double applyAsDouble(double x) {
-            // On cherche à trouver dans quel intervalle est x
-            // a*interval <= x < (a+1)*interval
-            // Pour trouver a on utilise la division entière de x par interval
-            // On utilise l'interpolation en prenant samples[a] et samples[a+1]
-            int a = (int) (x / interval);
             double remainder = x % interval;
             // Si x est hors de l'intervalle [0 ; xMax] on retourne la valeur de 0 ou de xMax
             if (x <= 0) {
@@ -102,6 +104,11 @@ public final class Functions {
             if (x >= xMax) {
                 return samples[nSamples - 1];
             }
+            // On cherche à trouver dans quel intervalle est x
+            // a*interval <= x < (a+1)*interval
+            // Pour trouver a on utilise la division entière de x par interval
+            // On utilise l'interpolation en prenant samples[a] et samples[a+1]
+            int a = (int) (x / interval);
             return Math2.interpolate(samples[a], samples[a + 1], remainder / interval);
         }
     }
