@@ -5,6 +5,7 @@
 package ch.epfl.javelo.data;
 
 import ch.epfl.javelo.Preconditions;
+import org.w3c.dom.Attr;
 
 import java.util.StringJoiner;
 
@@ -25,19 +26,19 @@ public record AttributeSet(long bits) {
      *                                  aucun attribut valide
      */
     public AttributeSet { //constructeur compact
-        Preconditions.checkArgument((bits >>> Attribute.ALL.size()) == 0);
+        Preconditions.checkArgument((bits >>> Attribute.COUNT) == 0);
     }
 
     /**
      * Méthode de construction qui retourne un ensemble contenant uniquement les attributs donnés en argument.
      *
      * @param attributes (Attribute) : les attributs contenus par l'ensemble
-     * @return (AttributeSet) un nouvel ensemble d'attributs OpenStreetMap
+     * @return (AttributeSet) : un nouvel ensemble d'attributs OpenStreetMap
      */
     public static AttributeSet of(Attribute... attributes) {
         long bits = 0;
-        for (int i = 0; i < attributes.length; i++) {
-            long mask = 1L << attributes[i].ordinal();
+        for ( Attribute i : attributes) {
+            long mask = 1L << i.ordinal();
             bits = bits + mask;
         }
         return new AttributeSet(bits);
@@ -50,9 +51,10 @@ public record AttributeSet(long bits) {
      * @return (boolean) vrai si l'ensemble récepteur (this) contient l'attribut donné et faux sinon
      */
     public boolean contains(Attribute attribute) {
+        int decalage = Attribute.COUNT + 1;
         int index = attribute.ordinal();
-        long newBits = bits() << 63 - index;
-        newBits = newBits >>> 63;
+        long newBits = bits() << decalage - index;
+        newBits = newBits >>> decalage;
         return (newBits == 1);
     }
 
@@ -65,11 +67,12 @@ public record AttributeSet(long bits) {
      * avec celui passé en argument (that) n'est pas vide, faux sinon
      */
     public boolean intersects(AttributeSet that) {
-        for (int i = 0; i < 62; ++i) {
-            long newThis = bits << (63 - i);
-            newThis = newThis >>> 63;
-            long newThat = that.bits() << (63 - i);
-            newThat = newThat >>> 63;
+        for (int i = 0; i < Attribute.COUNT ; ++i) {
+            int decalage= Attribute.COUNT + 1;
+            long newThis = bits << (decalage - i);
+            newThis = newThis >>> decalage;
+            long newThat = that.bits() << (decalage - i);
+            newThat = newThat >>> decalage;
             if (newThis == 1 && newThat == 1) {
                 return true;
             }
@@ -87,7 +90,7 @@ public record AttributeSet(long bits) {
     @Override
     public String toString() {
         StringJoiner j = new StringJoiner(",", "{", "}");
-        for (int i = 0; i < 62; ++i) {
+        for (int i = 0; i < Attribute.COUNT; ++i) {
             if (this.contains(Attribute.ALL.get(i))) {
                 String message = Attribute.ALL.get(i).toString();
                 j.add(message);

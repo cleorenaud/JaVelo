@@ -27,8 +27,11 @@ class ElevationProfileComputerTest {
 
 
     @Test
-    void elevationProfileComputerThrowsIllegalArgumentException() {
+    void elevationProfileComputerThrowsIllegalArgumentException() throws IOException {
         List<Edge> edges = new ArrayList<>();
+        Graph graph= Graph.loadFrom(Path.of("Lausanne"));
+        Edge edge = Edge.of(graph,5,2, 3);
+        edges.add(edge);
         SingleRoute route = new SingleRoute(edges);
 
         // On vérifie qu'une exception est levée si maxStepLength vaut zéro

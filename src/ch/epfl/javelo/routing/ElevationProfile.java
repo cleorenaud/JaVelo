@@ -49,20 +49,6 @@ public final class ElevationProfile {
     }
 
     /**
-     * Méthode qui nous nous aidera à calculer les statistiques de elevationsSamples
-     *
-     * @return (DoubleSummaryStatistics) : une instance de la classe DoubleSummaryStatistics avec les valeurs de
-     * elevationsSamples
-     */
-    private DoubleSummaryStatistics getStatistics() {
-        DoubleSummaryStatistics s = new DoubleSummaryStatistics();
-        for (int i = 0; i < elevationsSamples.length; i++) {
-            s.accept(elevationsSamples[i]);
-        }
-        return s;
-    }
-
-    /**
      * Méthode qui retourne l'altitude minimum du profil, en mètres
      *
      * @return (double) : l'altitude minimum du profil
@@ -125,6 +111,20 @@ public final class ElevationProfile {
         DoubleUnaryOperator function = Functions.sampled(elevationsSamples, length);
         return function.applyAsDouble(position);
 
+    }
+
+    /**
+     * Méthode qui nous nous aidera à calculer les statistiques de elevationsSamples
+     *
+     * @return (DoubleSummaryStatistics) : une instance de la classe DoubleSummaryStatistics avec les valeurs de
+     * elevationsSamples
+     */
+    private DoubleSummaryStatistics getStatistics() {
+        DoubleSummaryStatistics s = new DoubleSummaryStatistics();
+        for (int i = 0; i < elevationsSamples.length; i++) {
+            s.accept(elevationsSamples[i]);
+        }
+        return s;
     }
 
 }

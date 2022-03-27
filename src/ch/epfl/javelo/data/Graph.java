@@ -154,8 +154,7 @@ public final class Graph {
         double distanceMax = searchDistance * searchDistance;
         int identyMemory = -1;
         List<GraphSectors.Sector> sectorsInArea = sectors.sectorsInArea(point, searchDistance);
-        for (int i = 0; i < sectorsInArea.size(); i++) {
-            GraphSectors.Sector secteur = sectorsInArea.get(i);
+        for (GraphSectors.Sector secteur : sectorsInArea) {
             for (int j = secteur.startNodeId(); j < secteur.endNodeId(); j++) {
                 PointCh nodePoint = nodePoint(j);
                 double distance = point.squaredDistanceTo(nodePoint);

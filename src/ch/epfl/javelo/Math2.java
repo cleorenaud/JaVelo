@@ -44,7 +44,7 @@ public final class Math2 {
      * @param min (int) : le minimum de l'intervalle
      * @param v   (int) la variable
      * @param max (int) : le maximum de la variable
-     * @return (int) v, min ou max
+     * @return (int) : v, min ou max
      * @throws IllegalArgumentException si min est plus grand que max
      */
     public static int clamp(int min, int v, int max) throws IllegalArgumentException {
@@ -62,7 +62,7 @@ public final class Math2 {
      * @param min (double) : le minimum de l'intervalle
      * @param v   (double) la variable
      * @param max (double) : le maximum de l'intervalle
-     * @return (double) v, min ou max
+     * @return (double) : v, min ou max
      * @throws IllegalArgumentException si min est plus grand que max
      */
     public static double clamp(double min, double v, double max) throws IllegalArgumentException {
@@ -77,7 +77,7 @@ public final class Math2 {
      * Fonction qui calcule le sinus hyperbolique inverse d'une variable
      *
      * @param x (double) : la variable
-     * @return (double) l'asinh de x (double)
+     * @return (double) : l'asinh de x (double)
      */
     public static double asinh(double x) {
         return Math.log(x + Math.sqrt(1 + x * x));
@@ -108,11 +108,11 @@ public final class Math2 {
     }
 
     /**
-     * Retourne la norme d'un vecteur
+     * Retourne la norme d'un vecteur u
      *
      * @param uX (double) : la coordonnée X du vecteur u
      * @param uY (double) : la coordonnée y du vecteur u
-     * @return (double) la norme du vecteur u
+     * @return (double) : la norme du vecteur u
      */
     public static double norm(double uX, double uY) {
         return Math.sqrt(squaredNorm(uX, uY));
@@ -128,7 +128,7 @@ public final class Math2 {
      * @param bY (double) : la coordonnée y du point B
      * @param pX (double) : la coordonnée x du point P
      * @param pY (double) : la coordonnée y du point P
-     * @return (double) la longueur de ladite projection
+     * @return (double) : la longueur de ladite projection
      */
     public static double projectionLength(double aX, double aY, double bX, double bY, double pX, double pY) {
         return dotProduct(pX - aX, pY - aY, bX - aX, bY - aY) / norm(bX - aX, bY - aY);
