@@ -107,10 +107,10 @@ public final class MultiRoute implements Route {
     public List<PointCh> points() {
         List<PointCh> points = new ArrayList<>();
         List<Edge> edges = this.edges();
+        points.add(edges.get(0).fromPoint());
         for (int i = 0; i < edges().size(); i++) {
-            points.add(edges.get(i).fromPoint());
+            points.add(edges.get(i).toPoint());
         }
-        points.add((edges.get(edges().size() - 1)).toPoint());
         return points;
     }
 

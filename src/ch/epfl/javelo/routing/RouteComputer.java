@@ -41,7 +41,7 @@ public final class RouteComputer {
         Preconditions.checkArgument(startNodeId != endNodeId);
 
         record WeightedNode(int nodeId, float distance) implements Comparable<WeightedNode> {
-            
+
             @Override
             public int compareTo(WeightedNode that) {
                 return Float.compare(this.distance, that.distance);
