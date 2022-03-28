@@ -112,6 +112,7 @@ class ElevationProfileComputerTest {
         samples[samples.length - 1] = samples.length - 1;
 
         var route = new FakeRoute(1, x -> samples[(int) Math.rint(x)]);
+        System.out.println(route.points());
         var profile = elevationProfile(route, 1);
         for (int i = 0; i < FakeRoute.EDGE_LENGTH; i += 1)
             assertEquals(i, profile.elevationAt(i), 1e-4);

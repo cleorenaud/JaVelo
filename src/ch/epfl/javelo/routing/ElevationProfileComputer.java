@@ -67,7 +67,7 @@ public final class ElevationProfileComputer {
                 for (int k = i; k < j; k++) {
                     elevationSamples[k] = debut + (float) delta * (k - i + 1);
                 }
-                i = j + 1;
+                i = j;
             }
         }
         return new ElevationProfile(route.length(), elevationSamples);
