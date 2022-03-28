@@ -39,14 +39,16 @@ public final class RouteComputer {
      */
     public Route bestRouteBetween(int startNodeId, int endNodeId) throws IllegalArgumentException {
         Preconditions.checkArgument(startNodeId != endNodeId);
-        record WeightedNode(int nodeId, float distance)
-                implements Comparable<WeightedNode> {
+
+        record WeightedNode(int nodeId, float distance) implements Comparable<WeightedNode> {
+            
             @Override
             public int compareTo(WeightedNode that) {
                 return Float.compare(this.distance, that.distance);
             }
         }
-        //pour chaque noeud de graphe, définir une distance et un noeud prédecesseur
+
+        //pour chaque nœud de graphe, définir une distance et un nœud prédecesseur
         float[] distance = new float[graph.nodeCount()];
         int[] predecesseur = new int[graph.nodeCount()];
 
@@ -62,13 +64,13 @@ public final class RouteComputer {
         enExploration.add(new WeightedNode(startNodeId, distance[startNodeId]));
 
         while (!enExploration.isEmpty()) {
-            int retenir=enExploration.remove().nodeId;
+            int retenir = enExploration.remove().nodeId;
             //double mini = Double.POSITIVE_INFINITY;
             //int retenir = -1;
             //for (WeightedNode l : enExploration) {
-                //on calcule la distance à vol d'oiseau entre le noeuds d'arrivé et les noeuds en exploration
-                //double volOiseau = graph.nodePoint(l.nodeId).distanceTo(graph.nodePoint(endNodeId));
-                /*if (Math.abs(distance[l.nodeId] + volOiseau )< mini) {//on trouve le noeuds avec la plus petite distance pour l'instant
+            //on calcule la distance à vol d'oiseau entre le nœud d'arrivée et les nœuds en exploration
+            //double volOiseau = graph.nodePoint(l.nodeId).distanceTo(graph.nodePoint(endNodeId));
+                /*if (Math.abs(distance[l.nodeId] + volOiseau )< mini) {//on trouve le nœud avec la plus petite distance pour l'instant
                     mini = distance[l.nodeId] + volOiseau;
                     retenir = l.nodeId;
                 }*/
@@ -76,28 +78,27 @@ public final class RouteComputer {
 
             //enExploration.remove(retenir);
 
-            if (retenir == endNodeId) {//on a trouvé le chemin, on construit maintentant la route
-                List<Integer> noeudsTrajet = new ArrayList<>();//création d'une liste des noeuds du chemin
+            if (retenir == endNodeId) {//on a trouvé le chemin, on construit maintenant la route
+                List<Integer> noeudsTrajet = new ArrayList<>();//création d'une liste des nœuds du chemin
                 int k = endNodeId;
-                while (k != 0) { //remplissage des noeuds du trajet (de la fin vers le début)
+                while (k != 0) { //remplissage des nœuds du trajet (de la fin vers le début)
                     noeudsTrajet.add(k);
                     k = predecesseur[k];
                 }
 
                 List<Edge> edges = new ArrayList<>(); //création d'une liste d'arrêt
 
-                while (noeudsTrajet.size() >= 2) { //construction des arrêtes à partir des noeuds
+                while (noeudsTrajet.size() >= 2) { //construction des arêtes à partir des nœuds
                     int noeud1 = noeudsTrajet.get(noeudsTrajet.size() - 1);
                     int noeud2 = noeudsTrajet.get(noeudsTrajet.size() - 2);
                     int edgeId = -1;
                     int outEdge;
-                    for (int i = 0; i < graph.nodeOutDegree(noeud1); i++) { //trouver l'index de l'arrête
+                    for (int i = 0; i < graph.nodeOutDegree(noeud1); i++) { //trouver l'index de l'arête
 
                         outEdge = graph.nodeOutEdgeId(noeud1, i);
                         if (graph.edgeTargetNodeId(outEdge) == noeud2) {
                             edgeId = outEdge;
                         }
-
                     }
                     Edge edge = Edge.of(graph, edgeId, noeud1, noeud2);
                     edges.add(edge);
@@ -110,22 +111,19 @@ public final class RouteComputer {
             int[] nodesOut = new int[graph.nodeOutDegree(retenir)]; // création d'un tableau avec les arrêtes sortant de "retenir"
             for (int i = 0; i < nodesOut.length; i++) {
                 int outEdge = graph.nodeOutEdgeId(retenir, i);//recherche de l'arrête
-                int nPrime = graph.edgeTargetNodeId(outEdge); //noeud associé à l'arrête
+                int nPrime = graph.edgeTargetNodeId(outEdge); //nœud associé à l'arête
                 float minimum = distance[nPrime];
                 float distanceN = (float) (distance[retenir] + graph.edgeLength(outEdge) * costFunction.costFactor(retenir, outEdge)); //(Dijkstra)
                 if (distanceN < minimum) {
                     distance[nPrime] = distanceN;
                     predecesseur[nPrime] = retenir;
-                    //on calcule la distance à vol d'oiseau entre le noeuds d'arrivé et les noeuds en exploration
+                    //on calcule la distance à vol d'oiseau entre le nœud d'arrivée et les nœuds en exploration
                     float volOiseau = (float) graph.nodePoint(nPrime).distanceTo(graph.nodePoint(endNodeId));
-                    float weightedDis= Math.abs(volOiseau + distance[nPrime]);
+                    float weightedDis = Math.abs(volOiseau + distance[nPrime]);
                     enExploration.add(new WeightedNode(nPrime, weightedDis));
-
                 }
-
             }
-            distance[retenir]=Float.NEGATIVE_INFINITY; //marque le noeud visité
-
+            distance[retenir] = Float.NEGATIVE_INFINITY; //marque le nœud visité
         }
         return null;
     }
