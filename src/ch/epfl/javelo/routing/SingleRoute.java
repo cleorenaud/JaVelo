@@ -80,7 +80,6 @@ public final class SingleRoute implements Route {
      * @return (List < Edge >) la liste contenant la totalité des points situés aux extrémités des arêtes de l'itinéraire
      */
     @Override
-    // TODO: 27/03/2022 voir si ne créé pas de doublons sinon prendre from du point 0 et boucler sur toPoint
     public List<PointCh> points() {
         List<PointCh> points = new ArrayList<>();
         points.add(edges.get(0).fromPoint());
