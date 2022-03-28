@@ -48,7 +48,7 @@ public final class RouteComputer {
             }
         }
 
-        //pour chaque nœud de graphe, définir une distance et un nœud prédecesseur
+        // Pour chaque nœud de graphe, définir une distance et un nœud prédecesseur
         float[] distance = new float[graph.nodeCount()];
         int[] predecesseur = new int[graph.nodeCount()];
 
@@ -78,10 +78,10 @@ public final class RouteComputer {
 
             //enExploration.remove(retenir);
 
-            if (retenir == endNodeId) {//on a trouvé le chemin, on construit maintenant la route
-                List<Integer> noeudsTrajet = new ArrayList<>();//création d'une liste des nœuds du chemin
+            if (retenir == endNodeId) { //On a trouvé le chemin le plus court, on construit maintenant la route
+                List<Integer> noeudsTrajet = new ArrayList<>(); // Création d'une liste contenant les nœuds du chemin
                 int k = endNodeId;
-                while (k != 0) { //remplissage des nœuds du trajet (de la fin vers le début)
+                while (k != 0) { // Remplissage des nœuds du trajet (de la fin vers le début)
                     noeudsTrajet.add(k);
                     k = predecesseur[k];
                 }
