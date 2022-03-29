@@ -51,10 +51,12 @@ public final class RouteComputer {
         int[] predecesseur = new int[graph.nodeCount()];
         int[] arrete = new int[graph.nodeCount()];
 
-        for (int i = 0; i < graph.nodeCount(); i++) {
+        /*for (int i = 0; i < graph.nodeCount(); i++) {
             distance[i] = Float.POSITIVE_INFINITY;
-            predecesseur[i] = 0;
-        }
+
+        }*/
+        Arrays.fill(distance,0,graph.nodeCount(),Float.POSITIVE_INFINITY);
+        Arrays.fill(predecesseur,0,graph.nodeCount(),0);
 
         distance[startNodeId] = 0;
         PriorityQueue<WeightedNode> enExploration = new PriorityQueue<>();
@@ -87,9 +89,10 @@ public final class RouteComputer {
 
                 List<Edge> edges = new ArrayList<>(); //création d'une liste d'arrêt
 
-                while (noeudsTrajet.size() >= 2) { //construction des arrêtes à partir des noeuds
-                    int noeud1 = noeudsTrajet.get(noeudsTrajet.size() - 1);
-                    int noeud2 = noeudsTrajet.get(noeudsTrajet.size() - 2);
+                int noeud1 = noeudsTrajet.remove(noeudsTrajet.size()-1);
+                while (noeudsTrajet.size() >= 1) { //construction des arrêtes à partir des noeuds
+
+                    int noeud2 = noeudsTrajet.remove(noeudsTrajet.size()-1);
                     int edgeId=arrete[noeud2];
                    /* int edgeId = -1;
                     int outEdge;
@@ -104,6 +107,7 @@ public final class RouteComputer {
                     Edge edge = Edge.of(graph, edgeId, noeud1, noeud2);
                     edges.add(edge);
                     noeudsTrajet.remove(noeudsTrajet.size() - 1);
+                    noeud1=noeud2;
                 }
                 return new SingleRoute(edges);
             }
