@@ -71,7 +71,7 @@ public final class SingleRoute implements Route {
      */
     @Override
     public List<Edge> edges() {
-        return this.edges;
+        return List.copyOf(edges);
     }
 
     /**
@@ -136,8 +136,12 @@ public final class SingleRoute implements Route {
             int newNode = Math.abs(node) - 2;
             double posOnEdge = position - tableau[newNode];
             return this.edges.get(newNode).elevationAt(posOnEdge);
+
+            //les conditions ci-dessous permettent à un nombre valide de toujours être prioritaire par rapport à un NaN
         } else if (node != 0 && (node == edges.size() || Float.isNaN((float) (this.edges.get(node)).elevationAt(0)))) {
-            return (this.edges.get(node - 1)).elevationAt(this.edges.get(node - 1).length());
+            Edge tempEdge = this.edges.get(node - 1);
+            return (tempEdge).elevationAt(tempEdge.length());
+
         } else {
             return (this.edges.get(node)).elevationAt(0);
         }
@@ -158,13 +162,16 @@ public final class SingleRoute implements Route {
         if (node < 0) {
             int newNode = Math.abs(node) - 2;
             double posOnEdge = position - tableau[newNode];
+            
             if (posOnEdge <= (edges.get(newNode).length()) / 2) {
                 return edges.get(newNode).fromNodeId();
             } else {
                 return edges.get(newNode).toNodeId();
             }
+
         } else if (node == edges.size()) {
             return this.edges.get(node - 1).toNodeId();
+
         } else {
             return this.edges.get(node).fromNodeId();
         }
