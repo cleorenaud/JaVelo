@@ -49,12 +49,10 @@ public final class RouteComputer {
         //pour chaque noeud de graphe, définir une distance et un noeud prédecesseur
         float[] distance = new float[graph.nodeCount()];
         int[] predecesseur = new int[graph.nodeCount()];
-        int[] arrete = new int[graph.nodeCount()];
 
         for (int i = 0; i < graph.nodeCount(); i++) {
             distance[i] = Float.POSITIVE_INFINITY;
             predecesseur[i] = 0;
-            arrete[i]=0;
         }
 
         distance[startNodeId] = 0;
@@ -88,11 +86,10 @@ public final class RouteComputer {
 
                 List<Edge> edges = new ArrayList<>(); //création d'une liste d'arrêt
 
-                int noeud1= noeudsTrajet.remove(noeudsTrajet.size() - 1);
-                while(noeudsTrajet.size()>=1){
-                    int noeud2=noeudsTrajet.remove(noeudsTrajet.size() - 1);
-                    int edgeId= arrete[noeud2];
-                    /*int edgeId = -1;
+                while (noeudsTrajet.size() >= 2) { //construction des arrêtes à partir des noeuds
+                    int noeud1 = noeudsTrajet.get(noeudsTrajet.size() - 1);
+                    int noeud2 = noeudsTrajet.get(noeudsTrajet.size() - 2);
+                    int edgeId = -1;
                     int outEdge;
                     for (int i = 0; i < graph.nodeOutDegree(noeud1); i++) { //trouver l'index de l'arrête
 
@@ -101,10 +98,10 @@ public final class RouteComputer {
                             edgeId = outEdge;
                         }
 
-                    }*/
+                    }
                     Edge edge = Edge.of(graph, edgeId, noeud1, noeud2);
                     edges.add(edge);
-                    noeud1=noeud2;
+                    noeudsTrajet.remove(noeudsTrajet.size() - 1);
                 }
                 return new SingleRoute(edges);
             }
@@ -114,19 +111,18 @@ public final class RouteComputer {
             for (int i = 0; i < nodesOut.length; i++) {
                 int outEdge = graph.nodeOutEdgeId(retenir, i);//recherche de l'arrête
                 int nPrime = graph.edgeTargetNodeId(outEdge); //noeud associé à l'arrête
-                if(distance[nPrime]!=Float.NEGATIVE_INFINITY){
-                    float distanceN = (float) (distance[retenir] + graph.edgeLength(outEdge) * costFunction.costFactor(retenir, outEdge));
-                    if (distanceN < distance[nPrime]) {
-                        distance[nPrime] = distanceN;
-                        predecesseur[nPrime] = retenir;
-                        arrete[nPrime] =outEdge;
-                        //on calcule la distance à vol d'oiseau entre le noeuds d'arrivé et les noeuds en exploration
-                        float volOiseau = (float) graph.nodePoint(nPrime).distanceTo(graph.nodePoint(endNodeId));
-                        float weightedDis= volOiseau + distance[nPrime];
-                        enExploration.add(new WeightedNode(nPrime, weightedDis));
+                float minimum = distance[nPrime];
+                float distanceN = (float) (distance[retenir] + graph.edgeLength(outEdge) * costFunction.costFactor(retenir, outEdge)); //(Dijkstra)
+                if (distanceN < minimum) {
+                    distance[nPrime] = distanceN;
+                    predecesseur[nPrime] = retenir;
+                    //on calcule la distance à vol d'oiseau entre le noeuds d'arrivé et les noeuds en exploration
+                    float volOiseau = (float) graph.nodePoint(nPrime).distanceTo(graph.nodePoint(endNodeId));
+                    float weightedDis= Math.abs(volOiseau + distance[nPrime]);
+                    enExploration.add(new WeightedNode(nPrime, weightedDis));
 
-                    }
                 }
+
             }
             distance[retenir]=Float.NEGATIVE_INFINITY; //marque le noeud visité
 
