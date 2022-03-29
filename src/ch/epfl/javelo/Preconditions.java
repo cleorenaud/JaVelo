@@ -9,8 +9,7 @@ public final class Preconditions {
     /**
      * Constructeur privé pour que la classe ne soit pas instantiable
      */
-    private Preconditions() {
-    }
+    private Preconditions() {}
 
     /**
      * Méthode permettant de lever l'exception IllegalArgumentException si son argument est faux

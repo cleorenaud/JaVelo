@@ -19,8 +19,7 @@ public final class SwissBounds {
     /**
      * Constructeur privé pour que la classe ne soit pas instantiable
      */
-    private SwissBounds() {
-    }
+    private SwissBounds() {}
 
     /**
      * Méthode permettant de vérifier si les coordonnées d'un point donné sont bien dans les limites de la Suisse

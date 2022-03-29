@@ -4,6 +4,7 @@
  */
 package ch.epfl.javelo.data;
 
+import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.projection.PointCh;
 import ch.epfl.javelo.projection.SwissBounds;
 
@@ -55,22 +56,19 @@ public record GraphSectors(ByteBuffer buffer) {
         // On cherche à calculer les coordonnées des 4 sommets du carré (en coordonnées suisses).
         // On les stocke dans un ArrayList pour simplifier les calculs suivants au moyen d'une boucle for
         distance = Math.abs(distance);
+
         double estMoinDis = center.e() - distance;
-        if (estMoinDis < SwissBounds.MIN_E) {
-            estMoinDis = SwissBounds.MIN_E;
-        }
+        estMoinDis= Math.max(estMoinDis,SwissBounds.MIN_E);
+
         double estPlusDis = center.e() + distance;
-        if (estPlusDis > SwissBounds.MAX_E) {
-            estPlusDis = SwissBounds.MAX_E;
-        }
+        estPlusDis=Math.min(estPlusDis,SwissBounds.MAX_E);
+
         double nordMoinDis = center.n() - distance;
-        if (nordMoinDis < SwissBounds.MIN_N) {
-            nordMoinDis = SwissBounds.MIN_N;
-        }
+        nordMoinDis= Math.max(nordMoinDis,SwissBounds.MIN_N);
+
         double nordPlusDis = center.n() + distance;
-        if (nordPlusDis > SwissBounds.MAX_N) {
-            nordPlusDis = SwissBounds.MAX_N;
-        }
+        nordPlusDis=Math.min(nordPlusDis,SwissBounds.MAX_N);
+
 
         sommets.add(new PointCh(estMoinDis, nordPlusDis)); // Sommet en haut à gauche (assurément dans SwissBounds)
         sommets.add(new PointCh(estPlusDis, nordPlusDis)); // Sommet en haut à droite (assurément dans SwissBounds)
