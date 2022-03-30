@@ -10,12 +10,12 @@ import ch.epfl.javelo.Q28_4;
 import java.nio.*;
 
 /**
- * Enregistrement qui représente le tableau de toutes les arêtes du graphe JaVelo
+ * Enregistrement représentant le tableau de toutes les arêtes du graphe JaVelo
  *
- * @param edgesBuffer (ByteBuffer) la mémoire tampon contenant le sens de l'arête, l'identité du nœud de destination,
+ * @param edgesBuffer (ByteBuffer) : la mémoire tampon contenant le sens de l'arête, l'identité du nœud de destination,
  *                    la longueur, le dénivelé positif et l'identité de l'ensemble d'attributs OSM
- * @param profileIds (IntBuffer) le type de profil et l'identité du premier échantillon du profil
- * @param elevations (ShortBuffer) la mémoire tampon contenant la totalité des échantillons des profils, compressés ou non
+ * @param profileIds (IntBuffer) : le type de profil et l'identité du premier échantillon du profil
+ * @param elevations (ShortBuffer) : la mémoire tampon contenant la totalité des échantillons des profils, compressés ou non
  * @author : Roxanne Chevalley (339716)
  */
 public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuffer elevations) {
@@ -26,22 +26,22 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     private static final int EDGES_INTS = OFFSET_ATT + Short.BYTES;
 
     /**
-     * Méthode qui retourne vrai si l'arête d'identité donnée va dans le sens inverse
-     * de la voie OSM dont elle provient et retourne faux sinon.
+     * Méthode retournant vrai si l'arête d'identité donnée va dans le sens inverse de la voie OSM dont elle provient
+     * et retourne faux sinon.
      *
      * @param edgeId (int) : l'identité de l'arête
-     * @return (boolean) vrai si l'arête d'identité donnée va dans le sens inverse
-     * de la voie OSM dont elle provient et retourne faux sinon (boolean)
+     * @return (boolean) : vrai si l'arête d'identité donnée va dans le sens inverse de la voie OSM dont elle provient
+     * et retourne faux sinon
      */
     public boolean isInverted(int edgeId) {
         return (edgesBuffer.getInt(edgeId * EDGES_INTS + OFFSET_W) < 0);
     }
 
     /**
-     * Méthode qui retourne l'identité du nœud destination de l'arête d'identité donnée
+     * Méthode retournant l'identité du nœud destination de l'arête d'identité donnée
      *
      * @param edgeId (int) : l'identité de l'arête
-     * @return (int) l'identité du nœud destination de l'arête d'identité donnée (int)
+     * @return (int) : l'identité du nœud destination de l'arête d'identité donnée
      */
     public int targetNodeId(int edgeId) {
         if (isInverted(edgeId)) {
@@ -51,10 +51,10 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     }
 
     /**
-     * Méthode qui retourne la longueur, en mètres, de l'arête d'identité donnée.
+     * Méthode retournant la longueur, en mètres, de l'arête d'identité donnée.
      *
      * @param edgeId (int) : l'identité de l'arête
-     * @return (double) la longueur, en mètres, de l'arête d'identité donnée
+     * @return (double) : la longueur, en mètres, de l'arête d'identité donnée
      */
     public double length(int edgeId) {
         return Q28_4.asDouble(Bits.extractUnsigned
@@ -63,10 +63,10 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     }
 
     /**
-     * Méthode qui retourne le dénivelé positif, en mètres, de l'arête d'identité donnée
+     * Méthode retournant le dénivelé positif, en mètres, de l'arête d'identité donnée
      *
      * @param edgeId (int) : l'identité de l'arête
-     * @return (double) le dénivelé positif, en mètres, de l'arête d'identité donnée
+     * @return (double) : le dénivelé positif, en mètres, de l'arête d'identité donnée
      */
     public double elevationGain(int edgeId) {
         return Q28_4.asDouble(Bits.extractUnsigned
@@ -75,10 +75,10 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     }
 
     /**
-     * Méthode qui retourne vrai si l'arête d'identité donnée possède un profil et faux sinon.
+     * Méthode retournant vrai si l'arête d'identité donnée possède un profil et faux sinon.
      *
      * @param edgeId (int) : l'identité de l'arête
-     * @return (boolean) vrai si l'arête d'identité donnée possède un profil et faux sinon
+     * @return (boolean) : vrai si l'arête d'identité donnée possède un profil et faux sinon
      */
     public boolean hasProfile(int edgeId) {
         double m = Bits.extractUnsigned(profileIds.get(edgeId) ,30,2);
@@ -86,11 +86,11 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     }
 
     /**
-     * Méthode qui retourne le tableau des échantillons du profil de l'arête d'identité donnée,
+     * Méthode retournant le tableau des échantillons du profil de l'arête d'identité donnée,
      * qui est vide si l'arête ne possède pas de profil
      *
      * @param edgeId (int) : l'identité de l'arête
-     * @return (float[]) le tableau des échantillons du profil de l'arête d'identité donnée
+     * @return (float[]) : le tableau des échantillons du profil de l'arête d'identité donnée
      */
     public float[] profileSamples(int edgeId) {
         double maxLength= 2.0;
@@ -141,14 +141,12 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     }
 
     /**
-     * Méthode qui retourne l'identité de l'ensemble d'attributs attaché à l'arête d'identité donnée.
+     * Méthode retournant l'identité de l'ensemble d'attributs attaché à l'arête d'identité donnée.
      *
      * @param edgeId (int) : l'identité de l'arête
-     * @return (int) l'identité de l'ensemble d'attributs attaché à l'arête d'identité donnée
+     * @return (int) : l'identité de l'ensemble d'attributs attaché à l'arête d'identité donnée
      */
     public int attributesIndex(int edgeId) {
         return Short.toUnsignedInt(edgesBuffer.getShort(edgeId * EDGES_INTS + OFFSET_ATT));
     }
-
-
 }

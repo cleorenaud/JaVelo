@@ -21,9 +21,8 @@ public final class ElevationProfile {
     private final float[] elevationsSamples;
 
     /**
-     * Construit le profil en long d'un itinéraire de longueur length (en mètres)
-     * et dont les échantillons d'altitude, répartis uniformément le long de l'itinéraire, sont contenus dans
-     * elevationSamples
+     * Construit le profil en long d'un itinéraire de longueur length (en mètres) et dont les échantillons d'altitude,
+     * répartis uniformément le long de l'itinéraire, sont contenus dans elevationSamples
      *
      * @param length           (double) : la longueur en mètres
      * @param elevationSamples (float []) : les échantillons d'altitude
@@ -40,7 +39,7 @@ public final class ElevationProfile {
     }
 
     /**
-     * Méthode qui retourne la longueur du profil, en mètres
+     * Méthode retournant la longueur du profil, en mètres
      *
      * @return (double) : la longueur du profil
      */
@@ -49,7 +48,7 @@ public final class ElevationProfile {
     }
 
     /**
-     * Méthode qui retourne l'altitude minimum du profil, en mètres
+     * Méthode retournant l'altitude minimum du profil, en mètres
      *
      * @return (double) : l'altitude minimum du profil
      */
@@ -58,7 +57,7 @@ public final class ElevationProfile {
     }
 
     /**
-     * Méthode qui retourne l'altitude maximum du profil, en mètres
+     * Méthode retournant l'altitude maximum du profil, en mètres
      *
      * @return (double) : l'altitude maximum du profil
      */
@@ -67,7 +66,7 @@ public final class ElevationProfile {
     }
 
     /**
-     * Méthode qui retourne le dénivelé positif total du profil, en mètres
+     * Méthode retournant le dénivelé positif total du profil, en mètres
      *
      * @return (double) : le dénivelé positif total du profil, en mètres
      */
@@ -85,7 +84,7 @@ public final class ElevationProfile {
 
 
     /**
-     * Méthode qui retourne le dénivelé négatif total du profil, en mètres
+     * Méthode retournant le dénivelé négatif total du profil, en mètres
      *
      * @return (double) : le dénivelé négatif total du profil, en mètres
      */
@@ -102,7 +101,7 @@ public final class ElevationProfile {
     }
 
     /**
-     * Méthode qui retourne l'altitude du profil à la position donnée,
+     * Méthode retournant l'altitude du profil à la position donnée,
      *
      * @param position (double) : la position donnée
      * @return (double) : l'altitude du profil à la position donnée
@@ -126,5 +125,4 @@ public final class ElevationProfile {
         }
         return s;
     }
-
 }

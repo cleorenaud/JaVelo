@@ -103,7 +103,7 @@ public final class Graph {
     }
 
     /**
-     * Méthode qui retourne le nombre total de nœuds dans le graphe
+     * Méthode retournant le nombre total de nœuds dans le graphe
      *
      * @return (int) : le nombre total de nœuds dans le graphe
      */
@@ -112,27 +112,27 @@ public final class Graph {
     }
 
     /**
-     * Méthode qui retourne la position du nœud d'identité donnée
+     * Méthode retournant la position du nœud d'identité donnée
      *
      * @param nodeId (int) : l'identité du nœud
-     * @return (PointCh) la position du nœud d'identité donnée
+     * @return (PointCh) : la position du nœud d'identité donnée
      */
     public PointCh nodePoint(int nodeId) {
         return new PointCh(nodes.nodeE(nodeId), nodes.nodeN(nodeId));
     }
 
     /**
-     * Méthode qui retourne le nombre d'arêtes sortant du nœud d'identité donnée
+     * Méthode retournant le nombre d'arêtes sortant du nœud d'identité donnée
      *
      * @param nodeId (int) : l'identité du nœud
-     * @return (int) le nombre d'arêtes sortant du nœud d'identité donnée
+     * @return (int) : le nombre d'arêtes sortant du nœud d'identité donnée
      */
     public int nodeOutDegree(int nodeId) {
         return nodes.outDegree(nodeId);
     }
 
     /**
-     * Méthode qui retourne l'identité de la edgeIndex-ième arête sortant du nœud d'identité nodeId,
+     * Méthode retournant l'identité de la edgeIndex-ième arête sortant du nœud d'identité nodeId,
      *
      * @param nodeId    (int) : l'identité du nœud
      * @param edgeIndex (int) : l'index de l'arrête recherchée
@@ -143,7 +143,7 @@ public final class Graph {
     }
 
     /**
-     * Méthode qui retourne l'identité du nœud se trouvant le plus proche du point donné,
+     * Méthode retournant l'identité du nœud se trouvant le plus proche du point donné,
      * à la distance maximale donnée (en mètres), ou -1 si aucun nœud ne correspond à ces critères,
      *
      * @param point          (PointCh) : le point autour duquel on cherche
@@ -168,7 +168,7 @@ public final class Graph {
     }
 
     /**
-     * Méthode qui retourne l'identité du nœud destination de l'arête d'identité donnée
+     * Méthode retournant l'identité du nœud destination de l'arête d'identité donnée
      *
      * @param edgeId (int) : l'identité de l'arête
      * @return (int) : l'identité du nœud destination de l'arête d'identité donnée
@@ -178,7 +178,7 @@ public final class Graph {
     }
 
     /**
-     * Méthode qui retourne vrai ssi l'arête d'identité donnée va dans le sens contraire
+     * Méthode retournant vrai ssi l'arête d'identité donnée va dans le sens contraire
      * de la voie OSM dont elle provient
      *
      * @param edgeId (int) : l'identité de l'arête
@@ -189,7 +189,7 @@ public final class Graph {
     }
 
     /**
-     * Méthode qui retourne l'ensemble des attributs OSM attachés à l'arête d'identité donnée,
+     * Méthode retournant l'ensemble des attributs OSM attachés à l'arête d'identité donnée,
      *
      * @param edgeId (int) : l'identité de l'arête
      * @return (AttributeSet) : l'ensemble des attributs OSM attachés à l'arête d'identité donnée
@@ -199,7 +199,7 @@ public final class Graph {
     }
 
     /**
-     * Méthode qui retourne la longueur, en mètres, de l'arête d'identité donnée
+     * Méthode retournant la longueur, en mètres, de l'arête d'identité donnée
      *
      * @param edgeId (int) : l'identité de l'arête
      * @return (double) la longueur, en mètres, de l'arête d'identité donnée
@@ -209,7 +209,7 @@ public final class Graph {
     }
 
     /**
-     * Méthode qui retourne le dénivelé positif total de l'arête d'identité donnée (en mètres)
+     * Méthode retournant le dénivelé positif total de l'arête d'identité donnée (en mètres)
      *
      * @param edgeId (int) : l'identité de l'arête
      * @return (double) : le dénivelé positif total de l'arête d'identité donnée
@@ -219,7 +219,7 @@ public final class Graph {
     }
 
     /**
-     * Méthode qui retourne le profil en long de l'arête d'identité donnée, sous la forme d'une fonction
+     * Méthode retournant le profil en long de l'arête d'identité donnée, sous la forme d'une fonction
      *
      * @param edgeId (int) : l'identité de l'arête
      * @return (DoubleUnaryOperator) : le profil en long de l'arête d'identité donnée, sous la forme d'une fonction
