@@ -5,32 +5,31 @@
 package ch.epfl.javelo.data;
 
 import ch.epfl.javelo.Preconditions;
-import org.w3c.dom.Attr;
 
 import java.util.StringJoiner;
 
 /**
- * Enregistrement qui représente un ensemble d'attributs OpenStreetMap à l'aide d'une séquence de bits
+ * Enregistrement représentant un ensemble d'attributs OpenStreetMap à l'aide d'une séquence de bits
  *
- * @param bits (long) la séquence de bits représentant un ensemble d'attributs OpenStreetMap
+ * @param bits (long) : la séquence de bits représentant un ensemble d'attributs OpenStreetMap
  * @author : Roxanne Chevalley (339716)
  */
 
 public record AttributeSet(long bits) {
 
     /**
-     * Le constructeur
+     * Constructeur de la classe
      *
-     * @param bits la séquence de bits représentant un ensemble d'attributs OpenStreetMap
+     * @param bits (long) : la séquence de bits représentant un ensemble d'attributs OpenStreetMap
      * @throws IllegalArgumentException si la valeur passée au constructeur contient un bit à 1 qui ne correspond à
      *                                  aucun attribut valide
      */
-    public AttributeSet { //constructeur compact
+    public AttributeSet {
         Preconditions.checkArgument((bits >>> Attribute.COUNT) == 0);
     }
 
     /**
-     * Méthode de construction qui retourne un ensemble contenant uniquement les attributs donnés en argument.
+     * Méthode de construction retournant un ensemble contenant uniquement les attributs donnés en argument
      *
      * @param attributes (Attribute) : les attributs contenus par l'ensemble
      * @return (AttributeSet) : un nouvel ensemble d'attributs OpenStreetMap
@@ -45,10 +44,10 @@ public record AttributeSet(long bits) {
     }
 
     /**
-     * Méthode qui retourne vrai si et seulement si l'ensemble récepteur (this) contient l'attribut donné
+     * Méthode retournant vrai si et seulement si l'ensemble récepteur (this) contient l'attribut donné
      *
      * @param attribute (Attribute) : l'attribut "cherché"
-     * @return (boolean) vrai si l'ensemble récepteur (this) contient l'attribut donné et faux sinon
+     * @return (boolean) : vrai si l'ensemble récepteur (this) contient l'attribut donné et faux sinon
      */
     public boolean contains(Attribute attribute) {
         long bits2= 1L << attribute.ordinal();
@@ -56,12 +55,12 @@ public record AttributeSet(long bits) {
     }
 
     /**
-     * Méthode qui retourne vrai ssi l'intersection de l'ensemble récepteur (this)
-     * avec celui passé en argument (that) n'est pas vide.
+     * Méthode retournant vrai ssi l'intersection de l'ensemble récepteur (this) avec celui passé en argument (that)
+     * n'est pas vide.
      *
      * @param that (AttributeSet) : un autre ensemble d'attributs
-     * @return (boolean) vrai si l'intersection de l'ensemble récepteur (this)
-     * avec celui passé en argument (that) n'est pas vide, faux sinon
+     * @return (boolean) : vrai si l'intersection de l'ensemble récepteur (this) avec celui passé en argument (that)
+     * n'est pas vide, faux sinon
      */
     public boolean intersects(AttributeSet that) {
         return ((this.bits() & that.bits()) != 0);
@@ -69,10 +68,10 @@ public record AttributeSet(long bits) {
 
 
     /**
-     * Cette méthode redéfinit la méthode toString afin qu'elle retourne
-     * une chaîne composée de la représentation textuelle des éléments de l'ensemble
+     * Redéfinition de la méthode toString afin qu'elle retourne une chaîne composée de la représentation textuelle
+     * des éléments de l'ensemble entourés d'accolades et séparées de virgules
      *
-     * @return (String) une chaîne composée de la représentation textuelle des éléments de l'ensemble
+     * @return (String) : une chaîne composée de la représentation textuelle des éléments de l'ensemble
      */
     @Override
     public String toString() {
