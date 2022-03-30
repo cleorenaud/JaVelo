@@ -5,8 +5,8 @@ import ch.epfl.javelo.Preconditions;
 /**
  * Représente un point dans le système Web Mercator
  *
- * @param x (double) la coordonnée x de point dans le système Web Mercator
- * @param y (double) la coordonnée y du point dans le système Web Mercator
+ * @param x (double) : la coordonnée x de point dans le système Web Mercator
+ * @param y (double) : la coordonnée y du point dans le système Web Mercator
  * @author Cléo Renaud (325156)
  */
 public record PointWebMercator(double x, double y) {
@@ -14,8 +14,8 @@ public record PointWebMercator(double x, double y) {
     /**
      * Constructeur compact validant les coordinates qu'il reçoit
      *
-     * @param x (double) la coordonnée x reçue
-     * @param y (double) la coordonnée y reçue
+     * @param x (double) : la coordonnée x reçue
+     * @param y (double) : la coordonnée y reçue
      * @throws IllegalArgumentException si les coordonnées ne sont pas toutes comprises dans l'intervalle [0,1]
      */
     public PointWebMercator {
@@ -26,10 +26,10 @@ public record PointWebMercator(double x, double y) {
     /**
      * Méthode de construction retournant le point Web Mercator dont les coordonnées sont x et y au niveau de zoom donné
      *
-     * @param zoomLevel (int) le niveau de zoom donné
-     * @param x         (double) la coordonnée x du point au niveau de zoom donné
-     * @param y         (double) la coordonnée y du point au niveau de zoom donné
-     * @return (PointWebMercator) le point Web Mercator correspondant aux paramètres donnés
+     * @param zoomLevel (int) : le niveau de zoom donné
+     * @param x         (double) : la coordonnée x du point au niveau de zoom donné
+     * @param y         (double) : la coordonnée y du point au niveau de zoom donné
+     * @return (PointWebMercator) : le point Web Mercator correspondant aux paramètres donnés
      */
     public static PointWebMercator of(int zoomLevel, double x, double y) {
         x = x / Math.scalb(256, zoomLevel);
@@ -41,8 +41,8 @@ public record PointWebMercator(double x, double y) {
      * Méthode de construction retournant le point Web Mercator correspondant au point du système de coordonnées suisse
      * donné
      *
-     * @param pointCh (PointCh) le point exprimé dans le système de coordinates suisse
-     * @return (PointWebMercator) le point Web Mercator correspondant aux paramètres donnés
+     * @param pointCh (PointCh) : le point exprimé dans le système de coordinates suisse
+     * @return (PointWebMercator) : le point Web Mercator correspondant aux paramètres donnés
      */
     public static PointWebMercator ofPointCh(PointCh pointCh) {
         double x = WebMercator.x(pointCh.lon());
@@ -53,8 +53,8 @@ public record PointWebMercator(double x, double y) {
     /**
      * Méthode retournant la coordonnée x au niveau de zoom donné
      *
-     * @param zoomLevel (int) le niveau de zoom
-     * @return (double) la coordonnée x
+     * @param zoomLevel (int) : le niveau de zoom
+     * @return (double) : la coordonnée x
      */
     public double xAtZoomLevel(int zoomLevel) {
         return (x * Math.scalb(256, zoomLevel));
@@ -63,8 +63,8 @@ public record PointWebMercator(double x, double y) {
     /**
      * Méthode retournant la coordonnée y au niveau de zoom donné
      *
-     * @param zoomLevel (int) le niveau de zoom
-     * @return (double) la coordonnée y
+     * @param zoomLevel (int) : le niveau de zoom
+     * @return (double) : la coordonnée y
      */
     public double yAtZoomLevel(int zoomLevel) {
         return (y * Math.scalb(256, zoomLevel));
@@ -73,7 +73,7 @@ public record PointWebMercator(double x, double y) {
     /**
      * Méthode retournant la longitude du point en radians
      *
-     * @return (double) la longitude du point
+     * @return (double) : la longitude du point
      */
     public double lon() {
         return WebMercator.lon(x);
@@ -82,7 +82,7 @@ public record PointWebMercator(double x, double y) {
     /**
      * Méthode retournant la latitude du point en radians
      *
-     * @return (double) la latitude du point
+     * @return (double) : la latitude du point
      */
     public double lat() {
         return WebMercator.lat(y);
@@ -91,7 +91,7 @@ public record PointWebMercator(double x, double y) {
     /**
      * Méthode retournant le point de coordonnées suisses se trouvant a la même position que le récepteur
      *
-     * @return (PointCh) le point de coordonnées suisses
+     * @return (PointCh) : le point de coordonnées suisses
      */
     public PointCh toPointCh() {
         double n = Ch1903.n(lon(), lat());
