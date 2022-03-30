@@ -24,9 +24,9 @@ public final class SwissBounds {
     /**
      * Méthode permettant de vérifier si les coordonnées d'un point donné sont bien dans les limites de la Suisse
      *
-     * @param e (double) coordonnée est du point donné
-     * @param n (double) coordonnée nord du point donné
-     * @return (boolean) true si les coordonnées du point sont bien dans les limites de la Suisse, et false autrement
+     * @param e (double) : coordonnée est du point donné
+     * @param n (double) : coordonnée nord du point donné
+     * @return (boolean) : true si les coordonnées du point sont bien dans les limites de la Suisse, et false autrement
      */
     public static boolean containsEN(double e, double n) {
         if ((MIN_E <= e) && (e <= MAX_E) && (MIN_N <= n) && (MAX_N >= n)) {

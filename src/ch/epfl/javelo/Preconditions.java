@@ -15,7 +15,7 @@ public final class Preconditions {
      * Méthode permettant de lever l'exception IllegalArgumentException si son argument est faux
      * et ne fait rien sinon
      *
-     * @param shouldBeTrue (boolean) l'expression passée en argument qui doit être vérifiée
+     * @param shouldBeTrue (boolean) : l'expression passée en argument qui doit être vérifiée
      */
     public static void checkArgument(boolean shouldBeTrue) {
         if (!shouldBeTrue) {
