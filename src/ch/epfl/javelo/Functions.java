@@ -9,6 +9,7 @@ import java.util.function.DoubleUnaryOperator;
  * @author Cléo Renaud (325156)
  */
 public final class Functions {
+
     /**
      * Constructeur privé pour que la classe ne soit pas instantiable
      */

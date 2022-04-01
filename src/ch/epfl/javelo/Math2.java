@@ -6,6 +6,7 @@ package ch.epfl.javelo;
  * @author Roxanne Chevalley (339716)
  */
 public final class Math2 {
+
     /**
      * Constructeur privé pour que la classe ne soit pas instantiable
      */

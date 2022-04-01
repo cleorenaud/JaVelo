@@ -19,6 +19,7 @@ import java.nio.*;
  * @author : Roxanne Chevalley (339716)
  */
 public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuffer elevations) {
+
     private static final int OFFSET_W = 0;
     private static final int OFFSET_L = OFFSET_W + Integer.BYTES;
     private static final int OFFSET_E = OFFSET_L + Short.BYTES;
@@ -149,4 +150,5 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     public int attributesIndex(int edgeId) {
         return Short.toUnsignedInt(edgesBuffer.getShort(edgeId * EDGES_INTS + OFFSET_ATT));
     }
+
 }

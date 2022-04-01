@@ -12,6 +12,7 @@ import java.util.*;
  * @author : Roxanne Chevalley (339716)
  */
 public final class RouteComputer {
+
     private final Graph graph;
     private final CostFunction costFunction;
     private final float INITIATE= Float.POSITIVE_INFINITY;

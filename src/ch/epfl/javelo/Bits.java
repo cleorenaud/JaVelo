@@ -10,6 +10,7 @@ package ch.epfl.javelo;
  * @author Roxanne Chevalley (339716)
  */
 public final class Bits {
+
     /**
      * Constructeur privé pour que la classe ne soit pas instantiable
      */
@@ -50,4 +51,5 @@ public final class Bits {
         int temp = value << (32 - (start + length));
         return temp >>> (32 - length);
     }
+
 }

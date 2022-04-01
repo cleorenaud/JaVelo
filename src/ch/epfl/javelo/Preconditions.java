@@ -6,6 +6,7 @@ package ch.epfl.javelo;
  * @author Cléo Renaud (325156)
  */
 public final class Preconditions {
+
     /**
      * Constructeur privé pour que la classe ne soit pas instantiable
      */

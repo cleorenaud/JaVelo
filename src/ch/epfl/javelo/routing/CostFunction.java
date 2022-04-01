@@ -17,4 +17,5 @@ public interface CostFunction {
      * @return (double) : la facteur par lequel la longueur de l'arête doit être multipliée
      */
     double costFactor(int nodeId, int edgeId);
+
 }
