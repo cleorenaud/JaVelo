@@ -36,7 +36,7 @@ public record AttributeSet(long bits) {
      */
     public static AttributeSet of(Attribute... attributes) {
         long bits = 0;
-        for ( Attribute i : attributes) {
+        for (Attribute i : attributes) {
             long mask = 1L << i.ordinal();
             bits = bits | mask;
         }

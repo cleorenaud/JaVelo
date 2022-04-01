@@ -10,13 +10,10 @@ import ch.epfl.javelo.projection.PointCh;
 import java.io.*;
 import java.nio.*;
 import java.nio.channels.FileChannel;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.DoubleUnaryOperator;
-import java.util.stream.Stream;
 
 /**
  * Classe publique et immuable représentant le graphe JaVelo
@@ -25,6 +22,7 @@ import java.util.stream.Stream;
  */
 
 public final class Graph {
+
     /**
      * Méthode permettant de charger le graphe depuis un répertoire
      *
@@ -61,9 +59,11 @@ public final class Graph {
         try (FileChannel channel = FileChannel.open(edgesPath)) {
             edgesBuffer = channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size());
         }
+
         try (FileChannel channel = FileChannel.open(profileIdsPath)) {
             profileIds = channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size()).asIntBuffer();
         }
+
         try (FileChannel channel = FileChannel.open(elevationsPath)) {
             elevations = channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size()).asShortBuffer();
         }
