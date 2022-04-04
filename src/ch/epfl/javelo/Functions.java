@@ -3,7 +3,7 @@ package ch.epfl.javelo;
 import java.util.function.DoubleUnaryOperator;
 
 /**
- * Non instantiable, contient des méthodes permettant de créer des objets représentants des fonctions mathématiques
+ * Classe non instantiable, contient des méthodes permettant de créer des objets représentants des fonctions mathématiques
  * des réels vers les réels
  *
  * @author Cléo Renaud (325156)
@@ -17,8 +17,8 @@ public final class Functions {
     /**
      * Méthode retournant une fonction constante dont la valeur est toujours y
      *
-     * @param y (double) la valeur de la fonction
-     * @return (DoubleUnaryOperator) une fonction constante
+     * @param y (double) : la valeur de la fonction
+     * @return (DoubleUnaryOperator) : une fonction constante
      */
     public static DoubleUnaryOperator constant(double y) {
         return new Constant(y);
@@ -33,7 +33,7 @@ public final class Functions {
         /**
          * Constructeur de la classe Constant
          *
-         * @param y (double) valeur de constante retournée par la fonction
+         * @param y (double) : valeur de constante retournée par la fonction
          */
         public Constant(double y) {
             this.CONSTANT = y;
@@ -42,8 +42,8 @@ public final class Functions {
         /**
          * Méthode permettant d'appliquer la fonction constante au paramètre donné
          *
-         * @param y (double) l'argument
-         * @return (double) la constante
+         * @param y (double) : l'argument
+         * @return (double) : la constante
          */
         @Override
         public double applyAsDouble(double y) {
@@ -54,9 +54,9 @@ public final class Functions {
     /**
      * Méthode retournant une fonction obtenue par interpolation linéaire entre les échantillons
      *
-     * @param samples (float[]) échantillons espacés régulièrement
-     * @param xMax    (double) valeur maximale de la plage dans laquelle on a nos échantillons
-     * @return (DoubleUnaryOperator) une fonction qui permet d'interpoler
+     * @param samples (float[]) : échantillons espacés régulièrement
+     * @param xMax    (double) : valeur maximale de la plage dans laquelle on a nos échantillons
+     * @return (DoubleUnaryOperator) : une fonction qui permet d'interpoler
      * @throws IllegalArgumentException si le tableau samples contient moins de deux éléments, ou si xMax est inférieur
      *                                  ou égal à 0
      */
@@ -77,8 +77,8 @@ public final class Functions {
         /**
          * Constructeur de la classe Sampled
          *
-         * @param samples (float[]) le tableau contenant les échantillons
-         * @param xMax    (double) la valeur de x correspondant au dernier échantillon
+         * @param samples (float[]) : le tableau contenant les échantillons
+         * @param xMax    (double) : la valeur de x correspondant au dernier échantillon
          */
         public Sampled(float[] samples, double xMax) {
             this.samples = samples;
@@ -90,8 +90,8 @@ public final class Functions {
         /**
          * Méthode permettant d'appliquer une interpolation linéaire à un paramètre donné
          *
-         * @param x (double) le paramètre donné
-         * @return (double) la valeur interpolée
+         * @param x (double) : le paramètre donné
+         * @return (double) : la valeur interpolée
          */
         @Override
         public double applyAsDouble(double x) {

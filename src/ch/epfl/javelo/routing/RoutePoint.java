@@ -13,9 +13,9 @@ import static java.lang.Double.POSITIVE_INFINITY;
  * Enregistrement représentant le point d'un itinéraire le plus proche d'un point de référence donné, qui se trouve dans
  * le voisinage de l'itinéraire
  *
- * @param point               (pointCh) le point sur l'itinéraire
- * @param position            (double) la position du point le long de l'itinéraire (en mètres)
- * @param distanceToReference (double) la distance entre le point et la référence (en mètres)
+ * @param point               (pointCh) : le point sur l'itinéraire
+ * @param position            (double) : la position du point le long de l'itinéraire (en mètres)
+ * @param distanceToReference (double) : la distance entre le point et la référence (en mètres)
  * @author Cléo Renaud (325156)
  */
 public record RoutePoint(PointCh point, double position, double distanceToReference) {
@@ -27,8 +27,8 @@ public record RoutePoint(PointCh point, double position, double distanceToRefere
      * Méthode retournant un point identique au récepteur (this) mais dont la position est décalée d'une différence
      * donnée (qui peut être positive ou négative)
      *
-     * @param positionDifference (double) la différence donnée
-     * @return (RoutePoint) le point décalé
+     * @param positionDifference (double) : la différence donnée
+     * @return (RoutePoint) : le point décalé
      */
     public RoutePoint withPositionShiftedBy(double positionDifference) {
         return new RoutePoint(this.point(), this.position() + positionDifference, this.distanceToReference());
@@ -37,8 +37,8 @@ public record RoutePoint(PointCh point, double position, double distanceToRefere
     /**
      * Méthode retournant this si sa distance à la référence est inférieure ou égale à celle de that, et that sinon
      *
-     * @param that (RoutePoint) le point passé en argument
-     * @return (RoutePoint) le point le plus proche de la référence
+     * @param that (RoutePoint) : le point passé en argument
+     * @return (RoutePoint) : le point le plus proche de la référence
      */
     public RoutePoint min(RoutePoint that) {
         return (Math.abs(this.distanceToReference()) <= Math.abs(that.distanceToReference())) ? this : that;
@@ -48,10 +48,10 @@ public record RoutePoint(PointCh point, double position, double distanceToRefere
      * Méthode retournant this si sa distance à la référence est inférieure ou égale à thatDistanceToReference, et une
      * nouvelle instance de RoutePoint dont les attributs sont les arguments passés à min sinon
      *
-     * @param thatPoint               (PointCh) le point passé en argument
-     * @param thatPosition            (double) la position de thatPoint
-     * @param thatDistanceToReference (double) la distance entre la référence et thatPoint
-     * @return (RoutePoint) le point le plus proche de la référence
+     * @param thatPoint               (PointCh) : le point passé en argument
+     * @param thatPosition            (double) : la position de thatPoint
+     * @param thatDistanceToReference (double) : la distance entre la référence et thatPoint
+     * @return (RoutePoint) : le point le plus proche de la référence
      */
     public RoutePoint min(PointCh thatPoint, double thatPosition, double thatDistanceToReference) {
         return (Math.abs(this.distanceToReference()) <= Math.abs(thatDistanceToReference)) ? this : new RoutePoint(thatPoint, thatPosition, thatDistanceToReference);

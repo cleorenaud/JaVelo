@@ -22,7 +22,7 @@ public final class SingleRoute implements Route {
     /**
      * Constructeur retournant l'itinéraire simple composé des arêtes données
      *
-     * @param edges (List<Edge>) les arêtes données
+     * @param edges (List<Edge>) : les arêtes données
      * @throws IllegalArgumentException si la liste d'arêtes est vide
      */
     public SingleRoute(List<Edge> edges) throws IllegalArgumentException{
@@ -42,8 +42,8 @@ public final class SingleRoute implements Route {
      * Méthode retournant l'index du segment de l'itinéraire contenant la position donnée,
      * qui vaut toujours 0 dans le cas d'un itinéraire simple,
      *
-     * @param position (double) la position donnée (en mètres)
-     * @return (int) l'index du segment de l'itinéraire contenant la position donnée
+     * @param position (double) : la position donnée (en mètres)
+     * @return (int) : l'index du segment de l'itinéraire contenant la position donnée
      */
     @Override
     public int indexOfSegmentAt(double position) {
@@ -53,7 +53,7 @@ public final class SingleRoute implements Route {
     /**
      * Méthode retournant la longueur de l'itinéraire
      *
-     * @return (double) la longueur de l'itinéraire (en mètres)
+     * @return (double) : la longueur de l'itinéraire (en mètres)
      */
     @Override
     public double length() {
@@ -67,7 +67,7 @@ public final class SingleRoute implements Route {
     /**
      * Méthode retournant la totalité des arêtes de l'itinéraire
      *
-     * @return (List < Edge >) la liste contenant la totalité des arêtes de l'itinéraire
+     * @return (List < Edge >) : la liste contenant la totalité des arêtes de l'itinéraire
      */
     @Override
     public List<Edge> edges() {
@@ -77,7 +77,7 @@ public final class SingleRoute implements Route {
     /**
      * Méthode retournant la totalité des points situés aux extrémités des arêtes de l'itinéraire
      *
-     * @return (List < Edge >) la liste contenant la totalité des points situés aux extrémités des arêtes de l'itinéraire
+     * @return (List < Edge >) : la liste contenant la totalité des points situés aux extrémités des arêtes de l'itinéraire
      */
     @Override
     public List<PointCh> points() {
@@ -92,8 +92,8 @@ public final class SingleRoute implements Route {
     /**
      * Méthode retournant le point se trouvant à la position donnée le long de l'itinéraire
      *
-     * @param position (double) la position donnée le long de l'itinéraire
-     * @return (PointCh) le point correspondant à la position donnée
+     * @param position (double) : la position donnée le long de l'itinéraire
+     * @return (PointCh) : le point correspondant à la position donnée
      */
     @Override
     public PointCh pointAt(double position) {
@@ -120,8 +120,8 @@ public final class SingleRoute implements Route {
      * Méthode retournant l'altitude à la position donnée le long de l'itinéraire,
      * qui peut valoir NaN si l'arête contenant cette position n'a pas de profil
      *
-     * @param position (double) la position donnée le long de l'itinéraire
-     * @return (double) l'altitude à la position donnée le long de l'itinéraire
+     * @param position (double) : la position donnée le long de l'itinéraire
+     * @return (double) : l'altitude à la position donnée le long de l'itinéraire
      */
     @Override
     public double elevationAt(double position) {
@@ -150,8 +150,8 @@ public final class SingleRoute implements Route {
     /**
      * Méthode retournant l'identité du nœud appartenant à l'itinéraire et se trouvant le plus proche de la position donnée
      *
-     * @param position (double) la position donnée
-     * @return (int) l'identité du nœud le plus proche de la position donnée
+     * @param position (double) : la position donnée
+     * @return (int) : l'identité du nœud le plus proche de la position donnée
      */
     @Override
     public int nodeClosestTo(double position) {
@@ -180,8 +180,8 @@ public final class SingleRoute implements Route {
     /**
      * Méthode retournant le point de l'itinéraire se trouvant le plus proche du point de référence donné
      *
-     * @param point (PointCh) le point de référence
-     * @return (RoutePoint) le point de l'itinéraire la plus proche du point de référence
+     * @param point (PointCh) : le point de référence
+     * @return (RoutePoint) : le point de l'itinéraire la plus proche du point de référence
      */
     @Override
     public RoutePoint pointClosestTo(PointCh point) {

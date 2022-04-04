@@ -4,7 +4,6 @@
  */
 package ch.epfl.javelo.data;
 
-import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.projection.PointCh;
 import ch.epfl.javelo.projection.SwissBounds;
 
@@ -13,10 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Enregistrement représentant un tableau contenant les 16384 secteurs de JaVelo avec pour seul attribut buffer
- * (ByteBuffer)
+ * Enregistrement représentant un tableau contenant les 16384 secteurs de JaVelo avec pour seul attribut un ByteBuffer
  *
- * @param buffer (ByteBuffer) la mémoire tampon contenant la valeur des attributs de la totalité des secteurs
+ * @param buffer (ByteBuffer) : la mémoire tampon contenant la valeur des attributs de la totalité des secteurs
  * @author Cléo Renaud (325156)
  */
 public record GraphSectors(ByteBuffer buffer) {
@@ -32,8 +30,8 @@ public record GraphSectors(ByteBuffer buffer) {
      * Enregistrement représentant un secteur uniquement doté de deux attributs : l'identité du premier nœud du secteur
      * et l'identité du nœud situé après le dernier nœud du secteur
      *
-     * @param startNodeId (int) l'identité du premier nœud du secteur
-     * @param endNodeId (int) l'identité du dernier nœud du secteur
+     * @param startNodeId (int) : l'identité du premier nœud du secteur
+     * @param endNodeId (int) : l'identité du dernier nœud du secteur
      */
     public record Sector(int startNodeId, int endNodeId) {
     }
@@ -42,11 +40,10 @@ public record GraphSectors(ByteBuffer buffer) {
      * Méthode retournant la liste de tous les secteurs ayant une intersection avec le carré centré au point donné et
      * de côté égal au double de la distance donnée
      *
-     * @param center   (PointCh) le point donné
-     * @param distance (double) la moitié de la taille du côté du carré centré sur center
-     * @return (List < Sector >) la liste de tous les secteurs ayant une intersection avec le carré centré au point donné
+     * @param center   (PointCh) : le point donné
+     * @param distance (double) : la moitié de la taille du côté du carré centré sur center
+     * @return (List < Sector >) : la liste de tous les secteurs ayant une intersection avec le carré centré au point donné
      */
-
     public List<Sector> sectorsInArea(PointCh center, double distance) {
         // On déclare la liste de tous les secteurs ayant une intersection avec le carré défini dans les paramètres
         // elle sera implémentée à la fin de la méthode

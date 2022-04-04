@@ -12,12 +12,12 @@ import java.util.Arrays;
 
 public final class ElevationProfileComputer {
     /**
-     * Méthode qui retourne le profil en long de l'itinéraire route,
+     * Méthode retournant le profil en long de l'itinéraire route,
      * en garantissant un espacement maximal entre les échantillons du profil.
      *
      * @param route         (Route) : l'itinéraire sur lequel on se base pour le profil en long
      * @param maxStepLength (double) : l'espacement maximal entre les échantillons du profil
-     * @return (ElevationProfile) le profil en long de l'itinéraire route
+     * @return (ElevationProfile) : le profil en long de l'itinéraire route
      * @throws IllegalArgumentException si maxStepLength n'est pas strictement positif
      */
     public static ElevationProfile elevationProfile(Route route, double maxStepLength) throws IllegalArgumentException {
