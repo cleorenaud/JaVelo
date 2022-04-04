@@ -11,6 +11,7 @@ import java.util.Arrays;
  */
 
 public final class ElevationProfileComputer {
+
     /**
      * Méthode retournant le profil en long de l'itinéraire route,
      * en garantissant un espacement maximal entre les échantillons du profil.
@@ -73,4 +74,5 @@ public final class ElevationProfileComputer {
         return new ElevationProfile(route.length(), elevationSamples);
 
     }
+
 }

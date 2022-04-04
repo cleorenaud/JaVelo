@@ -84,4 +84,5 @@ public final class Ch1903 {
         latitude = Math.toRadians(latitude);
         return latitude;
     }
+
 }

@@ -18,6 +18,7 @@ import java.util.List;
  * @author Cléo Renaud (325156)
  */
 public record GraphSectors(ByteBuffer buffer) {
+
     // Donne l'index à partir duquel on accède à l'identité du premier nœud du secteur, exprimé en octets
     private static final int OFFSET_FIRST = 0;
     // Donne l'index à partir duquel on accède à l'identité du nœud situé juste après le dernier nœud du secteur,
@@ -102,4 +103,5 @@ public record GraphSectors(ByteBuffer buffer) {
         }
         return intersect;
     }
+
 }

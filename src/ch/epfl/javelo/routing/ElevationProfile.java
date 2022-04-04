@@ -17,6 +17,7 @@ import java.util.function.DoubleUnaryOperator;
  */
 
 public final class ElevationProfile {
+
     private final double length;
     private final float[] elevationsSamples;
 
@@ -125,4 +126,5 @@ public final class ElevationProfile {
         }
         return s;
     }
+
 }

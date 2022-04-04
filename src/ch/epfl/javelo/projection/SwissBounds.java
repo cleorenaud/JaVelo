@@ -6,6 +6,7 @@ package ch.epfl.javelo.projection;
  * @author Cléo Renaud (325156)
  */
 public final class SwissBounds {
+
     /**
      * Constantes pour stocker les coordonnées min et max, nord et sud de la Suisse.
      */
@@ -34,4 +35,5 @@ public final class SwissBounds {
         }
         return false;
     }
+
 }

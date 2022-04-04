@@ -62,5 +62,4 @@ public record PointCh(double e, double n) {
         return Ch1903.lat(e(), n());
     }
 
-
 }

@@ -16,6 +16,7 @@ import ch.epfl.javelo.Q28_4;
  * @author: Roxanne Chevalley (339716)
  */
 public record GraphNodes(IntBuffer buffer) {
+
     private static final int OFFSET_E = 0;
     private static final int OFFSET_N = OFFSET_E + 1;
     private static final int OFFSET_OUT_EDGES = OFFSET_N + 1;
@@ -78,4 +79,5 @@ public record GraphNodes(IntBuffer buffer) {
         int d = Bits.extractUnsigned(buffer.get(indexD), 0, 28);
         return d + edgeIndex;
     }
+
 }

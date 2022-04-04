@@ -211,4 +211,5 @@ public final class SingleRoute implements Route {
         }
         return new RoutePoint(this.edges.get(edgeCloser).pointAt(position), positionGen, distance);
     }
+
 }

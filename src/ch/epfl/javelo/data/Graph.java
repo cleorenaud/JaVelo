@@ -231,4 +231,5 @@ public final class Graph {
         }
         return Functions.sampled(edges.profileSamples(edgeId), edgeLength(edgeId));
     }
+
 }
