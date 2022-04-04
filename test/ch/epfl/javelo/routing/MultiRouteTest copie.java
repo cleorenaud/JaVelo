@@ -46,8 +46,9 @@ class MultiRouteTest2 {
                 new SingleRoute(List.of(horizontalEdge1K(3))),
                 new SingleRoute(List.of(horizontalEdge1K(4))),
                 new SingleRoute(List.of(horizontalEdge1K(5)))));
-        for (int i = 0; i < 6; i += 1)
+        for (int i = 0; i < 6; i += 1){
             assertEquals(i, m.indexOfSegmentAt((i + 0.5) * 1000));
+        }
         assertEquals(5, m.indexOfSegmentAt(10000));
     }
 
