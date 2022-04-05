@@ -29,8 +29,11 @@ public final class TileManager {
      */
     record TileId(int zoomLevel, double x, double y) {
 
+        /*
         public static isValid(int zoomLevel, double x, double y) {
 
         }
+        
+         */
     }
 }
