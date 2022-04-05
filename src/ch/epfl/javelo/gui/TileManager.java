@@ -33,7 +33,7 @@ public final class TileManager {
         public static isValid(int zoomLevel, double x, double y) {
 
         }
-        
+
          */
     }
 }
