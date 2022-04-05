@@ -36,7 +36,6 @@ public final class TileManager {
             }
             return false;
         }
-        
 
     }
 }
