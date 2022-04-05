@@ -6,6 +6,12 @@ import org.w3c.dom.Element;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.Writer;
 
 /**
  * Classe non instantiable représentant un générateur d'itinéraire au format GPX
@@ -74,12 +80,22 @@ public final class GpxGenerator {
     /**
      * Méthode permettant d'écrire le document GPX correspondant aux arguments passés en paramètre
      *
-     * @param fileName         (String)
+     * @param fileName         (String) : le nom du fichier dans lequel on écrit le document GPX
      * @param route            (Route) : l'itinéraire passé en argument
      * @param elevationProfile (ElevationProfile) : le profil de cet itinéraire
      */
     public static void writeGpx(String fileName, Route route, ElevationProfile elevationProfile) {
         // TODO: voir si le type String est le bon pour le nom du fichier
+
+        Document doc = createGpx(route, elevationProfile);
+        Writer w = ;
+
+        Transformer transformer = TransformerFactory
+                .newDefaultInstance()
+                .newTransformer();
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.transform(new DOMSource(doc),
+                new StreamResult(w));
     }
 
 
