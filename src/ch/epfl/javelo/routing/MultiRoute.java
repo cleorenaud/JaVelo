@@ -73,8 +73,8 @@ public final class MultiRoute implements Route {
     @Override
     public double length() {
         double totalLength = 0;
-        for (int i = 0; i < this.segments.size(); i++) {
-            totalLength = totalLength + (this.segments.get(i)).length();
+        for (Route segment : segments) {
+            totalLength = totalLength + (segment.length());
         }
         return totalLength;
     }
@@ -87,8 +87,8 @@ public final class MultiRoute implements Route {
     @Override
     public List<Edge> edges() {
         List<Edge> edges = new ArrayList<>();
-        for (int i = 0; i < this.segments.size(); i++) {
-            edges.addAll(this.segments.get(i).edges());
+        for (Route segment : segments) {
+            edges.addAll(segment.edges());
         }
         return edges;
     }
@@ -103,8 +103,8 @@ public final class MultiRoute implements Route {
         List<PointCh> points = new ArrayList<>();
         List<Edge> edges = this.edges();
         points.add(edges.get(0).fromPoint());
-        for (int i = 0; i < edges().size(); i++) {
-            points.add(edges.get(i).toPoint());
+        for (Edge edge : edges) {
+            points.add(edge.toPoint());
         }
         return points;
     }
