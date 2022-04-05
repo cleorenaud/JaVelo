@@ -185,31 +185,32 @@ public final class SingleRoute implements Route {
      */
     @Override
     public RoutePoint pointClosestTo(PointCh point) {
-        double position = this.edges.get(0).positionClosestTo(point);
+        // On initialise la position et la distance comme étant POSITIVE_INFINITY
+        double position = Double.POSITIVE_INFINITY ;
         double lengthBefore = 0;
-        position = Math2.clamp(0,position, this.edges.get(0).length());
         double positionGen = position;
-        // On initialise la distance comme étant la différence de point, et de sa projection sur l'arête 0
-        double distance = point.distanceTo(this.edges.get(0).pointAt(position));
-        // On initialise le numéro de l'arrête contenant le point le plus proche de point
-        int edgeCloser = 0;
-        // On parcourt la liste des arêtes restantes, et pour chacune d'entre elles on projette point
+        double distance=Double.POSITIVE_INFINITY;
+        // On crée une instance de Edge qui contiendra notre point le plus proche
+        Edge retenir = edges.get(0);
+
+        // On parcourt la liste des arêtes, et pour chacune d'entre elles on projette point
         // Si la distance entre point et sa projection est plus petite que l'ancienne valeur de distance, alors on stocke
-        // la nouvelle valeur de distance et on stocke la position sur l'arrête de la projection de point dans position
-        // edgeCloser permet de garder en mémoire l'indice de l'arrête contenant la meilleure projection de point
-        for (int i = 1; i < this.edges.size(); i++) {
-            lengthBefore = lengthBefore + edges.get(i - 1).length();
-            double position2 = this.edges.get(i).positionClosestTo(point);
-            position2 = Math2.clamp(0, position2, this.edges.get(i).length());
-            double distance2 = point.distanceTo(this.edges.get(i).pointAt(position2));
+        // la nouvelle valeur de distance et on stocke la position sur l'arête de la projection de point dans position
+        // retenir permet de garder en mémoire l'arête contenant la meilleure projection de point
+        for(Edge edge : edges) {
+            double position2 = edge.positionClosestTo(point);
+            position2 = Math2.clamp(0,position2, edge.length());
+            double distance2 = point.distanceTo(edge.pointAt(position2));
             if (distance2 < distance) {
                 distance = distance2;
                 position = position2;
-                edgeCloser = i;
+                retenir = edge;
                 positionGen = position + lengthBefore;
             }
+            lengthBefore = lengthBefore + edge.length();
+
         }
-        return new RoutePoint(this.edges.get(edgeCloser).pointAt(position), positionGen, distance);
+        return new RoutePoint(retenir.pointAt(position),positionGen, distance);
     }
 
 }

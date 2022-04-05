@@ -62,12 +62,7 @@ public final class MultiRoute implements Route {
             n = n + segments.get(i).indexOfSegmentAt(position) + 1;
             ++i;
         }
-        if (segments.size() == 1) {
-            i=0;
-            n=0;
-        }else{
-            i = Math2.clamp(0, i, positionEndSegment.length - 1);
-        }
+        Math2.clamp(0, i, positionEndSegment.length - 1);
         System.out.println(n);
         return n + segments.get(i).indexOfSegmentAt(position - positionSegment[i]);
     }
@@ -201,18 +196,24 @@ public final class MultiRoute implements Route {
      */
     @Override
     public RoutePoint pointClosestTo(PointCh point) {
-        // On initialise le point de l'itinéraire le plus proche comme étant celui le plus proche du premier segment
-        RoutePoint routePoint = (this.segments.get(0).pointClosestTo(point));
+        // On initialise le point de l'itinéraire le plus proche comme NONE
+        RoutePoint routePoint = RoutePoint.NONE;
+        double position = 0;
+
         // On parcourt la liste de segments de notre MultiRoute
         for (Route segment : segments) {
             // On crée un RoutePoint étant le plus proche du segment sur lequel on est en train d'itérer
             RoutePoint newRoutePoint = (segment.pointClosestTo(point));
-            // On utilise la méthode min de RoutePoint pour comparer le point obtenu avec celui qu'on avait pour l'edge
-            // précédente
-            if (routePoint != routePoint.min(newRoutePoint)) {
-                routePoint = newRoutePoint.withPositionShiftedBy(segment.length());
+            // On utilise la méthode min de RoutePoint pour comparer le point obtenu avec celui qu'on avait pour le segment
+            // précédent
+            if(routePoint != routePoint.min(newRoutePoint)){
+                routePoint = routePoint.min(newRoutePoint);
+                routePoint = routePoint.withPositionShiftedBy(position);
             }
+
+            position = position + segment.length();
         }
+
         return routePoint;
     }
 
