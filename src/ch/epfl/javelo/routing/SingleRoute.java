@@ -58,8 +58,8 @@ public final class SingleRoute implements Route {
     @Override
     public double length() {
         double length = 0;
-        for (int i = 0; i < this.edges.size(); i++) {
-            length = length + edges.get(i).length();
+        for (Edge edge : edges) {
+            length = length + edge.length();
         }
         return length;
     }
@@ -83,8 +83,8 @@ public final class SingleRoute implements Route {
     public List<PointCh> points() {
         List<PointCh> points = new ArrayList<>();
         points.add(edges.get(0).fromPoint());
-        for (int i = 0; i < this.edges.size(); i++) {
-            points.add(edges.get(i).toPoint());
+        for (Edge edge : edges) {
+            points.add(edge.toPoint());
         }
         return points;
     }
@@ -162,7 +162,6 @@ public final class SingleRoute implements Route {
         if (node < 0) {
             int newNode = Math.abs(node) - 2;
             double posOnEdge = position - tableau[newNode];
-            
             if (posOnEdge <= (edges.get(newNode).length()) / 2) {
                 return edges.get(newNode).fromNodeId();
             } else {
