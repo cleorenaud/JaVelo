@@ -114,7 +114,7 @@ public final class ElevationProfile {
     }
 
     /**
-     * Méthode qui nous nous aidera à calculer les statistiques de elevationsSamples
+     * Méthode qui nous aidera à calculer les statistiques de elevationsSamples
      *
      * @return (DoubleSummaryStatistics) : une instance de la classe DoubleSummaryStatistics avec les valeurs de
      * elevationsSamples

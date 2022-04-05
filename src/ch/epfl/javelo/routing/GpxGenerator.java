@@ -1,6 +1,7 @@
 package ch.epfl.javelo.routing;
 
 
+import ch.epfl.javelo.projection.PointCh;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -8,6 +9,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -60,12 +62,35 @@ public final class GpxGenerator {
         Element rte = doc.createElement("rte");
         root.appendChild((rte));
 
-        Element rtept = doc.createElement("rtept");
-        rte.appendChild(rtept);
+        // On itère sur tous les points de notre route pour pouvoir ajouter leur représentation à notre document
+        for (PointCh point : route.points()) {
+            // On commence par créer un élément rtept représentant le point de la route sur lequel on itère
+            // On lui associe ensuite deux attributs étant sa latitude et sa longitude
+            Element rtept = doc.createElement("rtept");
+            rtept.setAttribute("lat", String.valueOf(point.lat()));
+            rtept.setAttribute("lon", String.valueOf(point.lon()));
+            // On définit maintenant rtept comme ayant pour "parent" l'élément rte
+            rte.appendChild(rtept);
 
-        return doc; // TODO: compléter la méthode
+            // On crée un élément ele représentant l'élévation correspondant au point rtept
+            // On lui associe ensuite un attribut textuel contenant l'élévation
+            Element ele = doc.createElement("ele");
+            RoutePoint routePoint = route.pointClosestTo(point);
+            double elevation = elevationProfile.elevationAt(routePoint.position());
+            rtept.setTextContent(String.valueOf(elevation));
+            // On définit maintenant ele comme ayant pour "parent" l'élément rtept
+            rtept.appendChild(ele);
+        }
+
+        return doc; // TODO: vérifier que la méthode semble correcte
     }
 
+    /**
+     * Méthode permettant de créer un nouveau Document
+     * (donnée à l'étape 7 du projet)
+     *
+     * @return (Document) : un nouveau Document
+     */
     private static Document newDocument() {
         try {
             return DocumentBuilderFactory
@@ -87,15 +112,32 @@ public final class GpxGenerator {
     public static void writeGpx(String fileName, Route route, ElevationProfile elevationProfile) {
         // TODO: voir si le type String est le bon pour le nom du fichier
 
+        /*
         Document doc = createGpx(route, elevationProfile);
-        Writer w = ;
+        Writer w = new Writer();
 
-        Transformer transformer = TransformerFactory
-                .newDefaultInstance()
-                .newTransformer();
+        Transformer transformer = newTransformer();
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
         transformer.transform(new DOMSource(doc),
                 new StreamResult(w));
+                
+         */
+    }
+
+    /**
+     * Méthode permettant de créer un nouveau Transformer
+     * (inspirée de la méthode newDocument() donnée à l'étape 7 du projet)
+     *
+     * @return (Transformer) : un nouveau Transformer
+     */
+    private static Transformer newTransformer() {
+        try {
+            return TransformerFactory
+                    .newDefaultInstance()
+                    .newTransformer();
+        } catch (TransformerConfigurationException e) {
+            throw new Error(e); // Should never happen
+        }
     }
 
 
