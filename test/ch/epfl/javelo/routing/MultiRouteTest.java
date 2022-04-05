@@ -11,7 +11,7 @@ import static ch.epfl.test.TestRandomizer.RANDOM_ITERATIONS;
 import static ch.epfl.test.TestRandomizer.newRandom;
 import static org.junit.jupiter.api.Assertions.*;
 
-class MultiRouteTest2 {
+class MultiRouteTest {
     private static final int ORIGIN_N = 1_200_000;
     private static final int ORIGIN_E = 2_600_000;
     private static final double EDGE_LENGTH = 100.25;

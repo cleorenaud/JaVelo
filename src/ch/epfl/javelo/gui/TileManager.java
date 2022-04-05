@@ -10,8 +10,8 @@ public final class TileManager {
 
     /**
      * Constructeur de la classe TileManager
-     * @param path (Path) le chemin d'accès au répertoire contenant le cache disque
-     * @param serverName (String) le nom du serveur de tuile
+     * @param path (Path) : le chemin d'accès au répertoire contenant le cache disque
+     * @param serverName (String) : le nom du serveur de tuile
      */
     public TileManager(Path path, String serverName) {
 
@@ -23,10 +23,17 @@ public final class TileManager {
 
     /**
      * Enregistrement imbriqué
-     * @param zoomLevel (int)
-     * @param
+     * @param zoomLevel (int) : le niveau de zoom de la tuile
+     * @param x (double) : l'index X de la tuile
+     * @param y (double) : l'index Y de la tuile
      */
     record TileId(int zoomLevel, double x, double y) {
 
+        /*
+        public static isValid(int zoomLevel, double x, double y) {
+
+        }
+        
+         */
     }
 }
