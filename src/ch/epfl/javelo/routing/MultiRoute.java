@@ -208,7 +208,7 @@ public final class MultiRoute implements Route {
                 routePoint = routePoint.min(newRoutePoint);
                 routePoint = routePoint.withPositionShiftedBy(position);
             }
-
+            position = position + segment.length();
 
         }
 
