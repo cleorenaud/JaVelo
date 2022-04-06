@@ -7,9 +7,15 @@ import org.w3c.dom.Element;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.FileWriter;
+import java.io.Writer;
+import java.nio.file.Path;
 
 
 /**
@@ -66,8 +72,6 @@ public final class GpxGenerator {
             Element rtept = doc.createElement("rtept");
             rtept.setAttribute("lat", String.valueOf(point.lat()));
             rtept.setAttribute("lon", String.valueOf(point.lon()));
-            // On définit maintenant rtept comme ayant pour "parent" l'élément rte
-            rte.appendChild(rtept);
 
             // On crée un élément ele représentant l'élévation correspondant au point rtept
             // On lui associe ensuite un attribut textuel contenant l'élévation
@@ -77,9 +81,12 @@ public final class GpxGenerator {
             rtept.setTextContent(String.valueOf(elevation));
             // On définit maintenant ele comme ayant pour "parent" l'élément rtept
             rtept.appendChild(ele);
+
+            // On définit maintenant rtept et ses attributs et enfant comme ayant pour "parent" l'élément rte
+            rte.appendChild(rtept);
         }
 
-        return doc; // TODO: vérifier que la méthode semble correcte
+        return doc;
     }
 
     /**
@@ -102,23 +109,24 @@ public final class GpxGenerator {
     /**
      * Méthode permettant d'écrire le document GPX correspondant aux arguments passés en paramètre
      *
-     * @param fileName         (String) : le nom du fichier dans lequel on écrit le document GPX
+     * @param fileName         (Path) : le nom du fichier dans lequel on écrit le document GPX
      * @param route            (Route) : l'itinéraire passé en argument
      * @param elevationProfile (ElevationProfile) : le profil de cet itinéraire
      */
-    public static void writeGpx(String fileName, Route route, ElevationProfile elevationProfile) {
-        // TODO: voir si le type String est le bon pour le nom du fichier
+    public static void writeGpx(Path fileName, Route route, ElevationProfile elevationProfile) {
 
         /*
         Document doc = createGpx(route, elevationProfile);
-        Writer w = new Writer();
+        Writer w = new FileWriter();
 
         Transformer transformer = newTransformer();
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
         transformer.transform(new DOMSource(doc),
                 new StreamResult(w));
 
+
          */
+
     }
 
     /**
