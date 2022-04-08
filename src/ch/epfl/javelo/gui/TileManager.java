@@ -20,7 +20,7 @@ import javafx.scene.image.Image;
 public final class TileManager {
     private final Path path;
     private final String serverName;
-    private LinkedHashMap2<TileId, Image> cacheMemoir;
+    private LinkedHashMap<TileId, Image> cacheMemoir;
     private InputStream inputStream;
     private OutputStream outputStream;
     private final int CAPACITY = 100;
@@ -34,7 +34,7 @@ public final class TileManager {
     public TileManager(Path path, String serverName) {
         this.path = path;
         this.serverName = serverName;
-        this.cacheMemoir = new LinkedHashMap2<>(100, 2, true); //TO DO
+        this.cacheMemoir = new LinkedHashMap<>(100, 2, true); //TO DO
     }
 
     public Image imageForTileAt(TileId tileId) throws IOException {
@@ -49,6 +49,7 @@ public final class TileManager {
             File file = tilePath.toFile();
             inputStream = new FileInputStream(file);
             image = new Image(inputStream);
+            addToCacheMemoir(tileId, image);
 
 
             return image;
@@ -65,11 +66,17 @@ public final class TileManager {
         return null;
     }
 
-    private void addToCacheMemoir(int tileId, Image image) {
-        if (cacheMemoir.size() == CAPACITY) {
-
-
+    private void addToCacheMemoir(TileId tileId, Image image){
+        if(cacheMemoir.size()==CAPACITY){
+            boolean check=true;
+            for (Map.Entry entry: cacheMemoir.entrySet()) {
+                if (check){
+                    cacheMemoir.remove(entry.getKey());
+                }
+                check= false;
+            }
         }
+        cacheMemoir.put(tileId, image);
 
     }
 
@@ -93,23 +100,5 @@ public final class TileManager {
             return false;
         }
 
-    }
-
-    /**
-     * On crée une classe imbriquée nous permettant d'override la méthode removeEldestEntry de la classe LinkedHashMap
-     * Grace à cette nouvelle méthode, à chaque fois que la LinkedHashMap sera complète (ses 100 entrées étant occupées)
-     * et qu'on ajoutera un élément a notre LinkedHashMap, l'élément le plus anciennement accédé sera supprimé et
-     * remplacé par le nouvel élément
-     */
-    private class LinkedHashMap2<K, V> extends LinkedHashMap<K, V> {
-
-        public LinkedHashMap2(int initialCapacity, float loadFactor, boolean accessOrder) {
-            super(initialCapacity, loadFactor, accessOrder);
-        }
-
-        @Override
-        protected boolean removeEldestEntry(Map.Entry eldest) {
-            return size() > CAPACITY;
-        }
     }
 }
