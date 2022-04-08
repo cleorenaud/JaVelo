@@ -39,31 +39,37 @@ public final class TileManager {
 
     public Image imageForTileAt(TileId tileId) throws IOException {
         Preconditions.checkArgument(TileId.isValid(tileId));
-        Image image = cacheMemoir.get(tileId);
-        if (image != null) {
-            return image;
+        if(cacheMemoir.containsKey(tileId)){
+            return cacheMemoir.get(tileId);
         }
+        Image image;
 
-        Path tilePath = path.resolve(tileId.zoomLevel() + "/" + tileId.x + "/" + tileId.y + ".png");
+        Path dir = path.resolve(String.valueOf(tileId.zoomLevel()));
+        dir = dir.resolve(String.valueOf(tileId.x()));
+        Path tilePath = dir.resolve(String.valueOf(tileId.y()) + ".png");
         if (Files.exists(tilePath)) {
             File file = tilePath.toFile();
-            inputStream = new FileInputStream(file);
-            image = new Image(inputStream);
-            addToCacheMemoir(tileId, image);
-
-
-            return image;
+            try (InputStream inputStream = new FileInputStream(file)){
+                image = new Image(inputStream);
+                addToCacheMemoir(tileId, image);
+                return image;
+            }
         }
 
 
-            /*URL u = new URL("https://tile.openstreetmap.org/" + tileId.zoomLevel() +rem
-                    "/" + tileId.x  +  "/" + tileId.y + ".png");
-            URLConnection c = u.openConnection();
-            c.setRequestProperty("User-Agent", "JaVelo");
-            InputStream i = c.getInputStream();
-             */
+        Files.createDirectories(dir);
+        URL u = new URL("https://tile.openstreetmap.org/" + tileId.zoomLevel() +
+                "/" + tileId.x  +  "/" + tileId.y + ".png");
+        URLConnection c = u.openConnection();
+        c.setRequestProperty("User-Agent", "JaVelo");
+        try(InputStream i = c.getInputStream()){
+            FileOutputStream file = new FileOutputStream(tilePath.toString());
+            i.transferTo(file);
+            image = new Image(i);
+            addToCacheMemoir(tileId, image);
+            return image;
+        }
 
-        return null;
     }
 
     private void addToCacheMemoir(TileId tileId, Image image){
@@ -88,7 +94,6 @@ public final class TileManager {
      * @param y         (int) : l'index Y de la tuile
      */
     record TileId(int zoomLevel, int x, int y) {
-
 
         public static boolean isValid(TileId tileId) {
             int zoomLevel = tileId.zoomLevel();
