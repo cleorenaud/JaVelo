@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import ch.epfl.javelo.Preconditions;
 import  javafx.scene.image.Image;
 
 /**
@@ -35,6 +36,7 @@ private final int CAPACITY= 100;
     }
 
     public Image imageForTileAt(TileId tileId) throws IOException {
+        Preconditions.checkArgument(TileId.isValid(tileId));
         Image image = cacheMemoir.get(tileId);
         if(image!=null){
             return image;
@@ -64,6 +66,7 @@ private final int CAPACITY= 100;
     private void addToCacheMemoir(int tileId, Image image){
         if(cacheMemoir.size()==CAPACITY){
 
+
         }
 
     }
@@ -77,8 +80,11 @@ private final int CAPACITY= 100;
     record TileId(int zoomLevel, int x, int y) {
 
 
-        public static boolean isValid(int zoomLevel, int x, int y) {
-            if(x>=0 && y>= 0 && x<=Math.pow(2,zoomLevel)-1 && y<=Math.pow(2,zoomLevel)-1){
+        public static boolean isValid(TileId tileId) {
+            int zoomLevel = tileId.zoomLevel();
+            int x = tileId.x();
+            int y = tileId.y();
+            if(x>=0 && y>= 0 && x<=Math.pow(2,zoomLevel)-1 && y<=Math.pow(2,zoomLevel)-1 && zoomLevel>=0){
                 return true;
             }
             return false;
