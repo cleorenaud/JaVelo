@@ -7,9 +7,14 @@ import org.w3c.dom.Element;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.FileWriter;
+import java.io.Writer;
 import java.nio.file.Path;
 
 
@@ -102,25 +107,24 @@ public final class GpxGenerator {
     }
 
     /**
-     * Méthode permettant d'écrire le document GPX correspondant aux arguments passés en paramètre
+     * Méthode permettant d'écrire le document GPX correspondant aux paramètres passés en argument
      *
-     * @param fileName         (Path) : le nom du fichier dans lequel on écrit le document GPX
+     * @param fileName         (String) : le nom du fichier dans lequel on écrit le document GPX
      * @param route            (Route) : l'itinéraire passé en argument
      * @param elevationProfile (ElevationProfile) : le profil de cet itinéraire
      */
-    public static void writeGpx(Path fileName, Route route, ElevationProfile elevationProfile) {
+    public static void writeGpx(String fileName, Route route, ElevationProfile elevationProfile) {
 
-        /*
+        // On commence par créer le document GPX correspondant aux paramètres passés en argument
+        // On crée également un Writer de type FileWriter
         Document doc = createGpx(route, elevationProfile);
-        Writer w = new FileWriter();
+        Writer w = new FileWriter(fileName);
 
         Transformer transformer = newTransformer();
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
         transformer.transform(new DOMSource(doc),
                 new StreamResult(w));
 
-
-         */
 
     }
 
