@@ -19,4 +19,6 @@ public final class TileManagerTest extends Application {
         Image tileImage = tm.imageForTileAt(new TileManager.TileId(19, 271725, 185422));
         Platform.exit();
     }
+
 }
+

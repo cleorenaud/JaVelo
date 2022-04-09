@@ -44,8 +44,8 @@ public record MapViewParameters(int zoomLevel, int x, int y) {
      * exprimées par rapport au coin haut-gauche de la portion de carte affichée à l'écran
      * et retourne ce point sous la forme d'une instance de PointWebMercator
      *
-     * @param x (double) : coordonnée x d'un point exprimée par raapport au coin haut-gauche de la portion de carte
-     * @param y (double) : coordonnée y d'un point exprimée par raapport au coin haut-gauche de la portion de carte
+     * @param x (double) : coordonnée x d'un point exprimée par rapport au coin haut-gauche de la portion de carte
+     * @param y (double) : coordonnée y d'un point exprimée par rapport au coin haut-gauche de la portion de carte
      * @return (PointWebMercator) : un point avec comme coordonnées x et y
      * (exprimées par rapport au coin haut-gauche de notre portion de carte)
      */
