@@ -8,6 +8,8 @@ import ch.epfl.javelo.Bits;
 import ch.epfl.javelo.Q28_4;
 
 import java.nio.*;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Enregistrement représentant le tableau de toutes les arêtes du graphe JaVelo
