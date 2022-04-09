@@ -1,11 +1,8 @@
 package ch.epfl.javelo.gui;
 
-import java.awt.*;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedHashMap;
@@ -21,8 +18,6 @@ public final class TileManager {
     private final Path path;
     private final String serverName;
     private LinkedHashMap<TileId, Image> cacheMemoir;
-    private InputStream inputStream;
-    private OutputStream outputStream;
     private final int CAPACITY = 100;
 
     /**

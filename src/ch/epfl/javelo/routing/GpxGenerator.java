@@ -126,7 +126,7 @@ public final class GpxGenerator {
         } catch (TransformerException e) {
             throw new IOException();
         }
-        
+
     }
 
     /**

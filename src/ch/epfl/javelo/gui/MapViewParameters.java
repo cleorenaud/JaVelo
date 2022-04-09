@@ -33,7 +33,7 @@ public record MapViewParameters(int zoomLevel, int x, int y) {
      * @param x (int) : la coordonnée x du coin haut-gauche de la nouvelle instance de MapViewParameters
      * @param y (int) : la coordonnée y du coin haut-gauche de la nouvelle instance de MapViewParameters
      * @return (MapViewParameters) : une instance de MapViewParameters identique au récepteur
-     * mais avec les ccordonnées passées en arguments pour le coin haut-gauche.
+     * mais avec les cordonnées passées en arguments pour le coin haut-gauche.
      */
     public MapViewParameters withMinXY(int x, int y) {
         return new MapViewParameters(this.zoomLevel, x, y);
