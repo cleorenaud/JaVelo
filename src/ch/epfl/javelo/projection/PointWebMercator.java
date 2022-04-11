@@ -91,7 +91,7 @@ public record PointWebMercator(double x, double y) {
     /**
      * Méthode retournant le point de coordonnées suisses se trouvant a la même position que le récepteur
      *
-     * @return (PointCh) : le point de coordonnées suisses
+     * @return (PointCh) :le point de coordonnées suisses
      */
     public PointCh toPointCh() {
         double n = Ch1903.n(lon(), lat());

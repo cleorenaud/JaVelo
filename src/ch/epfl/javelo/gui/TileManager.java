@@ -13,6 +13,8 @@ import javafx.scene.image.Image;
 
 /**
  * Classe publique et finale représentant un gestionnaire de tuiles OSM
+ *
+ * @author Roxanne Chevalley (339716)
  */
 public final class TileManager {
     private final Path path;

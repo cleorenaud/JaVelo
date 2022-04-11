@@ -14,6 +14,7 @@ import com.sun.javafx.geom.Point2D;
  * @param zoomLevel (int) : le niveau de zoom
  * @param x         (int) : la coordonnée x du coin haut-gauche de la portion de carte affichée
  * @param y         (int) : a coordonnée y du coin haut-gauche de la portion de carte affichée
+ * @author Roxanne Chevalley (339716)
  */
 public record MapViewParameters(int zoomLevel, int x, int y) {
 
