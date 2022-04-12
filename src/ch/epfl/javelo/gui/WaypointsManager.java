@@ -13,7 +13,7 @@ public final class WaypointsManager {
     }
 
     public void pane() {
-        
+
     }
 
     /**
