@@ -4,8 +4,6 @@ import ch.epfl.javelo.projection.PointWebMercator;
 import com.sun.javafx.geom.Point2D;
 import org.junit.jupiter.api.Test;
 
-import java.util.Map;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class MapViewParametersTest {
@@ -41,13 +39,17 @@ class MapViewParametersTest {
 
     @Test
     public void viewXIsCorrect() {
-        PointWebMercator p = PointWebMercator.of(10, 135735, 92327);
+        MapViewParameters mvp = new MapViewParameters(10, 135735, 92327);
+        PointWebMercator p = mvp.pointAt(0.2, 0.5);
+        assertEquals(0.2, mvp.viewX(p), 10e-6);
 
     }
 
     @Test
     public void viewYIsCorrect() {
+        MapViewParameters mvp = new MapViewParameters(10, 135735, 92327);
+        PointWebMercator p = mvp.pointAt(0.2, 0.5);
+        assertEquals(0.5, mvp.viewY(p), 10e-6);
     }
-
 
 }

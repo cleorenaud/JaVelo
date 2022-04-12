@@ -12,11 +12,11 @@ import com.sun.javafx.geom.Point2D;
  * présenté dans l'interface graphique.
  *
  * @param zoomLevel (int) : le niveau de zoom
- * @param x         (int) : la coordonnée x du coin haut-gauche de la portion de carte affichée
- * @param y         (int) : a coordonnée y du coin haut-gauche de la portion de carte affichée
+ * @param x         (float) : la coordonnée x du coin haut-gauche de la portion de carte affichée
+ * @param y         (float) : la coordonnée y du coin haut-gauche de la portion de carte affichée
  * @author Roxanne Chevalley (339716)
  */
-public record MapViewParameters(int zoomLevel, int x, int y) {
+public record MapViewParameters(int zoomLevel, float x, float y) {
 
     /**
      * Méthode qui retourne les coordonnées du coin haut-gauche sous la forme d'un objet de type Point2D
@@ -31,12 +31,12 @@ public record MapViewParameters(int zoomLevel, int x, int y) {
      * Méthode qui retourne une instance de MapViewParameters identique au récepteur,
      * si ce n'est que les coordonnées du coin haut-gauche sont celles passées en arguments à la méthode.
      *
-     * @param x (int) : la coordonnée x du coin haut-gauche de la nouvelle instance de MapViewParameters
-     * @param y (int) : la coordonnée y du coin haut-gauche de la nouvelle instance de MapViewParameters
+     * @param x (float) : la coordonnée x du coin haut-gauche de la nouvelle instance de MapViewParameters
+     * @param y (float) : la coordonnée y du coin haut-gauche de la nouvelle instance de MapViewParameters
      * @return (MapViewParameters) : une instance de MapViewParameters identique au récepteur
      * mais avec les cordonnées passées en arguments pour le coin haut-gauche.
      */
-    public MapViewParameters withMinXY(int x, int y) {
+    public MapViewParameters withMinXY(float x, float y) {
         return new MapViewParameters(this.zoomLevel, x, y);
     }
 
@@ -51,9 +51,7 @@ public record MapViewParameters(int zoomLevel, int x, int y) {
      * (exprimées par rapport au coin haut-gauche de notre portion de carte)
      */
     public PointWebMercator pointAt(double x, double y) {
-        double xCor = x / 256.0;
-        double yCor = y / 256.0;
-        return PointWebMercator.of(zoomLevel, this.x + xCor, this.y + yCor);
+        return PointWebMercator.of(zoomLevel, this.x + x, this.y + y);
     }
 
     /**
@@ -64,7 +62,7 @@ public record MapViewParameters(int zoomLevel, int x, int y) {
      * @return (double) : la position x correspondant au point donné en argument
      */
     public double viewX(PointWebMercator point) {
-        return (point.xAtZoomLevel(zoomLevel) - this.x) * 256;
+        return (point.xAtZoomLevel(zoomLevel) - this.x);
     }
 
     /**
@@ -75,6 +73,6 @@ public record MapViewParameters(int zoomLevel, int x, int y) {
      * @return (double) : la position y correspondant au point donné en argument
      */
     public double viewY(PointWebMercator point) {
-        return (point.yAtZoomLevel(zoomLevel) - this.y) * 256;
+        return (point.yAtZoomLevel(zoomLevel) - this.y);
     }
 }
