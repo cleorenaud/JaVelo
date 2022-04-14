@@ -9,6 +9,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.SVGPath;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * Classe publique et finale qui gère l'affichage et l'interaction avec les points de passage
@@ -17,13 +19,22 @@ public final class WaypointsManager {
 private final Graph graph;
 private final ObjectProperty objectProperty;
 private final List<Waypoint> pointDePassage;
+private final MapViewParameters mapViewParameters;
+private final Consumer<String> errorConsumer;
     /**
      * Constructeur public de la classe
+     * @param graph (Graph) : le graphe du réseau routier
+     * @param objectProperty (ObjectProperty) : une propriété JavaFX contenant les paramètres de la carte affichée
+     * @param pointDePassage  (List<Waypoint>) : la liste de tous les points de passsage
+     * //@param erreurConsummer (Consumer<String>) :
      */
-    public WaypointsManager(Graph graph, ObjectProperty objectProperty, List<Waypoint> pointDePassage) {
+    public WaypointsManager(Graph graph, ObjectProperty<MapViewParameters> objectProperty, List<Waypoint> pointDePassage,
+                            Consumer<String> errorConsumer) {
         this.graph =graph;
         this.objectProperty= objectProperty;
+        mapViewParameters = objectProperty.get();
         this.pointDePassage = pointDePassage;
+        this.errorConsumer=errorConsumer;
     }
 
     public Pane pane() {
@@ -34,6 +45,7 @@ private final List<Waypoint> pointDePassage;
         SVGPath fils2 = new SVGPath();
         fils2.getStyleClass().add("pin_inside");
         fils2.setContent("M0-23A1 1 0 000-29 1 1 0 000-23");
+
 
         for (int i = 0; i < pointDePassage.size(); i++) {
            Group marqueur = new Group(fils1, fils2);
@@ -46,15 +58,14 @@ private final List<Waypoint> pointDePassage;
                marqueur.getStyleClass().add("middle");
            }
 
-
-
-
-
            PointCh pointCh=  pointDePassage.get(i).point();
            PointWebMercator webMercator = PointWebMercator.ofPointCh(pointCh);
 
+           marqueur.setLayoutX(mapViewParameters.viewX(webMercator));
+           marqueur.setLayoutY(mapViewParameters.viewY(webMercator));
+           carte.getChildren().add(marqueur);
         }
-        return null;
+        return carte;
 
     }
 
@@ -65,6 +76,10 @@ private final List<Waypoint> pointDePassage;
      * @param y (int) : la coordonnée y du point
      */
     public void addWaypoint(int x, int y) {
+        PointCh pointOfXY = mapViewParameters.pointAt(x, y).toPointCh();
+        int closestNode = graph.nodeClosestTo(pointOfXY, 1000);
+        Waypoint wayPoint  = new Waypoint(graph.nodePoint(closestNode), closestNode);
+        pointDePassage.add(wayPoint);
 
     }
 }
