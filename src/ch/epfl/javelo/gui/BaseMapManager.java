@@ -6,6 +6,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Pane;
 
+import java.util.Map;
+
 /**
  * Classe publique et finale qui gère l'affichage et interaction avec le fond de carte
  *
@@ -14,8 +16,10 @@ import javafx.scene.layout.Pane;
 public final class BaseMapManager {
     private final TileManager tileManager;
     private final WaypointsManager waypointsManager;
-    private final ObjectProperty objectProperty;
+    private final ObjectProperty<MapViewParameters> objectProperty;
     private boolean redrawNeeded;
+    private Canvas canvas;
+    private Pane pane;
 
 
     /**
@@ -25,18 +29,25 @@ public final class BaseMapManager {
      * @param waypointsManager (WaypointsManager) : le gestionnaire des points de passage
      * @param objectProperty   (ObjectProperty) : une propriété JavaFX contenant les paramètres de la carte affichée
      */
-    public BaseMapManager(TileManager tileManager, WaypointsManager waypointsManager, ObjectProperty objectProperty) {
+    public BaseMapManager(TileManager tileManager, WaypointsManager waypointsManager, ObjectProperty<MapViewParameters> objectProperty) {
         this.tileManager = tileManager;
         this.waypointsManager = waypointsManager;
         this.objectProperty = objectProperty;
 
-        /*
+        pane.getChildren().add(canvas);
+
+        // Le Canvas n'était pas redimensionné automatiquement, contrairement au Pane, on utilise des liens JavaFX
+        // pour que la hauteur et la largeur de notre Canvas soient toujours égales à celle de notre Pane
+        canvas.widthProperty().bind(pane.widthProperty());
+        canvas.heightProperty().bind(pane.heightProperty());
+
+
         // On s'assure que JavaFX appelle bien la méthode redrawIfNeeded() à chaque battement
         canvas.sceneProperty().addListener((p, oldS, newS) -> {
             assert oldS == null;
             newS.addPreLayoutPulseListener(this::redrawIfNeeded);
         });
-         */
+
     }
 
     /**
@@ -45,14 +56,13 @@ public final class BaseMapManager {
      * @return (Pane) : le panneau JavaFX affichant le fond de carte
      */
     public Pane pane() {
-        Pane pane = new Pane();
-        // On crée une instance de Canvas et on fait en sorte que les dimensions de canvas soient identiques à celle de
-        // notre instance de Pane
-        Canvas canvas = new Canvas();
-        canvas.widthProperty().bind(pane.widthProperty());
-
-        // On cherche à obtenir le contexte graphique du canevas
+        // On cherche à obtenir le contexte graphique du canevas puis on utilise la méthode drawImage
         GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
+
+        MapViewParameters mapViewParameters = objectProperty.get();
+        mapViewParameters.topLeft();
+
+
         // Utilisation de la méthode tileManager.imageForTileAt() utile pour déterminer quelles Tiles afficher à l'écran
         //graphicsContext.drawImage(tileManager.imageForTileAt(), );
 
