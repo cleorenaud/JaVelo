@@ -96,7 +96,7 @@ public final class TileManager {
             int zoomLevel = tileId.zoomLevel();
             int x = tileId.x();
             int y = tileId.y();
-            if (x >= 0 && y >= 0 && x <= Math.pow(2, zoomLevel) - 1 && y <= Math.pow(2, zoomLevel) - 1 && zoomLevel >= 0) {
+            if ((0 <= x && x <= Math.pow(2, zoomLevel) - 1) && (0 <= y && y <= Math.pow(2, zoomLevel) - 1) && (0 <= zoomLevel)) {
                 return true;
             }
             return false;
