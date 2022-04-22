@@ -74,35 +74,31 @@ public final class BaseMapManager {
     private void redrawIfNeeded() {
         if (!redrawNeeded) return;
         redrawNeeded = false;
-        //this.pane.setPrefSize(this.pane.sceneProperty().get().getWidth(), this.pane.sceneProperty().get().getHeight());
 
         // On cherche à obtenir le contexte graphique du canevas puis on utilise la méthode drawImage
         GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
 
-        //double xTiles = Math.ceil(canvas.getWidth() / 256); // Le nombre de tuiles horizontales
-        //double yTiles = Math.ceil(canvas.getHeight() / 256); // Le nombre de tuiles verticales
         MapViewParameters mapViewParameters = objectProperty.get();
         int zoomLevel = mapViewParameters.zoomLevel();
         float x = mapViewParameters.x();
         float y = mapViewParameters.y();
 
-        int indexTileX = (int) Math.floor(x / 256);
-        int indexTileY = (int) Math.floor(y / 256);
+        int indexTileX = (int) Math.floor(x / 256); // L'index x de la Tile supérieure gauche
+        int indexTileY = (int) Math.floor(y / 256); // L'index y de la Tile supérieure gauche
 
-        double xInTile = x - indexTileX * 256;
-        double yInTile = y - indexTileY * 256;
+        double xInTile = x - indexTileX * 256; // La coordonnée x du point supérieur gauche par rapport au sommet de la Tile supérieure gauche
+        double yInTile = y - indexTileY * 256; // La coordonnée y du point supérieur gauche par rapport au sommet de la Tile supérieure gauche
 
-        double xTiles = Math.ceil((canvas.getWidth() - (256 - xInTile)) / 256) + 1;
-        double yTiles = Math.ceil((canvas.getHeight() - (256 - yInTile)) / 256) + 1;
+        double xTiles = Math.ceil((canvas.getWidth() - (256 - xInTile)) / 256); // Le nombre de tiles horizontales après la Tile supérieure gauche
+        double yTiles = Math.ceil((canvas.getHeight() - (256 - yInTile)) / 256); // Le nombre de tiles verticales après la Tile supérieure gauche
 
+        // On itère sur toutes les tiles pour récupérer leur image puis les afficher à l'écran si cette dernière existe
         for (int i = 0; i <= xTiles; i++) {
             for (int j = 0; j <= yTiles; j++) {
                 try {
-                    // Utilisation de la méthode tileManager.imageForTileAt() utile pour déterminer quelles Tiles afficher à l'écran
                     TileManager.TileId tileId = new TileManager.TileId(zoomLevel, indexTileX + i, indexTileY + j);
                     Image image = tileManager.imageForTileAt(tileId);
                     graphicsContext.drawImage(image, 256 * i - xInTile, 256 * j - yInTile, 256, 256);
-                    System.out.println("Tuile (" + i  + ", " + j + ")");
 
                 } catch (IOException e) {
                     // ignore
