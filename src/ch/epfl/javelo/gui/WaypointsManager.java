@@ -8,6 +8,7 @@ import javafx.scene.Group;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.SVGPath;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -65,6 +66,11 @@ public final class WaypointsManager {
            marqueur.setLayoutX(mapViewParameters.viewX(webMercator));
            marqueur.setLayoutY(mapViewParameters.viewY(webMercator));
            carte.getChildren().add(marqueur);
+           carte.setPickOnBounds(false);
+
+           //List<Waypoint> pointDePassageSansI= new ArrayList<>(pointDePassage);
+           //pointDePassageSansI.remove(i);
+           //marqueur.setOnMouseClicked(e-> );
         }
     }
 
