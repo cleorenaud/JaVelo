@@ -3,6 +3,7 @@ package ch.epfl.javelo.gui;
 import ch.epfl.javelo.Math2;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -10,6 +11,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 
+import java.awt.geom.Point2D;
 import java.io.IOException;
 
 
@@ -26,7 +28,8 @@ public final class BaseMapManager {
     private boolean redrawNeeded;
     private Pane pane;
     private Canvas canvas;
-    private int zoomLevel;
+
+    private ObjectProperty<Point2D> posSouris;
 
 
     /**
@@ -51,7 +54,7 @@ public final class BaseMapManager {
         canvas.widthProperty().bind(pane.widthProperty());
         canvas.heightProperty().bind(pane.heightProperty());
 
-        redrawNeeded = true;
+        redrawOnNextPulse();
 
         // On s'assure que JavaFX appelle bien la méthode redrawIfNeeded() à chaque battement
         canvas.sceneProperty().addListener((p, oldS, newS) -> {
@@ -92,12 +95,12 @@ public final class BaseMapManager {
         double xInTile = x - indexTileX * 256; // La coordonnée x du point supérieur gauche par rapport au sommet de la Tile supérieure gauche
         double yInTile = y - indexTileY * 256; // La coordonnée y du point supérieur gauche par rapport au sommet de la Tile supérieure gauche
 
-        double xTiles = Math.ceil((canvas.getWidth() - (256 - xInTile)) / 256); // Le nombre de tiles horizontales après la Tile supérieure gauche
-        double yTiles = Math.ceil((canvas.getHeight() - (256 - yInTile)) / 256); // Le nombre de tiles verticales après la Tile supérieure gauche
+        double xTiles = Math.ceil((canvas.getWidth() - (256 - xInTile)) / 256) + 1; // Le nombre de tiles horizontales après la Tile supérieure gauche
+        double yTiles = Math.ceil((canvas.getHeight() - (256 - yInTile)) / 256) + 1; // Le nombre de tiles verticales après la Tile supérieure gauche
 
         // On itère sur toutes les tiles pour récupérer leur image puis les afficher à l'écran si cette dernière existe
-        for (int i = 0; i <= xTiles; i++) {
-            for (int j = 0; j <= yTiles; j++) {
+        for (int i = 0; i < xTiles; i++) {
+            for (int j = 0; j < yTiles; j++) {
                 try {
                     TileManager.TileId tileId = new TileManager.TileId(zoomLevel, indexTileX + i, indexTileY + j);
                     Image image = tileManager.imageForTileAt(tileId);
@@ -131,10 +134,11 @@ public final class BaseMapManager {
             double x = mouseEvent.getX();
             double y = mouseEvent.getY();
             redrawOnNextPulse();
-            System.out.println("yo");
         });
 
         pane.setOnMousePressed((MouseEvent mouseEvent) -> {
+            // On crée un ObjectProperty contenant la position à laquelle se trouvait la souris au moment où elle est pressée
+            this.posSouris = new SimpleObjectProperty<>(new Point2D.Double(mouseEvent.getX(), mouseEvent.getY()));
 
         });
 
@@ -144,14 +148,15 @@ public final class BaseMapManager {
 
         pane.setOnMouseReleased((MouseEvent mouseEvent) -> {
 
+
         });
 
         pane.setOnScroll((ScrollEvent scrollEvent) -> {
             double delta = Math.round(scrollEvent.getDeltaY());
-            zoomLevel += delta;
+            int zoomLevel = (int) (objectProperty.get().zoomLevel() + delta);
             zoomLevel = Math2.clamp(8, zoomLevel, 19);
+            objectProperty.setValue(new MapViewParameters(zoomLevel, objectProperty.get().x(), objectProperty.get().y()));
             redrawOnNextPulse();
-            System.out.println("yo");
         });
 
 
