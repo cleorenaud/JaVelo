@@ -28,6 +28,7 @@ public final class BaseMapManager {
     private boolean redrawNeeded;
     private Pane pane;
     private Canvas canvas;
+    private int zoomLevel;
 
     private ObjectProperty<Point2D> posSouris;
 
