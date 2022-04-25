@@ -134,6 +134,7 @@ public final class BaseMapManager {
         canvas.setOnMouseClicked((MouseEvent mouseEvent) -> {
             double x = mouseEvent.getX();
             double y = mouseEvent.getY();
+            waypointsManager.addWaypoint((int) x, (int) y);
             redrawOnNextPulse();
         });
 

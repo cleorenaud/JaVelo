@@ -1,14 +1,24 @@
 package ch.epfl.javelo.gui;
 
+import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.data.Graph;
 import ch.epfl.javelo.projection.PointCh;
 import ch.epfl.javelo.projection.PointWebMercator;
+import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Group;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.SVGPath;
 
+import java.awt.geom.Point2D;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -24,6 +34,10 @@ public final class WaypointsManager {
     private final MapViewParameters mapViewParameters;
     private final Consumer<String> errorConsumer;
     private Pane carte;
+    private boolean redrawNeeded;
+    private final SVGPath fils1;
+    private final SVGPath fils2;
+    private Map<Group, Waypoint> marqueurs = new HashMap<>();
 
     /**
      * Constructeur public de la classe
@@ -45,33 +59,24 @@ public final class WaypointsManager {
         SVGPath fils1 = new SVGPath();
         fils1.setContent("M-8-20C-5-14-2-7 0 0 2-7 5-14 8-20 20-40-20-40-8-20");
         fils1.getStyleClass().add("pin_outside");
+        this.fils1 = fils1;
         SVGPath fils2 = new SVGPath();
         fils2.getStyleClass().add("pin_inside");
         fils2.setContent("M0-23A1 1 0 000-29 1 1 0 000-23");
+        this.fils2= fils2;
 
-        for (int i = 0; i < pointDePassage.size(); i++) {
-           Group marqueur = new Group(fils1, fils2);
-           marqueur.getStyleClass().add("pin");
-           if(i==0){
-               marqueur.getStyleClass().add("first");
-           }else if (i==pointDePassage.size()-1){
-               marqueur.getStyleClass().add("last");
-           }else{
-               marqueur.getStyleClass().add("middle");
-           }
 
-           PointCh pointCh=  pointDePassage.get(i).point();
-           PointWebMercator webMercator = PointWebMercator.ofPointCh(pointCh);
+        carte.setPickOnBounds(false);
 
-           marqueur.setLayoutX(mapViewParameters.viewX(webMercator));
-           marqueur.setLayoutY(mapViewParameters.viewY(webMercator));
-           carte.getChildren().add(marqueur);
-           carte.setPickOnBounds(false);
+        // On s'assure que JavaFX appelle bien la méthode redrawIfNeeded() à chaque battement
+        carte.sceneProperty().addListener((p, oldS, newS) -> {
+            assert oldS == null;
+            newS.addPreLayoutPulseListener(this::redrawIfNeeded);
+        });
 
-           //List<Waypoint> pointDePassageSansI= new ArrayList<>(pointDePassage);
-           //pointDePassageSansI.remove(i);
-           //marqueur.setOnMouseClicked(e-> );
-        }
+        redrawNeeded= true; //dessine au début
+
+
     }
 
     public Pane pane() {
@@ -88,7 +93,88 @@ public final class WaypointsManager {
         PointCh pointOfXY = mapViewParameters.pointAt(x, y).toPointCh();
         int closestNode = graph.nodeClosestTo(pointOfXY, 1000);
         Waypoint wayPoint = new Waypoint(graph.nodePoint(closestNode), closestNode);
+        Waypoint lastPoint= pointDePassage.remove(pointDePassage.size()-1);
         pointDePassage.add(wayPoint);
+        pointDePassage.add(lastPoint);
+        redrawOnNextPulse();
 
+    }
+
+    private void installHandlers(Group marqueur) {
+        // On doit installer trois gestionnaires d'événement gérant le glissement de la carte
+
+        marqueur.setOnMouseClicked((MouseEvent mouseEvent) -> {
+            if(mouseEvent.isStillSincePress()){
+                pointDePassage.remove(marqueurs.get(marqueur));
+                redrawOnNextPulse();
+            }
+        });
+
+
+        marqueur.setOnMouseDragged((MouseEvent mouseEvent) -> {
+                marqueur.setLayoutY(mouseEvent.getY());
+                marqueur.setLayoutX(mouseEvent.getX());
+
+        });
+
+        marqueur.setOnMouseReleased((MouseEvent mouseEvent) -> {
+            if(!mouseEvent.isStillSincePress()){
+              Waypoint pointPassage =  marqueurs.get(marqueur);
+              System.out.println("hello");
+              PointCh newPCh = mapViewParameters.pointAt(mouseEvent.getX(), mouseEvent.getY()).toPointCh();
+              int i = pointDePassage.indexOf(pointPassage);
+              pointDePassage.set(i,new Waypoint(newPCh, graph.nodeClosestTo(newPCh, 1000)));
+              redrawOnNextPulse();
+
+            }
+
+        });
+
+
+
+    }
+
+    private void redrawIfNeeded() {
+        if (!redrawNeeded) return;
+        redrawNeeded = false;
+        carte.getChildren().removeAll();
+        marqueurs.clear();
+        System.out.println("yes");
+        System.out.println(pointDePassage.size());
+
+        for (int i = 0; i < pointDePassage.size(); i++) {
+            Group marqueur = new Group(fils1, fils2);
+            marqueur.getStyleClass().add("pin");
+            if(i==0){
+                marqueur.getStyleClass().add("first");
+            }else if (i==pointDePassage.size()-1){
+                marqueur.getStyleClass().add("last");
+            }else{
+                marqueur.getStyleClass().add("middle");
+            }
+
+            PointCh pointCh=  pointDePassage.get(i).point();
+            PointWebMercator webMercator = PointWebMercator.ofPointCh(pointCh);
+
+            marqueur.setLayoutX(mapViewParameters.viewX(webMercator));
+            marqueur.setLayoutY(mapViewParameters.viewY(webMercator));
+            marqueurs.put(marqueur, pointDePassage.get(i));
+            carte.getChildren().add(marqueur);
+
+            installHandlers(marqueur);
+
+
+        }
+
+
+
+    }
+
+    /**
+     * Méthode permettant de demander un redessin au prochain battement
+     */
+    private void redrawOnNextPulse() {
+        redrawNeeded = true;
+        Platform.requestNextPulse();
     }
 }
