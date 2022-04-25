@@ -56,6 +56,7 @@ public final class BaseMapManager {
         canvas.heightProperty().bind(pane.heightProperty());
 
         redrawOnNextPulse();
+        installHandlers();
 
         // On s'assure que JavaFX appelle bien la méthode redrawIfNeeded() à chaque battement
         canvas.sceneProperty().addListener((p, oldS, newS) -> {
@@ -63,7 +64,6 @@ public final class BaseMapManager {
             newS.addPreLayoutPulseListener(this::redrawIfNeeded);
         });
 
-        installHandlers();
 
     }
 
@@ -89,21 +89,24 @@ public final class BaseMapManager {
         MapViewParameters mapViewParameters = objectProperty.get();
         float x = mapViewParameters.x();
         float y = mapViewParameters.y();
+        
+        int indexXLeftTile = (int) Math.floor(x / 256); // L'index x de la Tile supérieure gauche
+        int indexYLeftTile = (int) Math.floor(y / 256); // L'index y de la Tile supérieure gauche
 
-        int indexTileX = (int) Math.floor(x / 256); // L'index x de la Tile supérieure gauche
-        int indexTileY = (int) Math.floor(y / 256); // L'index y de la Tile supérieure gauche
+        int indexXRightTile = (int) Math.floor((x + canvas.getWidth()) / 256); // L'index x de la Tile inférieure droite
+        int indexYRightTile = (int) Math.floor((y + canvas.getHeight()) / 256); // L'index y de la Tile inférieure droite
 
-        double xInTile = x - indexTileX * 256; // La coordonnée x du point supérieur gauche par rapport au sommet de la Tile supérieure gauche
-        double yInTile = y - indexTileY * 256; // La coordonnée y du point supérieur gauche par rapport au sommet de la Tile supérieure gauche
+        double xTiles = indexXRightTile - indexXLeftTile + 1; // Le nombre de tiles horizontales après la Tile supérieure gauche
+        double yTiles = indexYRightTile - indexYLeftTile + 1; // Le nombre de tiles verticales après la Tile supérieure gauche
 
-        double xTiles = Math.ceil((canvas.getWidth() - (256 - xInTile)) / 256) + 1; // Le nombre de tiles horizontales après la Tile supérieure gauche
-        double yTiles = Math.ceil((canvas.getHeight() - (256 - yInTile)) / 256) + 1; // Le nombre de tiles verticales après la Tile supérieure gauche
+        double xInTile = x - indexXLeftTile * 256; // La coordonnée x du point supérieur gauche par rapport au sommet de la Tile supérieure gauche
+        double yInTile = y - indexYLeftTile * 256; // La coordonnée y du point supérieur gauche par rapport au sommet de la Tile supérieure gauche
 
         // On itère sur toutes les tiles pour récupérer leur image puis les afficher à l'écran si cette dernière existe
         for (int i = 0; i < xTiles; i++) {
             for (int j = 0; j < yTiles; j++) {
                 try {
-                    TileManager.TileId tileId = new TileManager.TileId(zoomLevel, indexTileX + i, indexTileY + j);
+                    TileManager.TileId tileId = new TileManager.TileId(zoomLevel, indexXLeftTile + i, indexYLeftTile + j);
                     Image image = tileManager.imageForTileAt(tileId);
                     graphicsContext.drawImage(image, 256 * i - xInTile, 256 * j - yInTile, 256, 256);
 
@@ -155,7 +158,7 @@ public final class BaseMapManager {
 
         pane.setOnScroll((ScrollEvent scrollEvent) -> {
             double delta = Math.round(scrollEvent.getDeltaY());
-            int zoomLevel = (int) (objectProperty.get().zoomLevel() + delta);
+            zoomLevel = (int) (objectProperty.get().zoomLevel() + delta);
             zoomLevel = Math2.clamp(8, zoomLevel, 19);
             objectProperty.setValue(new MapViewParameters(zoomLevel, objectProperty.get().x(), objectProperty.get().y()));
             redrawOnNextPulse();
