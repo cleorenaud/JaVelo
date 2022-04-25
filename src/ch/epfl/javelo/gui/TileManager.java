@@ -31,11 +31,12 @@ public final class TileManager {
     public TileManager(Path path, String serverName) {
         this.path = path;
         this.serverName = serverName;
-        this.cacheMemoir = new LinkedHashMap<>(100, 2, true); //TO DO
+        this.cacheMemoir = new LinkedHashMap<>(100, 2, true);
     }
 
     public Image imageForTileAt(TileId tileId) throws IOException {
         Preconditions.checkArgument(TileId.isValid(tileId));
+
         if(cacheMemoir.containsKey(tileId)){
             return cacheMemoir.get(tileId);
         }

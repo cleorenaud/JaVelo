@@ -1,14 +1,14 @@
 package ch.epfl.javelo.gui;
 
-import ch.epfl.javelo.projection.PointWebMercator;
-import com.sun.javafx.geom.Point2D;
+import ch.epfl.javelo.Math2;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 
 import java.io.IOException;
 
@@ -26,6 +26,7 @@ public final class BaseMapManager {
     private boolean redrawNeeded;
     private Pane pane;
     private Canvas canvas;
+    private int zoomLevel;
 
 
     /**
@@ -39,6 +40,7 @@ public final class BaseMapManager {
         this.tileManager = tileManager;
         this.waypointsManager = waypointsManager;
         this.objectProperty = objectProperty;
+        this.zoomLevel = objectProperty.get().zoomLevel();
 
         this.pane = new Pane();
         this.canvas = new Canvas();
@@ -56,6 +58,8 @@ public final class BaseMapManager {
             assert oldS == null;
             newS.addPreLayoutPulseListener(this::redrawIfNeeded);
         });
+
+        installHandlers();
 
     }
 
@@ -79,7 +83,6 @@ public final class BaseMapManager {
         GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
 
         MapViewParameters mapViewParameters = objectProperty.get();
-        int zoomLevel = mapViewParameters.zoomLevel();
         float x = mapViewParameters.x();
         float y = mapViewParameters.y();
 
@@ -116,6 +119,56 @@ public final class BaseMapManager {
     private void redrawOnNextPulse() {
         redrawNeeded = true;
         Platform.requestNextPulse();
+    }
+
+    /**
+     * Méthode installant les gestionnaires d'événements
+     */
+    private void installHandlers() {
+        // On doit installer trois gestionnaires d'événement gérant le glissement de la carte
+
+        canvas.setOnMouseClicked((MouseEvent mouseEvent) -> {
+            double x = mouseEvent.getX();
+            double y = mouseEvent.getY();
+            redrawOnNextPulse();
+            System.out.println("yo");
+        });
+
+        pane.setOnMousePressed((MouseEvent mouseEvent) -> {
+
+        });
+
+        pane.setOnMouseDragged((MouseEvent mouseEvent) -> {
+
+        });
+
+        pane.setOnMouseReleased((MouseEvent mouseEvent) -> {
+
+        });
+
+        pane.setOnScroll((ScrollEvent scrollEvent) -> {
+            double delta = Math.round(scrollEvent.getDeltaY());
+            zoomLevel += delta;
+            zoomLevel = Math2.clamp(8, zoomLevel, 19);
+            redrawOnNextPulse();
+            System.out.println("yo");
+        });
+
+
+    }
+
+    /**
+     * Méthode créant les liens
+     */
+    private void installBindings() {
+
+    }
+
+    /**
+     * Méthode installant les auditeurs
+     */
+    private void installListeners() {
+
     }
 
 }
