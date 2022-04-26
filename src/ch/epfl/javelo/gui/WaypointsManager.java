@@ -7,11 +7,13 @@ import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.SVGPath;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -32,8 +34,9 @@ public final class WaypointsManager {
     private final Map<Group, Waypoint> marqueurs = new HashMap<>();
     private final String FILS_CONTENT1 = "M-8-20C-5-14-2-7 0 0 2-7 5-14 8-20 20-40-20-40-8-20";
     private final String FILS_CONTENT2 =  "M0-23A1 1 0 000-29 1 1 0 000-23";
-    private double initialPosX=0;
-    private double initialPosY=0;
+    private javafx.geometry.Point2D posSouris;
+    private javafx.geometry.Point2D posMarqueur;
+    private javafx.geometry.Point2D newPlace;
     private boolean canMove=false;
     private final double SEARCH_DISTANCE = 500;
 
@@ -108,29 +111,23 @@ public final class WaypointsManager {
     private void installHandlers(Group marqueur) {
         // On doit installer trois gestionnaires d'événement gérant les marqueurs
 
-        /*marqueur.setOnMouseClicked((MouseEvent mouseEvent) -> {
-            System.out.println("j'ai cliqué");
-            if(mouseEvent.isStillSincePress()){
-                pointDePassage.remove(marqueurs.get(marqueur));
-                System.out.println("slt");
-                //redraw();
-            }
-        });
-         */
+        marqueur.setOnMousePressed((MouseEvent mouseEvent) -> {
+            // On crée deux Point2D contenant la position à laquelle se trouvaient le marqueur
+            // et la souris au moment où elle est pressée
+            this.posSouris = new javafx.geometry.Point2D(mouseEvent.getX(), mouseEvent.getY());
+            this.posMarqueur = new javafx.geometry.Point2D(marqueur.getLayoutX(), marqueur.getLayoutY());
+            System.out.println("nouvelle Pos");
 
-        //permet d'enregistrer la position intiale avant de déplacer un marqueur
-        marqueur.setOnDragDetected(e->{
-            setInitialPos(marqueur.getLayoutX(), marqueur.getLayoutY());
-            System.out.println("pos enregistré " + initialPosX + " "  + initialPosY);
         });
 
 
         //déplace le marqueur sans déplacer le wayPoint
         marqueur.setOnMouseDragged((MouseEvent mouseEvent) -> {
-            if(canMove){
-                marqueur.setLayoutX(initialPosX + mouseEvent.getX());
-                marqueur.setLayoutY(initialPosY + mouseEvent.getY());
-            }
+            javafx.geometry.Point2D newPosSouris = new javafx.geometry.Point2D(mouseEvent.getX(), mouseEvent.getY());
+            Point2D dif= newPosSouris.subtract(posSouris);
+            newPlace = dif.add(posMarqueur);
+            marqueur.setLayoutX(newPlace.getX());
+            marqueur.setLayoutY(newPlace.getY());
 
         });
 
@@ -138,10 +135,9 @@ public final class WaypointsManager {
 
             Waypoint pointPassage =  marqueurs.get(marqueur); //le wayPoint associé au marqueur
 
-            if(!mouseEvent.isStillSincePress() && canMove){ //si la souris s'est déplacée on déplace le marqueur
-              canMove= false;
+            if(!mouseEvent.isStillSincePress()){ //si la souris s'est déplacée on déplace le marqueur
               PointCh newPCh = objectProperty.get().pointAt
-                      (initialPosX + mouseEvent.getX(), initialPosY+ mouseEvent.getY()).toPointCh();
+                (newPlace.getX(), newPlace.getY()).toPointCh();
               int i = pointDePassage.indexOf(pointPassage);
               int node = graph.nodeClosestTo(newPCh, SEARCH_DISTANCE);
 
@@ -211,11 +207,6 @@ public final class WaypointsManager {
         errorConsumer.accept("Aucune route à proximité !");
     }
 
-    private void setInitialPos(double x, double y) {
-        this.initialPosX=x;
-        this.initialPosY=y;
-        canMove=true;
-    }
 
 
 
