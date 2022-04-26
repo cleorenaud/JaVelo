@@ -110,7 +110,7 @@ public final class BaseMapManager {
                 try {
                     TileManager.TileId tileId = new TileManager.TileId(objectProperty.get().zoomLevel(), indexXLeftTile + i, indexYLeftTile + j);
                     Image image = tileManager.imageForTileAt(tileId);
-                    if(!TileManager.TileId.isValid(tileId)){
+                    if (!TileManager.TileId.isValid(tileId)) {
                         System.out.println("zoom " + mapViewParameters.zoomLevel());
                         System.out.println("x " + indexXLeftTile + i);
                         System.out.println("y " + indexYLeftTile + j);
@@ -160,7 +160,7 @@ public final class BaseMapManager {
 
         pane.setOnMouseReleased((MouseEvent mouseEvent) -> {
             // On vérifie qu'il y a bien eu un déplacement de la souris depuis qu'elle a été pressée
-            if(!mouseEvent.isStillSincePress()) {
+            if (!mouseEvent.isStillSincePress()) {
                 Point2D newPosSouris = new Point2D.Double(mouseEvent.getX(), mouseEvent.getY());
                 double distance = posSouris.get().distance(newPosSouris);
 
@@ -173,24 +173,26 @@ public final class BaseMapManager {
             float xSouris = (float) scrollEvent.getX();
             float ySouris = (float) scrollEvent.getY();
 
-            //premiere translation
-            objectProperty.set(objectProperty.get().withMinXY(xSouris, ySouris));
+            //objectProperty.set(objectProperty.get().withMinXY(xSouris, ySouris));
 
             double delta = Math.round(scrollEvent.getDeltaY());
             int oldZoomLevel = objectProperty.get().zoomLevel();
             int newZoomLevel = (int) (oldZoomLevel + delta);
-            newZoomLevel = Math2.clamp(8, newZoomLevel,19);
+            newZoomLevel = Math2.clamp(8, newZoomLevel, 19);
 
             float oldX = objectProperty.get().x();
             float oldY = objectProperty.get().y();
+
             float newX = Math.scalb(oldX, newZoomLevel - oldZoomLevel);
             float newY = Math.scalb(oldY, newZoomLevel - oldZoomLevel);
 
-            objectProperty.setValue(new MapViewParameters(newZoomLevel, newX, newY));
+            //xSouris = Math.scalb(xSouris, newZoomLevel - oldZoomLevel);
+            //ySouris = Math.scalb(ySouris, newZoomLevel - oldZoomLevel);
+
+            objectProperty.setValue(new MapViewParameters(newZoomLevel, newX , newY));
+
             redrawOnNextPulse();
 
-            // On fait des translations pour mettre le point sous la souris dans le coin haut gauche, on zoom puis on
-            // remet le coin haut gauche sous la souris
         });
 
 
