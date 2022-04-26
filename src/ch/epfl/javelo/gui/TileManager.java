@@ -35,7 +35,7 @@ public final class TileManager {
     }
 
     public Image imageForTileAt(TileId tileId) throws IOException {
-        Preconditions.checkArgument(TileId.isValid(tileId));
+        Preconditions. checkArgument(TileId.isValid(tileId));
 
         if(cacheMemoir.containsKey(tileId)){
             return cacheMemoir.get(tileId);
@@ -95,7 +95,7 @@ public final class TileManager {
             int zoomLevel = tileId.zoomLevel();
             int x = tileId.x();
             int y = tileId.y();
-            if ((0 <= x && x <= Math.pow(2, zoomLevel) - 1) && (0 <= y && y <= Math.pow(2, zoomLevel) - 1) && (0 <= zoomLevel)) {
+            if ((0 <= x && x <= Math.pow(2, zoomLevel) - 1) && (0 <= y && y <= Math.pow(2, zoomLevel) - 1) && (0 <= zoomLevel) && (zoomLevel<=20)) {
                 return true;
             }
             return false;
