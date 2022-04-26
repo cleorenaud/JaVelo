@@ -29,7 +29,6 @@ public final class BaseMapManager {
     private boolean redrawNeeded;
     private Pane pane;
     private Canvas canvas;
-    private int zoomLevel;
 
     private ObjectProperty<Point2D> posSouris;
 
@@ -45,7 +44,6 @@ public final class BaseMapManager {
         this.tileManager = tileManager;
         this.waypointsManager = waypointsManager;
         this.objectProperty = objectProperty;
-        this.zoomLevel = objectProperty.get().zoomLevel();
 
         this.pane = new Pane();
         this.canvas = new Canvas();
@@ -106,10 +104,10 @@ public final class BaseMapManager {
         double yInTile = y - indexYLeftTile * 256; // La coordonnée y du point supérieur gauche par rapport au sommet de la Tile supérieure gauche
 
         // On itère sur toutes les tiles pour récupérer leur image puis les afficher à l'écran si cette dernière existe
-        for (int i = 0; i < xTiles; i++) {
-            for (int j = 0; j < yTiles; j++) {
+        for (int i = 0; i <= xTiles; i++) {
+            for (int j = 0; j <= yTiles; j++) {
                 try {
-                    TileManager.TileId tileId = new TileManager.TileId(zoomLevel, indexXLeftTile + i, indexYLeftTile + j);
+                    TileManager.TileId tileId = new TileManager.TileId(objectProperty.get().zoomLevel(), indexXLeftTile + i, indexYLeftTile + j);
                     Image image = tileManager.imageForTileAt(tileId);
                     graphicsContext.drawImage(image, 256 * i - xInTile, 256 * j - yInTile, 256, 256);
 
@@ -137,11 +135,11 @@ public final class BaseMapManager {
     private void installHandlers() {
         // On doit installer trois gestionnaires d'événement gérant le glissement de la carte
 
-        canvas.setOnMouseClicked((MouseEvent mouseEvent) -> {
+        pane.setOnMouseClicked((MouseEvent mouseEvent) -> {
             double x = mouseEvent.getX();
             double y = mouseEvent.getY();
             waypointsManager.addWaypoint((int) x, (int) y);
-            redrawOnNextPulse();
+            //redrawOnNextPulse();
         });
 
         pane.setOnMousePressed((MouseEvent mouseEvent) -> {
@@ -161,7 +159,7 @@ public final class BaseMapManager {
 
         pane.setOnScroll((ScrollEvent scrollEvent) -> {
             double delta = Math.round(scrollEvent.getDeltaY());
-            zoomLevel = (int) (objectProperty.get().zoomLevel() + delta);
+            int zoomLevel = (int) (objectProperty.get().zoomLevel() + delta);
             zoomLevel = Math2.clamp(8, zoomLevel, 19);
             objectProperty.setValue(new MapViewParameters(zoomLevel, objectProperty.get().x(), objectProperty.get().y()));
             redrawOnNextPulse();
@@ -174,20 +172,15 @@ public final class BaseMapManager {
      * Méthode créant les liens entre la taille de la fenêtre et la taille de notre Pane (et donc du Canvas également)
      */
     private void installBindings() {
-        pane.sceneProperty().addListener((p) -> {
-            this.pane.prefWidth(this.pane.sceneProperty().get().getWidth());
-            this.pane.prefHeight(this.pane.sceneProperty().get().getHeight());
-        });
-
+        canvas.widthProperty().addListener(e -> redrawOnNextPulse());
+        canvas.heightProperty().addListener(e -> redrawOnNextPulse());
     }
 
     /**
      * Méthode installant les auditeurs
      */
     private void installListeners() {
-        objectProperty.addListener((p,o,n) -> {
-
-        });
+        objectProperty.addListener(e -> redrawOnNextPulse());
     }
 
 }
