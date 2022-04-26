@@ -11,7 +11,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 
-import java.awt.event.ActionListener;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 
@@ -29,6 +28,8 @@ public final class BaseMapManager {
     private boolean redrawNeeded;
     private Pane pane;
     private Canvas canvas;
+
+    private static final int TILE_SIZE = 256;
 
     private ObjectProperty<Point2D> posSouris;
 
@@ -91,17 +92,17 @@ public final class BaseMapManager {
         float y = mapViewParameters.y();
 
 
-        int indexXLeftTile = (int) Math.floor(x / 256); // L'index x de la Tile supérieure gauche
-        int indexYLeftTile = (int) Math.floor(y / 256); // L'index y de la Tile supérieure gauche
+        int indexXLeftTile = (int) Math.floor(x / TILE_SIZE); // L'index x de la Tile supérieure gauche
+        int indexYLeftTile = (int) Math.floor(y / TILE_SIZE); // L'index y de la Tile supérieure gauche
 
-        int indexXRightTile = (int) Math.floor((x + canvas.getWidth()) / 256); // L'index x de la Tile inférieure droite
-        int indexYRightTile = (int) Math.floor((y + canvas.getHeight()) / 256); // L'index y de la Tile inférieure droite
+        int indexXRightTile = (int) Math.floor((x + canvas.getWidth()) / TILE_SIZE); // L'index x de la Tile inférieure droite
+        int indexYRightTile = (int) Math.floor((y + canvas.getHeight()) / TILE_SIZE); // L'index y de la Tile inférieure droite
 
         double xTiles = indexXRightTile - indexXLeftTile + 1; // Le nombre de tiles horizontales après la Tile supérieure gauche
         double yTiles = indexYRightTile - indexYLeftTile + 1; // Le nombre de tiles verticales après la Tile supérieure gauche
 
-        double xInTile = x - indexXLeftTile * 256; // La coordonnée x du point supérieur gauche par rapport au sommet de la Tile supérieure gauche
-        double yInTile = y - indexYLeftTile * 256; // La coordonnée y du point supérieur gauche par rapport au sommet de la Tile supérieure gauche
+        double xInTile = x - indexXLeftTile * TILE_SIZE; // La coordonnée x du point supérieur gauche par rapport au sommet de la Tile supérieure gauche
+        double yInTile = y - indexYLeftTile * TILE_SIZE; // La coordonnée y du point supérieur gauche par rapport au sommet de la Tile supérieure gauche
 
         // On itère sur toutes les tiles pour récupérer leur image puis les afficher à l'écran si cette dernière existe
         for (int i = 0; i < xTiles; i++) {
@@ -114,7 +115,7 @@ public final class BaseMapManager {
                         System.out.println("x " + indexXLeftTile + i);
                         System.out.println("y " + indexYLeftTile + j);
                     }
-                    graphicsContext.drawImage(image, 256 * i - xInTile, 256 * j - yInTile, 256, 256);
+                    graphicsContext.drawImage(image, TILE_SIZE * i - xInTile, TILE_SIZE * j - yInTile, TILE_SIZE, TILE_SIZE);
 
                 } catch (IOException e) {
                     // ignore
@@ -160,20 +161,36 @@ public final class BaseMapManager {
         pane.setOnMouseReleased((MouseEvent mouseEvent) -> {
             // On vérifie qu'il y a bien eu un déplacement de la souris depuis qu'elle a été pressée
             if(!mouseEvent.isStillSincePress()) {
+                Point2D newPosSouris = new Point2D.Double(mouseEvent.getX(), mouseEvent.getY());
+                double distance = posSouris.get().distance(newPosSouris);
+
 
             }
 
         });
 
         pane.setOnScroll((ScrollEvent scrollEvent) -> {
+            float xSouris = (float) scrollEvent.getX();
+            float ySouris = (float) scrollEvent.getY();
+
+            //premiere translation
+            objectProperty.set(objectProperty.get().withMinXY(xSouris, ySouris));
+
             double delta = Math.round(scrollEvent.getDeltaY());
-            int zoomLevel = (int) (objectProperty.get().zoomLevel() + delta);
-            zoomLevel = Math2.clamp(8, zoomLevel, 19);
-            objectProperty.setValue(new MapViewParameters(zoomLevel, objectProperty.get().x(), objectProperty.get().y()));
+            int oldZoomLevel = objectProperty.get().zoomLevel();
+            int newZoomLevel = (int) (oldZoomLevel + delta);
+            newZoomLevel = Math2.clamp(8, newZoomLevel,19);
+
+            float oldX = objectProperty.get().x();
+            float oldY = objectProperty.get().y();
+            float newX = Math.scalb(oldX, newZoomLevel - oldZoomLevel);
+            float newY = Math.scalb(oldY, newZoomLevel - oldZoomLevel);
+
+            objectProperty.setValue(new MapViewParameters(newZoomLevel, newX, newY));
             redrawOnNextPulse();
 
             // On fait des translations pour mettre le point sous la souris dans le coin haut gauche, on zoom puis on
-            // remet le coin hau gauche sous la souris
+            // remet le coin haut gauche sous la souris
         });
 
 
@@ -192,6 +209,7 @@ public final class BaseMapManager {
      */
     private void installListeners() {
         //objectProperty.addListener(e -> redrawOnNextPulse());
+
     }
 
 }
