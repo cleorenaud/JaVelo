@@ -11,6 +11,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 
+import java.awt.event.ActionListener;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 
@@ -55,8 +56,9 @@ public final class BaseMapManager {
         canvas.widthProperty().bind(pane.widthProperty());
         canvas.heightProperty().bind(pane.heightProperty());
 
-        redrawOnNextPulse();
+        installBindings();
         installHandlers();
+        redrawOnNextPulse();
 
         // On s'assure que JavaFX appelle bien la méthode redrawIfNeeded() à chaque battement
         canvas.sceneProperty().addListener((p, oldS, newS) -> {
@@ -89,7 +91,8 @@ public final class BaseMapManager {
         MapViewParameters mapViewParameters = objectProperty.get();
         float x = mapViewParameters.x();
         float y = mapViewParameters.y();
-        
+
+
         int indexXLeftTile = (int) Math.floor(x / 256); // L'index x de la Tile supérieure gauche
         int indexYLeftTile = (int) Math.floor(y / 256); // L'index y de la Tile supérieure gauche
 
@@ -168,9 +171,13 @@ public final class BaseMapManager {
     }
 
     /**
-     * Méthode créant les liens
+     * Méthode créant les liens entre la taille de la fenêtre et la taille de notre Pane (et donc du Canvas également)
      */
     private void installBindings() {
+        pane.sceneProperty().addListener((p) -> {
+            this.pane.prefWidth(this.pane.sceneProperty().get().getWidth());
+            this.pane.prefHeight(this.pane.sceneProperty().get().getHeight());
+        });
 
     }
 
@@ -178,7 +185,9 @@ public final class BaseMapManager {
      * Méthode installant les auditeurs
      */
     private void installListeners() {
+        objectProperty.addListener((p,o,n) -> {
 
+        });
     }
 
 }
