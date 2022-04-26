@@ -28,10 +28,9 @@ public final class BaseMapManager {
     private boolean redrawNeeded;
     private Pane pane;
     private Canvas canvas;
+    private ObjectProperty<Point2D> posSouris;
 
     private static final int TILE_SIZE = 256;
-
-    private ObjectProperty<Point2D> posSouris;
 
 
     /**
@@ -91,7 +90,6 @@ public final class BaseMapManager {
         float x = mapViewParameters.x();
         float y = mapViewParameters.y();
 
-
         int indexXLeftTile = (int) Math.floor(x / TILE_SIZE); // L'index x de la Tile supérieure gauche
         int indexYLeftTile = (int) Math.floor(y / TILE_SIZE); // L'index y de la Tile supérieure gauche
 
@@ -142,10 +140,12 @@ public final class BaseMapManager {
         // On doit installer trois gestionnaires d'événement gérant le glissement de la carte
 
         pane.setOnMouseClicked((MouseEvent mouseEvent) -> {
-            double x = mouseEvent.getX();
-            double y = mouseEvent.getY();
-            waypointsManager.addWaypoint((int) x, (int) y);
-            redrawOnNextPulse();
+            if(mouseEvent.isStillSincePress()) {
+                double x = mouseEvent.getX();
+                double y = mouseEvent.getY();
+                waypointsManager.addWaypoint((int) x, (int) y);
+                redrawOnNextPulse();
+            }
         });
 
         pane.setOnMousePressed((MouseEvent mouseEvent) -> {
@@ -155,7 +155,6 @@ public final class BaseMapManager {
         });
 
         pane.setOnMouseDragged((MouseEvent mouseEvent) -> {
-            if (!mouseEvent.isStillSincePress()){
             Point2D newPosSouris = new Point2D.Double(mouseEvent.getX(), mouseEvent.getY());
             float deltaX = (float) (posSouris.get().getX() - newPosSouris.getX());
             float deltaY = (float) (posSouris.get().getY() - newPosSouris.getY());
@@ -166,23 +165,20 @@ public final class BaseMapManager {
             posSouris.set(newPosSouris);
 
             redrawOnNextPulse();
-            }
         });
 
         pane.setOnMouseReleased((MouseEvent mouseEvent) -> {
-            // On vérifie qu'il y a bien eu un déplacement de la souris depuis qu'elle a été pressée
             /*
-            if (!mouseEvent.isStillSincePress()) {
-                Point2D newPosSouris = new Point2D.Double(mouseEvent.getX(), mouseEvent.getY());
+            Point2D newPosSouris = new Point2D.Double(mouseEvent.getX(), mouseEvent.getY());
+            float deltaX = (float) (posSouris.get().getX() - newPosSouris.getX());
+            float deltaY = (float) (posSouris.get().getY() - newPosSouris.getY());
 
-                double deltaX = posSouris.get().getX() - newPosSouris.getX();
-                double deltaY = posSouris.get().getY() - newPosSouris.getY();
+            MapViewParameters mapViewParameters = objectProperty.get();
+            objectProperty.set(mapViewParameters.withMinXY(mapViewParameters.x() + deltaX, mapViewParameters.y() + deltaY));
 
+            posSouris.set(newPosSouris);
 
-
-                redrawOnNextPulse();
-            }
-
+            redrawOnNextPulse();
              */
 
         });
