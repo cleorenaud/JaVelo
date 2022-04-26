@@ -145,7 +145,7 @@ public final class BaseMapManager {
             double x = mouseEvent.getX();
             double y = mouseEvent.getY();
             waypointsManager.addWaypoint((int) x, (int) y);
-            //redrawOnNextPulse();
+            redrawOnNextPulse();
         });
 
         pane.setOnMousePressed((MouseEvent mouseEvent) -> {
@@ -155,17 +155,35 @@ public final class BaseMapManager {
         });
 
         pane.setOnMouseDragged((MouseEvent mouseEvent) -> {
+            if (!mouseEvent.isStillSincePress()){
+            Point2D newPosSouris = new Point2D.Double(mouseEvent.getX(), mouseEvent.getY());
+            float deltaX = (float) (posSouris.get().getX() - newPosSouris.getX());
+            float deltaY = (float) (posSouris.get().getY() - newPosSouris.getY());
 
+            MapViewParameters mapViewParameters = objectProperty.get();
+            objectProperty.set(mapViewParameters.withMinXY(mapViewParameters.x() + deltaX, mapViewParameters.y() + deltaY));
+
+            posSouris.set(newPosSouris);
+
+            redrawOnNextPulse();
+            }
         });
 
         pane.setOnMouseReleased((MouseEvent mouseEvent) -> {
             // On vérifie qu'il y a bien eu un déplacement de la souris depuis qu'elle a été pressée
+            /*
             if (!mouseEvent.isStillSincePress()) {
                 Point2D newPosSouris = new Point2D.Double(mouseEvent.getX(), mouseEvent.getY());
-                double distance = posSouris.get().distance(newPosSouris);
+
+                double deltaX = posSouris.get().getX() - newPosSouris.getX();
+                double deltaY = posSouris.get().getY() - newPosSouris.getY();
 
 
+
+                redrawOnNextPulse();
             }
+
+             */
 
         });
 
