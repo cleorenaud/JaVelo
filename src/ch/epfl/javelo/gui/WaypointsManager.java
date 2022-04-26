@@ -7,6 +7,9 @@ import ch.epfl.javelo.projection.PointWebMercator;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.scene.Group;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -30,7 +33,7 @@ public final class WaypointsManager {
 
     private final Graph graph;
     private final ObjectProperty<MapViewParameters> objectProperty;
-    private final List<Waypoint> pointDePassage;
+    private final ObservableList<Waypoint> pointDePassage;
     private final MapViewParameters mapViewParameters;
     private final Consumer<String> errorConsumer;
     private Pane carte;
@@ -49,12 +52,12 @@ public final class WaypointsManager {
      * @param pointDePassage (List<Waypoint>) : la liste de tous les points de passage
      *                       //@param erreurConsummer (Consumer<String>) :
      */
-    public WaypointsManager(Graph graph, ObjectProperty<MapViewParameters> objectProperty, List<Waypoint> pointDePassage,
+    public WaypointsManager(Graph graph, ObjectProperty<MapViewParameters> objectProperty, ObservableList<Waypoint> pointDePassage,
                             Consumer<String> errorConsumer) {
         this.graph = graph;
         this.objectProperty = objectProperty;
         mapViewParameters = objectProperty.get();
-        this.pointDePassage = new ArrayList<>(pointDePassage);
+        this.pointDePassage = FXCollections.observableArrayList(pointDePassage);
         this.errorConsumer = errorConsumer;
         this.carte = new Pane();
 
@@ -69,7 +72,9 @@ public final class WaypointsManager {
 
 
         carte.setPickOnBounds(false);
+        installBindings();
         redraw();
+
 
 
     }
@@ -88,6 +93,7 @@ public final class WaypointsManager {
         PointCh pointOfXY = mapViewParameters.pointAt(x, y).toPointCh();
         int closestNode = graph.nodeClosestTo(pointOfXY, 1000);
         if(closestNode==-1){
+            nodeError();
             return;
         }
         Waypoint wayPoint = new Waypoint(graph.nodePoint(closestNode), closestNode);
@@ -101,35 +107,47 @@ public final class WaypointsManager {
     private void installHandlers(Group marqueur) {
         // On doit installer trois gestionnaires d'événement gérant les marqueurs
 
-        marqueur.setOnMouseClicked((MouseEvent mouseEvent) -> {
+        /*marqueur.setOnMouseClicked((MouseEvent mouseEvent) -> {
+            System.out.println("j'ai cliqué");
             if(mouseEvent.isStillSincePress()){
                 pointDePassage.remove(marqueurs.get(marqueur));
                 System.out.println("slt");
-                redraw();
+                //redraw();
             }
         });
 
+         */
 
-        marqueur.setOnMousePressed((MouseEvent mouseEvent) -> {
+
+        /*marqueur.setOnMousePressed((MouseEvent mouseEvent) -> {
+
             marqueur.setLayoutY(mouseEvent.getY());
             marqueur.setLayoutX(mouseEvent.getX());
 
-        });
+        });*/
 
-        marqueur.setOnMouseDragged((MouseEvent mouseEvent) -> {
+        marqueur.setOnMouseDragged((MouseEvent mouseEvent) -> { //déplace le marqueur sans déplacer le wayPoint
                 marqueur.setLayoutY(mouseEvent.getY());
                 marqueur.setLayoutX(mouseEvent.getX());
 
         });
 
-        marqueur.setOnMouseReleased((MouseEvent mouseEvent) -> {
-            if(!mouseEvent.isStillSincePress()){
-              Waypoint pointPassage =  marqueurs.get(marqueur);
-              System.out.println("hello");
+        marqueur.setOnMouseReleased((MouseEvent mouseEvent) -> { //gère le déplacement et la suppression d'un marqueur
+            Waypoint pointPassage =  marqueurs.get(marqueur); //le wayPoint associé au marqueur
+
+            if(!mouseEvent.isStillSincePress()){ //si la souris s'est déplacée on déplace le marqueur
               PointCh newPCh = mapViewParameters.pointAt(mouseEvent.getX(), mouseEvent.getY()).toPointCh();
               int i = pointDePassage.indexOf(pointPassage);
-              pointDePassage.set(i,new Waypoint(newPCh, graph.nodeClosestTo(newPCh, 1000)));
-              redraw();
+              int node = graph.nodeClosestTo(newPCh, 1000);
+              if(node==-1){
+                  nodeError();
+                  redraw();
+                  return;
+              }else{
+                  pointDePassage.set(i,new Waypoint(newPCh,node ));
+              }
+            }else{
+                pointDePassage.remove(marqueurs.get(marqueur));
             }
 
 
@@ -139,9 +157,9 @@ public final class WaypointsManager {
     }
 
     private void redraw() {
-        carte.getChildren().removeAll();
+        carte.getChildren().clear();
         marqueurs.clear();
-        System.out.println("yes");
+        System.out.println("dessine");
         System.out.println(pointDePassage.size());
 
         for (int i = 0; i < pointDePassage.size(); i++) {
@@ -167,12 +185,20 @@ public final class WaypointsManager {
 
 
         }
+        System.out.println("nombre d'enfants : " + carte.getChildren().size());
         System.out.println(carte.getChildren().stream().map(p -> p.getLayoutX()).toList());
 
     }
 
     private void installBindings() {
+        pointDePassage.addListener((ListChangeListener<? super Waypoint>) e->redraw());
+        objectProperty.addListener(e->redraw());
     }
+
+    private void nodeError(){
+        errorConsumer.accept("Aucune route à proximité !");
+    }
+
 
 
 }
