@@ -143,7 +143,7 @@ public final class BaseMapManager {
         pane.setOnMouseClicked((MouseEvent mouseEvent) -> {
             double x = mouseEvent.getX();
             double y = mouseEvent.getY();
-            //waypointsManager.addWaypoint((int) x, (int) y);
+            waypointsManager.addWaypoint((int) x, (int) y);
             //redrawOnNextPulse();
         });
 
