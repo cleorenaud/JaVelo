@@ -104,11 +104,16 @@ public final class BaseMapManager {
         double yInTile = y - indexYLeftTile * 256; // La coordonnée y du point supérieur gauche par rapport au sommet de la Tile supérieure gauche
 
         // On itère sur toutes les tiles pour récupérer leur image puis les afficher à l'écran si cette dernière existe
-        for (int i = 0; i <= xTiles; i++) {
-            for (int j = 0; j <= yTiles; j++) {
+        for (int i = 0; i < xTiles; i++) {
+            for (int j = 0; j < yTiles; j++) {
                 try {
                     TileManager.TileId tileId = new TileManager.TileId(objectProperty.get().zoomLevel(), indexXLeftTile + i, indexYLeftTile + j);
                     Image image = tileManager.imageForTileAt(tileId);
+                    if(!TileManager.TileId.isValid(tileId)){
+                        System.out.println("zoom " + mapViewParameters.zoomLevel());
+                        System.out.println("x " + indexXLeftTile + i);
+                        System.out.println("y " + indexYLeftTile + j);
+                    }
                     graphicsContext.drawImage(image, 256 * i - xInTile, 256 * j - yInTile, 256, 256);
 
                 } catch (IOException e) {
@@ -180,7 +185,7 @@ public final class BaseMapManager {
      * Méthode installant les auditeurs
      */
     private void installListeners() {
-        objectProperty.addListener(e -> redrawOnNextPulse());
+        //objectProperty.addListener(e -> redrawOnNextPulse());
     }
 
 }
