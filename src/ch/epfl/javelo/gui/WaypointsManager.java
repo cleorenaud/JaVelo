@@ -92,6 +92,9 @@ public final class WaypointsManager {
     public void addWaypoint(int x, int y) {
         PointCh pointOfXY = mapViewParameters.pointAt(x, y).toPointCh();
         int closestNode = graph.nodeClosestTo(pointOfXY, 1000);
+        if(closestNode==-1){
+            return;
+        }
         Waypoint wayPoint = new Waypoint(graph.nodePoint(closestNode), closestNode);
         Waypoint lastPoint= pointDePassage.remove(pointDePassage.size()-1);
         pointDePassage.add(wayPoint);

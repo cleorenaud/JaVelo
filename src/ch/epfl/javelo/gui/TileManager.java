@@ -45,6 +45,17 @@ public final class TileManager {
         Path dir = path.resolve(String.valueOf(tileId.zoomLevel()));
         dir = dir.resolve(String.valueOf(tileId.x()));
         Path tilePath = dir.resolve(String.valueOf(tileId.y()) + ".png");
+        if(!Files.exists(tilePath)){
+            Files.createDirectories(dir);
+            URL u = new URL("https://tile.openstreetmap.org/" + tileId.zoomLevel() +
+                    "/" + tileId.x  +  "/" + tileId.y + ".png");
+            URLConnection c = u.openConnection();
+            c.setRequestProperty("User-Agent", "JaVelo");
+            try(InputStream i = c.getInputStream()) {
+                FileOutputStream file = new FileOutputStream(tilePath.toString());
+                i.transferTo(file);
+            }
+        }
         if (Files.exists(tilePath)) {
             File file = tilePath.toFile();
             try (InputStream inputStream = new FileInputStream(file)){
@@ -53,21 +64,8 @@ public final class TileManager {
                 return image;
             }
         }
-
-
-        Files.createDirectories(dir);
-        URL u = new URL("https://tile.openstreetmap.org/" + tileId.zoomLevel() +
-                "/" + tileId.x  +  "/" + tileId.y + ".png");
-        URLConnection c = u.openConnection();
-        c.setRequestProperty("User-Agent", "JaVelo");
-        try(InputStream i = c.getInputStream()){
-            FileOutputStream file = new FileOutputStream(tilePath.toString());
-            i.transferTo(file);
-            image = new Image(i);
-            addToCacheMemoir(tileId, image);
-            return image;
-        }
-
+        return null;
+        
     }
 
     private void addToCacheMemoir(TileId tileId, Image image){
