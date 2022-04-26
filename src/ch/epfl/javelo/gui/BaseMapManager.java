@@ -158,7 +158,10 @@ public final class BaseMapManager {
         });
 
         pane.setOnMouseReleased((MouseEvent mouseEvent) -> {
+            // On vérifie qu'il y a bien eu un déplacement de la souris depuis qu'elle a été pressée
+            if(!mouseEvent.isStillSincePress()) {
 
+            }
 
         });
 
@@ -168,6 +171,9 @@ public final class BaseMapManager {
             zoomLevel = Math2.clamp(8, zoomLevel, 19);
             objectProperty.setValue(new MapViewParameters(zoomLevel, objectProperty.get().x(), objectProperty.get().y()));
             redrawOnNextPulse();
+
+            // On fait des translations pour mettre le point sous la souris dans le coin haut gauche, on zoom puis on
+            // remet le coin hau gauche sous la souris
         });
 
 
