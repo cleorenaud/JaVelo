@@ -13,6 +13,7 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 
 import java.io.IOException;
+import java.util.Map;
 
 
 /**
@@ -140,7 +141,7 @@ public final class BaseMapManager {
         // On doit installer trois gestionnaires d'événement gérant le glissement de la carte
 
         pane.setOnMouseClicked((MouseEvent mouseEvent) -> {
-            if(mouseEvent.isStillSincePress()) {
+            if (mouseEvent.isStillSincePress()) {
                 double x = mouseEvent.getX();
                 double y = mouseEvent.getY();
                 waypointsManager.addWaypoint((int) x, (int) y);
@@ -185,10 +186,9 @@ public final class BaseMapManager {
         });
 
         pane.setOnScroll((ScrollEvent scrollEvent) -> {
+            /*
             float xSouris = (float) scrollEvent.getX();
             float ySouris = (float) scrollEvent.getY();
-
-            //objectProperty.set(objectProperty.get().withMinXY(xSouris, ySouris));
 
             double delta = Math.round(scrollEvent.getDeltaY());
             int oldZoomLevel = objectProperty.get().zoomLevel();
@@ -201,10 +201,40 @@ public final class BaseMapManager {
             float newX = Math.scalb(oldX, newZoomLevel - oldZoomLevel);
             float newY = Math.scalb(oldY, newZoomLevel - oldZoomLevel);
 
-            //xSouris = Math.scalb(xSouris, newZoomLevel - oldZoomLevel);
-            //ySouris = Math.scalb(ySouris, newZoomLevel - oldZoomLevel);
-
             objectProperty.setValue(new MapViewParameters(newZoomLevel, newX , newY));
+
+            redrawOnNextPulse();
+             */
+            float oldX = objectProperty.get().x(); // La coordonnée x du coin supérieur gauche avant le zoom
+            float oldY = objectProperty.get().y(); // La coordonnée y du coin supérieur gauche avant le zoom
+
+            float xSouris = oldX + (float) scrollEvent.getX(); // La coordonnée x de la souris
+            float ySouris = oldY + (float) scrollEvent.getY(); // La coordonnée y de la souris
+
+            double xTranslation = scrollEvent.getX(); // La coordonnée x de la souris par rapport au coin supérieur gauche
+            double yTranslation = scrollEvent.getY(); // La coordonnée y de la souris par rapport au coin supérieur gauche
+
+            // On effectue une première translation pour que le point sous la souris se retrouve dans le coin
+            // supérieur gauche de la fenêtre
+            objectProperty.set(objectProperty.get().withMinXY(xSouris, ySouris));
+
+            // On calcul le nouveau zoom selon le degré dont la molette à été tournée
+            double delta = Math.round(scrollEvent.getDeltaY());
+            int oldZoomLevel = objectProperty.get().zoomLevel();
+            int newZoomLevel = (int) (oldZoomLevel + delta);
+            newZoomLevel = Math2.clamp(8, newZoomLevel, 19);
+
+            int difZoom = newZoomLevel - oldZoomLevel;
+
+            float newX = Math.scalb(xSouris, difZoom);
+            float newY = Math.scalb(ySouris, difZoom);
+
+            objectProperty.setValue(new MapViewParameters(newZoomLevel, newX, newY));
+
+            newX = (float) (newX + Math.scalb(xTranslation, difZoom));
+            newY = (float) (newY + Math.scalb(yTranslation, difZoom));
+
+            objectProperty.set(objectProperty.get().withMinXY(newX, newY));
 
             redrawOnNextPulse();
 
