@@ -69,14 +69,13 @@ public final class TileManager {
     }
 
     private void addToCacheMemoir(TileId tileId, Image image){
-        System.out.println("avant " + cacheMemoir.size());
         if(cacheMemoir.size()==CAPACITY){
-            System.out.println("oui");
-            for (Map.Entry entry: cacheMemoir.entrySet()) {
-                cacheMemoir.remove(entry.getKey());
-                System.out.println("après" + cacheMemoir.size());
+            TileId key= null;
+            for (Map.Entry<TileId, Image> entry: cacheMemoir.entrySet()) {
+                key=entry.getKey();
                 continue;
             }
+            cacheMemoir.remove(key);
         }
         cacheMemoir.put(tileId, image);
 
