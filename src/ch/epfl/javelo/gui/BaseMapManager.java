@@ -4,6 +4,7 @@ import ch.epfl.javelo.Math2;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -11,7 +12,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 
-import java.awt.geom.Point2D;
 import java.io.IOException;
 
 
@@ -150,12 +150,13 @@ public final class BaseMapManager {
 
         pane.setOnMousePressed((MouseEvent mouseEvent) -> {
             // On crée un ObjectProperty contenant la position à laquelle se trouvait la souris au moment où elle est pressée
-            this.posSouris = new SimpleObjectProperty<>(new Point2D.Double(mouseEvent.getX(), mouseEvent.getY()));
+            this.posSouris = new SimpleObjectProperty<>(new Point2D(mouseEvent.getX(), mouseEvent.getY()));
 
         });
 
         pane.setOnMouseDragged((MouseEvent mouseEvent) -> {
-            Point2D newPosSouris = new Point2D.Double(mouseEvent.getX(), mouseEvent.getY());
+            // TODO: utiliser les méthodes add et substract
+            Point2D newPosSouris = new Point2D(mouseEvent.getX(), mouseEvent.getY());
             float deltaX = (float) (posSouris.get().getX() - newPosSouris.getX());
             float deltaY = (float) (posSouris.get().getY() - newPosSouris.getY());
 
