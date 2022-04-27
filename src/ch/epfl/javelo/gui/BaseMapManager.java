@@ -205,37 +205,28 @@ public final class BaseMapManager {
 
             redrawOnNextPulse();
              */
-            float oldX = objectProperty.get().x(); // La coordonnée x du coin supérieur gauche avant le zoom
-            float oldY = objectProperty.get().y(); // La coordonnée y du coin supérieur gauche avant le zoom
-
-            float xSouris = oldX + (float) scrollEvent.getX(); // La coordonnée x de la souris
-            float ySouris = oldY + (float) scrollEvent.getY(); // La coordonnée y de la souris
-
             double xTranslation = scrollEvent.getX(); // La coordonnée x de la souris par rapport au coin supérieur gauche
             double yTranslation = scrollEvent.getY(); // La coordonnée y de la souris par rapport au coin supérieur gauche
+            float xSouris = (float) (objectProperty.get().x() + xTranslation); // La coordonnée x de la souris
+            float ySouris = (float) (objectProperty.get().y() + yTranslation); // La coordonnée y de la souris
+
 
             // On effectue une première translation pour que le point sous la souris se retrouve dans le coin
             // supérieur gauche de la fenêtre
             objectProperty.set(objectProperty.get().withMinXY(xSouris, ySouris));
 
-            // On calcul le nouveau zoom selon le degré dont la molette à été tournée
+            // On calcule le nouveau zoom selon le degré dont la molette à été tournée
             double delta = Math.round(scrollEvent.getDeltaY());
             int oldZoomLevel = objectProperty.get().zoomLevel();
             int newZoomLevel = (int) (oldZoomLevel + delta);
             newZoomLevel = Math2.clamp(8, newZoomLevel, 19);
 
             int difZoom = newZoomLevel - oldZoomLevel;
-
-            float newX = Math.scalb(xSouris, difZoom);
-            float newY = Math.scalb(ySouris, difZoom);
+            // On effectue la deuxième translation pour que le point sous la souris se retrouve à nouveau au bon endroit
+            float newX = (float) (Math.scalb(xSouris, difZoom) - xTranslation);
+            float newY = (float) (Math.scalb(ySouris, difZoom) - yTranslation);
 
             objectProperty.setValue(new MapViewParameters(newZoomLevel, newX, newY));
-
-            newX = (float) (newX + Math.scalb(xTranslation, difZoom));
-            newY = (float) (newY + Math.scalb(yTranslation, difZoom));
-
-            objectProperty.set(objectProperty.get().withMinXY(newX, newY));
-
             redrawOnNextPulse();
 
         });
