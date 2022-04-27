@@ -186,25 +186,6 @@ public final class BaseMapManager {
         });
 
         pane.setOnScroll((ScrollEvent scrollEvent) -> {
-            /*
-            float xSouris = (float) scrollEvent.getX();
-            float ySouris = (float) scrollEvent.getY();
-
-            double delta = Math.round(scrollEvent.getDeltaY());
-            int oldZoomLevel = objectProperty.get().zoomLevel();
-            int newZoomLevel = (int) (oldZoomLevel + delta);
-            newZoomLevel = Math2.clamp(8, newZoomLevel, 19);
-
-            float oldX = objectProperty.get().x();
-            float oldY = objectProperty.get().y();
-
-            float newX = Math.scalb(oldX, newZoomLevel - oldZoomLevel);
-            float newY = Math.scalb(oldY, newZoomLevel - oldZoomLevel);
-
-            objectProperty.setValue(new MapViewParameters(newZoomLevel, newX , newY));
-
-            redrawOnNextPulse();
-             */
             double xTranslation = scrollEvent.getX(); // La coordonnée x de la souris par rapport au coin supérieur gauche
             double yTranslation = scrollEvent.getY(); // La coordonnée y de la souris par rapport au coin supérieur gauche
             float xSouris = (float) (objectProperty.get().x() + xTranslation); // La coordonnée x de la souris
