@@ -28,10 +28,10 @@ public final class RouteBean {
     }
 
 
-    private ObservableList<Waypoint> waypoints; // La liste (observable) des points de passage
-    private ReadOnlyObjectProperty<Route> route; // L'itinéraire permettant de relier les points de passage
-    private DoubleProperty highlightedPosition; // La position mise en évidence
-    private ReadOnlyObjectProperty<ElevationProfile> elevationProfile; // Le profil de l'itinéraire
+    public ObservableList<Waypoint> waypoints; // La liste (observable) des points de passage
+    public ReadOnlyObjectProperty<Route> route; // L'itinéraire permettant de relier les points de passage
+    public DoubleProperty highlightedPosition; // La position mise en évidence
+    public ReadOnlyObjectProperty<ElevationProfile> elevationProfile; // Le profil de l'itinéraire
 
     /**
      * Méthode retournant la propriété représentant la liste (observable) des points de passage
