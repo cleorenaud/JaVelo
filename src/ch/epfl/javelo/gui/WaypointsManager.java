@@ -20,6 +20,7 @@ import java.util.function.Consumer;
 
 /**
  * Classe publique et finale qui gère l'affichage et l'interaction avec les points de passage
+ *
  * @author : Roxanne Chevalley (339716)
  */
 public final class WaypointsManager {
@@ -29,15 +30,12 @@ public final class WaypointsManager {
     private final ObservableList<Waypoint> pointDePassage;
     private final Consumer<String> errorConsumer;
     private final Pane carte;
-    private final SVGPath fils1;
-    private final SVGPath fils2;
     private final Map<Group, Waypoint> marqueurs = new HashMap<>();
     private final String FILS_CONTENT1 = "M-8-20C-5-14-2-7 0 0 2-7 5-14 8-20 20-40-20-40-8-20";
-    private final String FILS_CONTENT2 =  "M0-23A1 1 0 000-29 1 1 0 000-23";
+    private final String FILS_CONTENT2 = "M0-23A1 1 0 000-29 1 1 0 000-23";
     private javafx.geometry.Point2D posSouris;
     private javafx.geometry.Point2D posMarqueur;
     private javafx.geometry.Point2D newPlace;
-    private boolean canMove=false;
     private final double SEARCH_DISTANCE = 500;
 
     /**
@@ -56,24 +54,16 @@ public final class WaypointsManager {
         this.errorConsumer = errorConsumer;
         this.carte = new Pane();
 
-        SVGPath fils1 = new SVGPath();
-        fils1.setContent(FILS_CONTENT1);
-        fils1.getStyleClass().add("pin_outside");
-        this.fils1 = fils1;
-        SVGPath fils2 = new SVGPath();
-        fils2.getStyleClass().add("pin_inside");
-        fils2.setContent(FILS_CONTENT2);
-        this.fils2= fils2;
-
 
         carte.setPickOnBounds(false);
-        installBindings();
+        installListeners(); //méthode s'occupant d'ajouter les auditeurs
         recreate();
 
     }
 
     /**
      * méthode publique permettant d'obtenir le pane qui contient le dessin des marqueurs
+     *
      * @return (Pane) : le pane
      */
     public Pane pane() {
@@ -89,15 +79,15 @@ public final class WaypointsManager {
     public void addWaypoint(int x, int y) {
         PointCh pointOfXY = objectProperty.get().pointAt(x, y).toPointCh();
         int closestNode = graph.nodeClosestTo(pointOfXY, SEARCH_DISTANCE);
-        if(closestNode==-1){
+        if (closestNode == -1) {
             nodeError();
             return;
         }
         Waypoint wayPoint = new Waypoint(pointOfXY, closestNode);
-        if(pointDePassage.size()<2){
+        if (pointDePassage.size() < 2) {
             pointDePassage.add(wayPoint);
-        }else{ //s'il y a plus que deux points insérer le nouveau point au milieu
-            Waypoint lastPoint= pointDePassage.remove(pointDePassage.size()-1);
+        } else { //s'il y a plus que deux points insérer le nouveau point au milieu
+            Waypoint lastPoint = pointDePassage.remove(pointDePassage.size() - 1);
             pointDePassage.add(wayPoint);
             pointDePassage.add(lastPoint);
         }
@@ -106,6 +96,7 @@ public final class WaypointsManager {
 
     /**
      * méthode privée installant la gestion d'événement pour chaque marqueur
+     *
      * @param marqueur (Group) : le marqueur sur lequel il faut installer la gestion d'événement
      */
     private void installHandlers(Group marqueur) {
@@ -116,15 +107,13 @@ public final class WaypointsManager {
             // et la souris au moment où elle est pressée
             this.posSouris = new javafx.geometry.Point2D(mouseEvent.getX(), mouseEvent.getY());
             this.posMarqueur = new javafx.geometry.Point2D(marqueur.getLayoutX(), marqueur.getLayoutY());
-            System.out.println("nouvelle Pos");
-
         });
 
 
         //déplace le marqueur sans déplacer le wayPoint
         marqueur.setOnMouseDragged((MouseEvent mouseEvent) -> {
             javafx.geometry.Point2D newPosSouris = new javafx.geometry.Point2D(mouseEvent.getX(), mouseEvent.getY());
-            Point2D dif= newPosSouris.subtract(posSouris);
+            Point2D dif = newPosSouris.subtract(posSouris);
             newPlace = dif.add(posMarqueur);
             marqueur.setLayoutX(newPlace.getX());
             marqueur.setLayoutY(newPlace.getY());
@@ -133,22 +122,24 @@ public final class WaypointsManager {
 
         marqueur.setOnMouseReleased((MouseEvent mouseEvent) -> { //gère le déplacement et la suppression d'un marqueur
 
-            Waypoint pointPassage =  marqueurs.get(marqueur); //le wayPoint associé au marqueur
+            Waypoint pointPassage = marqueurs.get(marqueur); //le wayPoint associé au marqueur
 
-            if(!mouseEvent.isStillSincePress()){ //si la souris s'est déplacée on déplace le marqueur
-              PointCh newPCh = objectProperty.get().pointAt
-                (newPlace.getX(), newPlace.getY()).toPointCh();
-              int i = pointDePassage.indexOf(pointPassage);
-              int node = graph.nodeClosestTo(newPCh, SEARCH_DISTANCE);
+            if (!mouseEvent.isStillSincePress()) { //si la souris s'est déplacée on déplace le marqueur
+                PointCh newPCh = objectProperty.get().pointAt
+                        (newPlace.getX(), newPlace.getY()).toPointCh();
+                int i = pointDePassage.indexOf(pointPassage);
+                int node = graph.nodeClosestTo(newPCh, SEARCH_DISTANCE);
 
-              if(node==-1){ //on a pas trouvé de noeud proche -> erreur
-                  nodeError();
-                  replace(); //on remet le noeud là où on l'a pris au début
-              }else{
-                  pointDePassage.set(i,new Waypoint(newPCh,node));
-              }
+                if (node == -1) { //on a pas trouvé de noeud proche -> erreur
+                    nodeError();
+                    replace(); //on remet le noeud là où on l'a pris au début
+                } else { //on change le waypoint
+                    Waypoint newWaypoint = new Waypoint(newPCh, node);
+                    pointDePassage.set(i, newWaypoint);
+                    marqueurs.put(marqueur, newWaypoint);
+                }
 
-            }else{//si on ne s'est pas déplacé
+            } else {//si on ne s'est pas déplacé
                 pointDePassage.remove(marqueurs.get(marqueur));
             }
 
@@ -156,40 +147,54 @@ public final class WaypointsManager {
 
     }
 
+    /**
+     * méthode privée recréant les marqueurs
+     */
     private void recreate() {
+
         carte.getChildren().clear();
         marqueurs.clear();
-        System.out.println("dessine");
-        System.out.println(pointDePassage.size());
+
 
         for (int i = 0; i < pointDePassage.size(); i++) {
+
+            //dessin des marqueurs grâce aux SVG Paths
+            SVGPath fils1 = new SVGPath();
+            fils1.setContent(FILS_CONTENT1);
+            fils1.getStyleClass().add("pin_outside");
+            SVGPath fils2 = new SVGPath();
+            fils2.getStyleClass().add("pin_inside");
+            fils2.setContent(FILS_CONTENT2);
             Group marqueur = new Group(fils1, fils2);
             marqueur.getStyleClass().add("pin");
-            if(i==0){
+
+            //coloriage des marqueurs
+            if (i == 0) {
                 marqueur.getStyleClass().add("first");
-            }else if (i==pointDePassage.size()-1){
+            } else if (i == pointDePassage.size() - 1) {
                 marqueur.getStyleClass().add("last");
-            }else{
+            } else {
                 marqueur.getStyleClass().add("middle");
             }
 
 
+            //installation du gestionnaire d'événement des marqueurs et placement de ceux ci
             marqueurs.put(marqueur, pointDePassage.get(i));
             carte.getChildren().add(marqueur);
-
             installHandlers(marqueur);
-
-
         }
-        replace();
-        System.out.println("nombre d'enfants : " + carte.getChildren().size());
-        System.out.println(carte.getChildren().stream().map(p -> p.getLayoutX()).toList());
+
+
+        replace(); //replace les marqueurs
 
     }
 
-    private void replace(){
-        for (Node marqueur:carte.getChildren()) {
-            PointCh pointCh=  marqueurs.get(marqueur).point();
+    /**
+     * méthode privée replaçant les marqueurs
+     */
+    private void replace() {
+        for (Node marqueur : carte.getChildren()) {
+            PointCh pointCh = marqueurs.get(marqueur).point();
             PointWebMercator webMercator = PointWebMercator.ofPointCh(pointCh);
 
             marqueur.setLayoutX(objectProperty.get().viewX(webMercator));
@@ -198,16 +203,20 @@ public final class WaypointsManager {
 
     }
 
-    private void installBindings() {
-        pointDePassage.addListener((ListChangeListener<? super Waypoint>) e->recreate());
-        objectProperty.addListener(e->replace());
+    /**
+     * méthode privée s'occupant d'ajouter les auditeurs nécessaires
+     */
+    private void installListeners() {
+        pointDePassage.addListener((ListChangeListener<? super Waypoint>) e -> recreate());
+        objectProperty.addListener(e -> replace());
     }
 
-    private void nodeError(){
+    /**
+     * méthode se chargeant de l'affichage d'erreur
+     */
+    private void nodeError() {
         errorConsumer.accept("Aucune route à proximité !");
     }
-
-
 
 
 }
