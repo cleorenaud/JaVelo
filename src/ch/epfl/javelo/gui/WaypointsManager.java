@@ -106,7 +106,6 @@ public final class WaypointsManager {
             // On crée deux Point2D contenant la position à laquelle se trouvaient le marqueur
             // et la souris au moment où elle est pressée
             this.posSouris = new javafx.geometry.Point2D(mouseEvent.getX(), mouseEvent.getY());
-            this.posMarqueur = new javafx.geometry.Point2D(marqueur.getLayoutX(), marqueur.getLayoutY());
         });
 
 
@@ -114,6 +113,7 @@ public final class WaypointsManager {
         marqueur.setOnMouseDragged((MouseEvent mouseEvent) -> {
             javafx.geometry.Point2D newPosSouris = new javafx.geometry.Point2D(mouseEvent.getX(), mouseEvent.getY());
             Point2D dif = newPosSouris.subtract(posSouris);
+            Point2D posMarqueur = new javafx.geometry.Point2D(marqueur.getLayoutX(), marqueur.getLayoutY());
             newPlace = dif.add(posMarqueur);
             marqueur.setLayoutX(newPlace.getX());
             marqueur.setLayoutY(newPlace.getY());
