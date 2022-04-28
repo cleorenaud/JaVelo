@@ -50,7 +50,7 @@ public final class Math2 {
      * @throws IllegalArgumentException si min est (strictement) supérieur à max
      */
     public static int clamp(int min, int v, int max) throws IllegalArgumentException {
-        Preconditions.checkArgument(max > min);
+        Preconditions.checkArgument(max >= min);
         if (v < min) {
             return min;
         }
@@ -95,7 +95,7 @@ public final class Math2 {
      * @return (double) le produit scalaire
      */
     public static double dotProduct(double uX, double uY, double vX, double vY) {
-        return Math.fma(uX, vX, Math.fma(uY, vY, 0));
+        return Math.fma(uX, vX, vY*uY);
     }
 
     /**

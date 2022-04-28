@@ -15,8 +15,8 @@ public final class RouteComputer {
 
     private final Graph graph;
     private final CostFunction costFunction;
-    private final float INITIATE= Float.POSITIVE_INFINITY;
-    private final float MARK= Float.NEGATIVE_INFINITY;
+    private static final float INITIATE = Float.POSITIVE_INFINITY;
+    private static final float MARK = Float.NEGATIVE_INFINITY;
 
     /**
      * Construit un planificateur d'itinéraire pour le graphe et la fonction de coût donnée
@@ -67,24 +67,7 @@ public final class RouteComputer {
             int retenir=enExploration.remove().nodeId;
 
             if (retenir == endNodeId) { // On a trouvé le chemin et on construit maintenant la route correspondante
-                List<Integer> noeudsTrajet = new ArrayList<>(); // Création d'une liste des nœuds du chemin
-                int k = endNodeId;
-                noeudsTrajet.add(k);
-                while (k != startNodeId) { // Remplissage des nœuds du trajet (de la fin vers le début)
-                    k = predecesseur[k];
-                    noeudsTrajet.add(k);
-                }
-
-                List<Edge> edges = new ArrayList<>(); // On crée une liste d'arêtes
-
-                int noeud1 = noeudsTrajet.remove(noeudsTrajet.size() - 1);
-                while (noeudsTrajet.size() >= 1) { // Construction des arêtes à partir des nœuds
-                    int noeud2 = noeudsTrajet.remove(noeudsTrajet.size() - 1);
-                    Edge edge = Edge.of(graph, arrete[noeud2], noeud1, noeud2);
-                    edges.add(edge);
-                    noeud1=noeud2;
-                }
-                return new SingleRoute(edges);
+                return createRoad(endNodeId,startNodeId,predecesseur,arrete);
             }
 
             // Si on n'a pas encore trouvé le chemin
@@ -110,6 +93,28 @@ public final class RouteComputer {
 
         }
         return null;
+    }
+
+
+    private SingleRoute createRoad(int endNodeId, int startNodeId, int[] predecesseur, int[] arrete){
+        List<Integer> noeudsTrajet = new ArrayList<>(); // Création d'une liste des nœuds du chemin
+        int k = endNodeId;
+        noeudsTrajet.add(k);
+        while (k != startNodeId) { // Remplissage des nœuds du trajet (de la fin vers le début)
+            k = predecesseur[k];
+            noeudsTrajet.add(k);
+        }
+
+        List<Edge> edges = new ArrayList<>(); // On crée une liste d'arêtes
+
+        int noeud1 = noeudsTrajet.remove(noeudsTrajet.size() - 1);
+        while (noeudsTrajet.size() >= 1) { // Construction des arêtes à partir des nœuds
+            int noeud2 = noeudsTrajet.remove(noeudsTrajet.size() - 1);
+            Edge edge = Edge.of(graph, arrete[noeud2], noeud1, noeud2);
+            edges.add(edge);
+            noeud1=noeud2;
+        }
+        return new SingleRoute(edges);
     }
 
 }

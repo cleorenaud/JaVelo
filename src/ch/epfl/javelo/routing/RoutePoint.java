@@ -20,7 +20,9 @@ import static java.lang.Double.POSITIVE_INFINITY;
  */
 public record RoutePoint(PointCh point, double position, double distanceToReference) {
 
-    // Constante représentant un point inexistant
+    /**
+     * Constante représentant un point inexistant
+     */
     public static final RoutePoint NONE = new RoutePoint(null, NaN, POSITIVE_INFINITY);
 
     /**

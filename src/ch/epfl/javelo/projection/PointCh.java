@@ -50,7 +50,7 @@ public record PointCh(double e, double n) {
      * @return (double) : la longitude du point, dans le système WGS84, en radians
      */
     public double lon() {
-        return Ch1903.lon(e(), n());
+        return Ch1903.lon(e, n);
     }
 
     /**
@@ -59,7 +59,7 @@ public record PointCh(double e, double n) {
      * @return (double) : retourne la latitude du point, dans le système WGS84, en radians
      */
     public double lat() {
-        return Ch1903.lat(e(), n());
+        return Ch1903.lat(e, n);
     }
 
 }

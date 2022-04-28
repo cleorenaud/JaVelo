@@ -29,10 +29,11 @@ public final class Bits {
      * l'intervalle allant de 0 à 31 (inclus), ou si start ou length est négatif, ou si start est supérieur à 31
      */
     public static int extractSigned(int value, int start, int length) throws IllegalArgumentException {
-        Preconditions.checkArgument((start + length <= 32) && (start <= 31) && (length >= 0) && (start >= 0));
+        Preconditions.checkArgument((start + length <= Integer.SIZE) && (start <= Integer.SIZE-1)
+                && (length >= 0) && (start >= 0));
 
-        int temp = value << (32 - (length + start));
-        return temp >> (32 - length);
+        int temp = value << (Integer.SIZE - (length + start));
+        return temp >> (Integer.SIZE - length);
     }
 
     /**
@@ -47,9 +48,10 @@ public final class Bits {
      * l'intervalle allant de 0 à 30 (inclus), ou si start ou length est négatif
      */
     public static int extractUnsigned(int value, int start, int length) throws IllegalArgumentException {
-        Preconditions.checkArgument((start <= 31) && (start >= 0) && (length >= 0) && (length <= 31) && (start + length <= 32));
-        int temp = value << (32 - (start + length));
-        return temp >>> (32 - length);
+        Preconditions.checkArgument((start <= Integer.SIZE-1) && (start >= 0) && (length >= 0) &&
+                (length <= Integer.SIZE-1) && (start + length <= Integer.SIZE));
+        int temp = value << (Integer.SIZE - (start + length));
+        return temp >>> (Integer.SIZE - length);
     }
 
 }

@@ -21,6 +21,9 @@ public record GraphNodes(IntBuffer buffer) {
     private static final int OFFSET_N = OFFSET_E + 1;
     private static final int OFFSET_OUT_EDGES = OFFSET_N + 1;
     private static final int NODE_INTS = OFFSET_OUT_EDGES + 1;
+    private static final int EXTRACT_START =0;
+    private static final int EXTRACT_MIDDLE =4;
+    private static final int EXTRACT_END=28;
 
     /**
      * Méthode retournant le nombre total de nœuds
@@ -62,7 +65,7 @@ public record GraphNodes(IntBuffer buffer) {
      */
     public int outDegree(int nodeId) {
         int indexD = NODE_INTS * nodeId + OFFSET_OUT_EDGES;
-        int d = Bits.extractUnsigned(buffer.get(indexD), 28, 4);
+        int d = Bits.extractUnsigned(buffer.get(indexD), EXTRACT_END, EXTRACT_MIDDLE);
         return d;
     }
 
@@ -76,7 +79,7 @@ public record GraphNodes(IntBuffer buffer) {
     public int edgeId(int nodeId, int edgeIndex) {
         assert 0 <= edgeIndex && edgeIndex < outDegree(nodeId);
         int indexD = NODE_INTS * nodeId + OFFSET_OUT_EDGES;
-        int d = Bits.extractUnsigned(buffer.get(indexD), 0, 28);
+        int d = Bits.extractUnsigned(buffer.get(indexD), EXTRACT_START, EXTRACT_END);
         return d + edgeIndex;
     }
 

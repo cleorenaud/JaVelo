@@ -12,6 +12,8 @@ import java.util.Arrays;
 
 public final class ElevationProfileComputer {
 
+    private ElevationProfileComputer(){}//constructeur privé pour que la classe soit non-instanciable
+
     /**
      * Méthode retournant le profil en long de l'itinéraire route,
      * en garantissant un espacement maximal entre les échantillons du profil.
@@ -41,6 +43,9 @@ public final class ElevationProfileComputer {
                 }
             }
             Arrays.fill(elevationSamples, 0, k, elevationSamples[k]);
+            if(Float.isNaN(elevationSamples[k])){
+                return new ElevationProfile(route.length(), elevationSamples);
+            }
         }
 
         if (Float.isNaN(elevationSamples[nbEch - 1])) { //gère si les dernières valeurs sont NaN
@@ -58,13 +63,11 @@ public final class ElevationProfileComputer {
             if (Float.isNaN(elevationSamples[i])) {
                 float debut = elevationSamples[i - 1];
                 int j = i + 1;
-                int compteur = 1;
                 while (Float.isNaN(elevationSamples[j])) {
                     ++j;
-                    ++compteur;
                 }
                 float fin = elevationSamples[j];
-                double delta = (double) (fin - debut) / (compteur + 1);
+                double delta = (double) (fin - debut) / (j-i + 1);
                 for (int k = i; k < j; k++) {
                     elevationSamples[k] = debut + (float) delta * (k - i + 1);
                 }

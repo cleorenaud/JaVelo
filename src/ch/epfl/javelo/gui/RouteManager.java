@@ -1,11 +1,17 @@
 package ch.epfl.javelo.gui;
 
+import ch.epfl.javelo.projection.PointCh;
+import ch.epfl.javelo.projection.PointWebMercator;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.collections.ListChangeListener;
+import javafx.scene.Group;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polyline;
 
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -33,6 +39,7 @@ public final class RouteManager {
         itineraire.setId("route");
         this.cercle = new Circle(5);
         cercle.setId("highlight");
+        carte.getChildren().add(itineraire);
         installListeners(); //méthode s'occupant d'ajouter les auditeurs
         recreate();
     }
@@ -47,13 +54,15 @@ public final class RouteManager {
     }
 
     private void recreate(){
+        List<PointCh> points = new ArrayList(routeBean.route.get().points());
         itineraire.getPoints().clear();
-        itineraire.getPoints().add(0d);
-        itineraire.getPoints().add(0d);
-        itineraire.getPoints().add(200d);
-        itineraire.getPoints().add(200d);
-        for (Waypoint pointDePassage : routeBean.waypoints){
-            itineraire.getPoints().add(10d);
+
+
+        for (PointCh point: points){
+            PointWebMercator webMercator = PointWebMercator.ofPointCh(point);
+
+
+            itineraire.getPoints().add(PointWebMercator.ofPointCh(point).x());
 
         }
 
@@ -61,9 +70,10 @@ public final class RouteManager {
     }
 
     private void replace(){
-        itineraire.setLayoutX(100);
-        itineraire.setLayoutY(100);
+
         itineraire.setVisible(true);
+        itineraire.setLayoutX(100);
+        itineraire.setLayoutY(50);
 
     }
 

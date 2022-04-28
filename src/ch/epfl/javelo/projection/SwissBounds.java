@@ -30,10 +30,8 @@ public final class SwissBounds {
      * @return (boolean) : true si les coordonnées du point sont bien dans les limites de la Suisse, et false autrement
      */
     public static boolean containsEN(double e, double n) {
-        if ((MIN_E <= e) && (e <= MAX_E) && (MIN_N <= n) && (MAX_N >= n)) {
-            return true;
-        }
-        return false;
+        return (MIN_E <= e) && (e <= MAX_E) && (MIN_N <= n) && (MAX_N >= n);
+
     }
 
 }

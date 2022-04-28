@@ -76,9 +76,9 @@ public record AttributeSet(long bits) {
     @Override
     public String toString() {
         StringJoiner j = new StringJoiner(",", "{", "}");
-        for (int i = 0; i < Attribute.COUNT; ++i) {
-            if (this.contains(Attribute.ALL.get(i))) {
-                String message = Attribute.ALL.get(i).toString();
+        for(Attribute attribute : Attribute.ALL){
+            if (this.contains(attribute)) {
+                String message = attribute.toString();
                 j.add(message);
             }
         }

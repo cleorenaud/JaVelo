@@ -7,7 +7,9 @@ package ch.epfl.javelo.routing;
 import ch.epfl.javelo.Functions;
 import ch.epfl.javelo.Preconditions;
 
+import java.util.Arrays;
 import java.util.DoubleSummaryStatistics;
+import java.util.List;
 import java.util.function.DoubleUnaryOperator;
 
 /**
@@ -20,6 +22,11 @@ public final class ElevationProfile {
 
     private final double length;
     private final float[] elevationsSamples;
+    private final DoubleUnaryOperator function;
+    private final double totalAscent;
+    private final double totalDescent;
+    private final double maxElevation;
+    private final double minElevation;
 
     /**
      * Construit le profil en long d'un itinéraire de longueur length (en mètres) et dont les échantillons d'altitude,
@@ -31,12 +38,14 @@ public final class ElevationProfile {
      *                                  moins de deux éléments
      */
     public ElevationProfile(double length, float[] elevationSamples) throws IllegalArgumentException {
-        this.elevationsSamples = elevationSamples;
-        this.length = length;
-        if (length <= 0 || elevationSamples.length < 2) {
-            throw new IllegalArgumentException();
-        }
         Preconditions.checkArgument(length > 0 && elevationSamples.length >= 2);
+        this.elevationsSamples = Arrays.copyOf(elevationSamples,elevationSamples.length);
+        this.length = length;
+        this.function = Functions.sampled(elevationsSamples, length);
+        this.totalAscent=getTotalAscent();
+        this.totalDescent=getTotalDescent();
+        this.maxElevation=getStatistics().getMax();
+        this.minElevation=getStatistics().getMin();
     }
 
     /**
@@ -54,7 +63,7 @@ public final class ElevationProfile {
      * @return (double) : l'altitude minimum du profil
      */
     public double minElevation() {
-        return getStatistics().getMin();
+        return minElevation;
     }
 
     /**
@@ -63,7 +72,7 @@ public final class ElevationProfile {
      * @return (double) : l'altitude maximum du profil
      */
     public double maxElevation() {
-        return getStatistics().getMax();
+        return maxElevation;
     }
 
     /**
@@ -72,14 +81,6 @@ public final class ElevationProfile {
      * @return (double) : le dénivelé positif total du profil, en mètres
      */
     public double totalAscent() {
-        double totalAscent = 0;
-        for (int i = 0; i < elevationsSamples.length - 1; i++) {
-            double dif = elevationsSamples[i + 1] - elevationsSamples[i];
-            if (dif > 0) {
-                totalAscent = totalAscent + dif;
-            }
-
-        }
         return totalAscent;
     }
 
@@ -90,15 +91,7 @@ public final class ElevationProfile {
      * @return (double) : le dénivelé négatif total du profil, en mètres
      */
     public double totalDescent() {
-        double totalDescent = 0;
-        for (int i = 0; i < elevationsSamples.length - 1; i++) {
-            double dif = elevationsSamples[i + 1] - elevationsSamples[i];
-            if (dif < 0) {
-                totalDescent = totalDescent + dif;
-            }
-
-        }
-        return Math.abs(totalDescent);
+        return totalDescent;
     }
 
     /**
@@ -108,7 +101,6 @@ public final class ElevationProfile {
      * @return (double) : l'altitude du profil à la position donnée
      */
     public double elevationAt(double position) {
-        DoubleUnaryOperator function = Functions.sampled(elevationsSamples, length);
         return function.applyAsDouble(position);
 
     }
@@ -126,5 +118,31 @@ public final class ElevationProfile {
         }
         return s;
     }
+
+    private double getTotalAscent(){
+        double totalAscent = 0;
+        for (int i = 0; i < elevationsSamples.length - 1; i++) {
+            double dif = elevationsSamples[i + 1] - elevationsSamples[i];
+            if (dif > 0) {
+                totalAscent = totalAscent + dif;
+            }
+
+        }
+        return totalAscent;
+
+    }
+
+    private double getTotalDescent(){
+        double totalDescent = 0;
+        for (int i = 0; i < elevationsSamples.length - 1; i++) {
+            double dif = elevationsSamples[i + 1] - elevationsSamples[i];
+            if (dif < 0) {
+                totalDescent = totalDescent + dif;
+            }
+
+        }
+        return Math.abs(totalDescent);
+    }
+
 
 }

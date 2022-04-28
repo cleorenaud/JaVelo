@@ -27,6 +27,11 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     private static final int OFFSET_E = OFFSET_L + Short.BYTES;
     private static final int OFFSET_ATT = OFFSET_E + Short.BYTES;
     private static final int EDGES_INTS = OFFSET_ATT + Short.BYTES;
+    private static final int EXTRACT_START = 0;
+    private static final int EXTRACT_2BYTE = Byte.SIZE * 2;
+    private static final double MAX_LENGTH = 2.0;
+    private static final int EXTRACT_MIDDLE1 = 30;
+    private static final int EXTRACT_MIDDLE2 = 2;
 
     /**
      * Méthode retournant vrai si l'arête d'identité donnée va dans le sens inverse de la voie OSM dont elle provient
@@ -62,7 +67,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     public double length(int edgeId) {
         return Q28_4.asDouble(Bits.extractUnsigned
                 (edgesBuffer.getShort
-                        (edgeId * EDGES_INTS + OFFSET_L),0,16));
+                        (edgeId * EDGES_INTS + OFFSET_L),EXTRACT_START,EXTRACT_2BYTE));
     }
 
     /**
@@ -74,7 +79,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     public double elevationGain(int edgeId) {
         return Q28_4.asDouble(Bits.extractUnsigned
                 (edgesBuffer.getShort
-                        (edgeId * EDGES_INTS + OFFSET_E),0,16));
+                        (edgeId * EDGES_INTS + OFFSET_E),EXTRACT_START,EXTRACT_2BYTE));
     }
 
     /**
@@ -84,7 +89,7 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      * @return (boolean) : vrai si l'arête d'identité donnée possède un profil et faux sinon
      */
     public boolean hasProfile(int edgeId) {
-        double m = Bits.extractUnsigned(profileIds.get(edgeId) ,30,2);
+        double m = Bits.extractUnsigned(profileIds.get(edgeId) ,EXTRACT_MIDDLE1,EXTRACT_MIDDLE2);
         return (m != 0);
     }
 
@@ -96,37 +101,32 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
      * @return (float[]) : le tableau des échantillons du profil de l'arête d'identité donnée
      */
     public float[] profileSamples(int edgeId) {
-        double maxLength= 2.0;
         if (!hasProfile(edgeId)) {
             return new float[0];
         }
-        int nbEch = 1 + (int) Math.ceil(length(edgeId) / maxLength); //calcul le nombre d'échantillons dont on aura besoin
+        int nbEch = 1 + (int) Math.ceil(length(edgeId) / MAX_LENGTH); //calcul le nombre d'échantillons dont on aura besoin
         float[] tab = new float[nbEch]; //créations dun tableau pour mettre les échantillons
-        int firstIndex = Bits.extractUnsigned(profileIds.get(edgeId),0,30); //identité du premier échantillon
-        double profileType = Bits.extractUnsigned(profileIds.get(edgeId),30,2); //savoir le type de profil
-        tab[0] = Q28_4.asFloat(Bits.extractUnsigned(elevations.get(firstIndex),0,16)); //remplit avec le premier échantillon
+        int firstIndex = Bits.extractUnsigned(profileIds.get(edgeId),EXTRACT_START,EXTRACT_MIDDLE1); //identité du premier échantillon
+        double profileType = Bits.extractUnsigned(profileIds.get(edgeId),EXTRACT_MIDDLE1,EXTRACT_MIDDLE2); //savoir le type de profil
+        tab[0] = Q28_4.asFloat(Bits.extractUnsigned(elevations.get(firstIndex),EXTRACT_START,EXTRACT_2BYTE)); //remplit avec le premier échantillon
 
         for (int i = firstIndex + 1; i < firstIndex + nbEch; ++i) { //remplissage du tableau
             int n = i - firstIndex;
 
             if (profileType == 1) { //cas 1
-                tab[n] = Q28_4.asFloat(Bits.extractUnsigned(elevations.get(i),0,16));
+                tab[n] = Q28_4.asFloat(Bits.extractUnsigned(elevations.get(i),EXTRACT_START,EXTRACT_2BYTE));
             }
 
-            if (profileType == 2) {//cas 2
-                double k = Math.ceil(((double) n) / 2.0); //savoir quel index chercher dans elevations
-                int fact = n % 2; //permettra de savoir ce qu'il faut extraire de "info"
+            if(profileType == 3 || profileType == 2){ // 2 ou 3
+                int m = 2;
+                if(profileType == 3){
+                    m = 4;
+                }
+                int length= EXTRACT_2BYTE / m;
+                double k = Math.ceil(((double) n) / (double)m); //savoir quel index chercher dans elevations
+                int fact = (m - n % m) % m; //permettra de savoir ce qu'il faut extraire de "info"
                 short info = elevations.get(firstIndex + (int) k);
-                float dif = (float) Bits.extractSigned(info, 8 * fact, 8);
-                dif = (float) Q28_4.asDouble((int)dif);
-                tab[n] = tab[n - 1] + dif; //remplissage du tableau
-            }
-
-            if (profileType == 3) {//cas 3
-                double k = Math.ceil(((double) n) / 4.0); //savoir quel index chercher dans elevations
-                int fact = (4 - n % 4) % 4; //permettra de savoir ce qu'il faut extraire de "info"
-                short info = elevations.get(firstIndex + (int) k);
-                float dif = (float) Bits.extractSigned(info, 4 * fact, 4);
+                float dif = (float) Bits.extractSigned(info, length * fact, length);
                 dif = (float) Q28_4.asDouble((int)dif);
                 tab[n] = tab[n - 1] + dif; //remplissage du tableau
             }
@@ -152,5 +152,6 @@ public record GraphEdges(ByteBuffer edgesBuffer, IntBuffer profileIds, ShortBuff
     public int attributesIndex(int edgeId) {
         return Short.toUnsignedInt(edgesBuffer.getShort(edgeId * EDGES_INTS + OFFSET_ATT));
     }
+
 
 }
