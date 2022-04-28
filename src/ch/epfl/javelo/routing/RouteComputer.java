@@ -48,6 +48,7 @@ public final class RouteComputer {
             public int compareTo(WeightedNode that) {
                 return Float.compare(this.distance, that.distance);
             }
+
         }
 
         // Pour chaque nœud de graphe, définir une distance et un nœud prédecesseur
