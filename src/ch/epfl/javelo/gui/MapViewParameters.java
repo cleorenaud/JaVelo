@@ -55,7 +55,7 @@ public record MapViewParameters(int zoomLevel, float x, float y) {
     }
 
     /**
-     * Méthode qui retourne la position x correspondant du point donné en argument
+     * Méthode qui retourne la position x correspondant au point donné en argument
      * (exprimées par rapport au coin haut-gauche de notre portion de carte)
      *
      * @param point (PointWebMercator) : le point de référence
@@ -66,7 +66,7 @@ public record MapViewParameters(int zoomLevel, float x, float y) {
     }
 
     /**
-     * Méthode qui retourne la position y correspondant du point donné en argument
+     * Méthode qui retourne la position y correspondant au point donné en argument
      * (exprimées par rapport au coin haut-gauche de notre portion de carte)
      *
      * @param point (PointWeMercator) : le point de référence
