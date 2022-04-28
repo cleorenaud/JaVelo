@@ -1,8 +1,10 @@
 package ch.epfl.javelo.gui;
 
 import ch.epfl.javelo.data.Graph;
+import ch.epfl.javelo.projection.Ch1903;
 import ch.epfl.javelo.projection.PointCh;
 import ch.epfl.javelo.projection.PointWebMercator;
+import ch.epfl.javelo.projection.SwissBounds;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -77,20 +79,27 @@ public final class WaypointsManager {
      * @param y (int) : la coordonnée y du point
      */
     public void addWaypoint(int x, int y) {
-        PointCh pointOfXY = objectProperty.get().pointAt(x, y).toPointCh();
-        int closestNode = graph.nodeClosestTo(pointOfXY, SEARCH_DISTANCE);
-        if (closestNode == -1) {
-            nodeError();
-            return;
+        PointWebMercator pWM=objectProperty.get().pointAt(x, y);
+
+        if (inSwissBounds(pWM)){ //vérifie que le point est dans les limites suisses
+            PointCh pointOfXY = pWM.toPointCh();
+            int closestNode = graph.nodeClosestTo(pointOfXY, SEARCH_DISTANCE);
+            if (closestNode == -1) { //s'il n'y a pas de noeuds proches du points
+                nodeError();
+                return;
+            }
+            Waypoint wayPoint = new Waypoint(pointOfXY, closestNode);
+            if (pointDePassage.size() < 2) {
+                pointDePassage.add(wayPoint);
+            } else { //s'il y a plus que deux points insérer le nouveau point au milieu
+                Waypoint lastPoint = pointDePassage.remove(pointDePassage.size() - 1);
+                pointDePassage.add(wayPoint);
+                pointDePassage.add(lastPoint);
+            }
+        }else{
+            nodeError(); //si le point n'est pas dans les limites suisses
         }
-        Waypoint wayPoint = new Waypoint(pointOfXY, closestNode);
-        if (pointDePassage.size() < 2) {
-            pointDePassage.add(wayPoint);
-        } else { //s'il y a plus que deux points insérer le nouveau point au milieu
-            Waypoint lastPoint = pointDePassage.remove(pointDePassage.size() - 1);
-            pointDePassage.add(wayPoint);
-            pointDePassage.add(lastPoint);
-        }
+
     }
 
 
@@ -125,19 +134,27 @@ public final class WaypointsManager {
             Waypoint pointPassage = marqueurs.get(marqueur); //le wayPoint associé au marqueur
 
             if (!mouseEvent.isStillSincePress()) { //si la souris s'est déplacée on déplace le marqueur
-                PointCh newPCh = objectProperty.get().pointAt
-                        (newPlace.getX(), newPlace.getY()).toPointCh();
-                int i = pointDePassage.indexOf(pointPassage);
-                int node = graph.nodeClosestTo(newPCh, SEARCH_DISTANCE);
+                PointWebMercator pWM=objectProperty.get().pointAt
+                        (newPlace.getX(), newPlace.getY());
 
-                if (node == -1) { //on a pas trouvé de noeud proche -> erreur
+                if(inSwissBounds(pWM)){//vérifie que le point est dans les limites suisses
+                    PointCh newPCh = pWM.toPointCh();
+                    int i = pointDePassage.indexOf(pointPassage);
+                    int node = graph.nodeClosestTo(newPCh, SEARCH_DISTANCE);
+
+                    if (node == -1) { //on a pas trouvé de noeud proche -> erreur
+                        nodeError();
+                        replace(); //on remet le noeud là où on l'a pris au début
+                    } else { //on change le waypoint
+                        Waypoint newWaypoint = new Waypoint(newPCh, node);
+                        pointDePassage.set(i, newWaypoint);
+                        marqueurs.put(marqueur, newWaypoint);
+                    }
+                }else{
                     nodeError();
                     replace(); //on remet le noeud là où on l'a pris au début
-                } else { //on change le waypoint
-                    Waypoint newWaypoint = new Waypoint(newPCh, node);
-                    pointDePassage.set(i, newWaypoint);
-                    marqueurs.put(marqueur, newWaypoint);
                 }
+
 
             } else {//si on ne s'est pas déplacé
                 pointDePassage.remove(marqueurs.get(marqueur));
@@ -216,6 +233,12 @@ public final class WaypointsManager {
      */
     private void nodeError() {
         errorConsumer.accept("Aucune route à proximité !");
+    }
+
+    private boolean inSwissBounds(PointWebMercator pWM){
+        double corE= Ch1903.e(pWM.lon(),pWM.lat());
+        double corN=Ch1903.n(pWM.lon(),pWM.lat());
+        return SwissBounds.containsEN(corE,corN);
     }
 
 
