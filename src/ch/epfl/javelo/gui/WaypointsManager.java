@@ -50,7 +50,7 @@ public final class WaypointsManager {
                             Consumer<String> errorConsumer) {
         this.graph = graph;
         this.objectProperty = objectProperty;
-        this.pointDePassage = FXCollections.observableArrayList(pointDePassage);
+        this.pointDePassage=pointDePassage;
         this.errorConsumer = errorConsumer;
         this.carte = new Pane();
 
