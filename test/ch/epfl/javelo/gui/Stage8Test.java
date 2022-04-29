@@ -41,9 +41,9 @@ public final class Stage8Test extends Application {
                 FXCollections.observableArrayList(
                         new Waypoint(new PointCh(2532697, 1152350), 159049),
                         new Waypoint(new PointCh(2538659, 1154350), 117669));
-        //RouteBean routeBean = new RouteBean(new RouteComputer(graph,new CityBikeCF(graph)));
-        //waypoints= routeBean.waypoints;
-        //routeBean.highlightedPosition.setValue(1000);
+        RouteBean routeBean = new RouteBean(new RouteComputer(graph,new CityBikeCF(graph)));
+        waypoints= routeBean.waypoints;
+        routeBean.highlightedPosition.setValue(1000);
 
         Consumer<String> errorConsumer = new ErrorConsumer();
 
@@ -51,10 +51,10 @@ public final class Stage8Test extends Application {
                 new WaypointsManager(graph, mapViewParametersP, waypoints, errorConsumer);
         BaseMapManager baseMapManager =
                 new BaseMapManager(tileManager, waypointsManager, mapViewParametersP);
-        //RouteManager routeManager= new RouteManager(routeBean, mapViewParametersP, errorConsumer);
+        RouteManager routeManager= new RouteManager(routeBean, mapViewParametersP, errorConsumer);
 
         StackPane mainPane =
-                new StackPane(baseMapManager.pane(), waypointsManager.pane());
+                new StackPane(baseMapManager.pane(), waypointsManager.pane(), routeManager.pane());
         mainPane.getStylesheets().add("map.css");
         primaryStage.setMinWidth(600);
         primaryStage.setMinHeight(300);

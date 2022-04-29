@@ -28,27 +28,36 @@ public final class RouteManager {
     private final ReadOnlyObjectProperty<MapViewParameters> mapViewParameters;
     private final Consumer<String> errorConsumer;
     private final Pane carte;
-    private int currentZoom;
+    private int zoomActu;
     private final Polyline itineraire;
     private final Circle cercle;
     private List<PointCh> points;
+    private static final int RADIUS = 5;
 
+    /**
+     * Constructeur public de la classe RouteManager
+     * @param routeBean (RouteBean) : le bean de l'itinéraire
+     * @param mapViewParameters (ReadOnlyObjectProperty<MapViewParameters>) : une propriété JavaFX,
+     *                         contenant les paramètres de la carte affichée,
+     * @param errorConsumer (Consumer<String>) : un consommateur d'erreurs permettant de signaler une erreur.
+     */
     public RouteManager(RouteBean routeBean, ReadOnlyObjectProperty<MapViewParameters> mapViewParameters,
                         Consumer<String> errorConsumer){
         this.routeBean= routeBean;
         this.mapViewParameters= mapViewParameters;
         this.errorConsumer= errorConsumer;
-        this.points = new ArrayList(routeBean.route.get().points());
+        this.points = new ArrayList();
         this.carte = new Pane();
-        carte.setPickOnBounds(false);
-        currentZoom=mapViewParameters.get().zoomLevel();
+        zoomActu=mapViewParameters.get().zoomLevel();
         this.itineraire= new Polyline();
         itineraire.setId("route");
-        this.cercle = new Circle(5);
+        this.cercle = new Circle(RADIUS);
         cercle.setId("highlight");
         carte.getChildren().add(itineraire);
+        carte.getChildren().add(cercle);
+        carte.setPickOnBounds(false);
         installListeners(); //méthode s'occupant d'ajouter les auditeurs
-        installHandlers(cercle); //méthode s'occupant d'ajouter la gestion dévénement de la Polyline
+        installHandlers(); //méthode s'occupant d'ajouter la gestion dévénement du cercle
         recreate();
     }
 
@@ -61,34 +70,42 @@ public final class RouteManager {
         return carte;
     }
 
+    /**
+     * méthode privée permettant la recréation du dessin de l'itinéraire
+     */
     private void recreate(){
+        itineraire.getPoints().clear();
 
-        if(routeBean.waypoints.size()<=2){
+        if(routeBean.route.get()==null){
             itineraire.setVisible(false);
             cercle.setVisible(false);
+        }else{
+            this.points=new ArrayList(routeBean.route.get().points());
+            PointWebMercator point1 = PointWebMercator.ofPointCh(points.get(0));
+            double posXInit=mapViewParameters.get().viewX(point1);
+            double posYInit=mapViewParameters.get().viewY(point1);
+
+
+            for (PointCh point: points){//crée un itinéraire commençant à (0,0) qu'on va par la suite replacer
+                PointWebMercator pointWM = PointWebMercator.ofPointCh(point);
+                double posX=mapViewParameters.get().viewX(pointWM);
+                double posY=mapViewParameters.get().viewY(pointWM);
+                itineraire.getPoints().add(posX-posXInit);
+                itineraire.getPoints().add(posY-posYInit);
+            }
+
+            replace();
         }
 
 
-        itineraire.getPoints().clear();
-        PointWebMercator point1 = PointWebMercator.ofPointCh(points.get(0));
-        double posXInit=mapViewParameters.get().viewX(point1);
-        double posYInit=mapViewParameters.get().viewY(point1);
 
-
-        for (PointCh point: points){//crée un itinéraire commençant à (0,0) qu'on va par la suite replacer
-            PointWebMercator pointWM = PointWebMercator.ofPointCh(point);
-            double posX=mapViewParameters.get().viewX(pointWM);
-            double posY=mapViewParameters.get().viewY(pointWM);
-            itineraire.getPoints().add(posX-posXInit);
-            itineraire.getPoints().add(posY-posYInit);
-        }
-
-       replace();
-       replaceCircle();
     }
 
+    /**
+     * méthode privée permettant de replacer l'itinéraire
+     */
     private void replace(){
-        if(routeBean.waypoints.size()>2){
+        if(routeBean.waypoints.size()>1){
             itineraire.setVisible(true);
         }else{
             return; //inutile de chercher la position si on ne doit pas voir la route
@@ -96,23 +113,26 @@ public final class RouteManager {
         PointWebMercator debut = PointWebMercator.ofPointCh(points.get(0));
         itineraire.setLayoutX(mapViewParameters.get().viewX(debut));
         itineraire.setLayoutY(mapViewParameters.get().viewY(debut));
+        replaceCircle();
 
     }
 
+    /**
+     * méthode privée s'occupant d'ajouter les auditeurs
+     */
     private void installListeners(){
 
         //auditeur qui permet de récréer le dessin de l'itinéraire lorsque la liste des points de passage change
         routeBean.waypoints.addListener((ListChangeListener<? super Waypoint>) e -> {
-            this.points=new ArrayList(routeBean.route.get().points());
             recreate();
         });
 
         //auditeur qui permet de recréer le dessin de l'itinéraire lorsque les paramètres de la carte changent
         //ou juste le replacer si le zoom n'a pas changé
         mapViewParameters.addListener(e->{
-            int actualZoom=mapViewParameters.get().zoomLevel();
-            if(actualZoom!=currentZoom){
-                currentZoom=actualZoom;
+            int nouvZoom=mapViewParameters.get().zoomLevel();
+            if(nouvZoom!=zoomActu){
+                zoomActu=nouvZoom;
                 recreate();
             }else{
                 replace();
@@ -124,7 +144,11 @@ public final class RouteManager {
 
     }
 
-    private void installHandlers(Circle cercle){
+    /**
+     * méthode privée permettant d'ajouter la gestion d'événement sur le cercle qui marque une position
+     */
+    private void installHandlers(){
+
         cercle.setOnMouseReleased((MouseEvent mouseEvent) -> { //gère l'ajout d'un point de passage
             double x= mouseEvent.getX();
             double y= mouseEvent.getY();
@@ -153,7 +177,7 @@ public final class RouteManager {
     }
 
     private void replaceCircle(){
-        if(routeBean.waypoints.size()>2){
+        if(routeBean.waypoints.size()>=2){
             cercle.setVisible(true);
         }else{
             return; //ça ne sert à rien de chercher la position si pour l'instant elle ne doit pas être visible
@@ -161,8 +185,8 @@ public final class RouteManager {
         double posCercle = routeBean.highlightedPosition.get();
         PointWebMercator pointCercle = PointWebMercator.ofPointCh(routeBean.route.get().pointAt(posCercle));
 
-        itineraire.setLayoutX(mapViewParameters.get().viewX(pointCercle));
-        itineraire.setLayoutY(mapViewParameters.get().viewY(pointCercle));
+        cercle.setLayoutX(mapViewParameters.get().viewX(pointCercle));
+        cercle.setLayoutY(mapViewParameters.get().viewY(pointCercle));
 
     }
 

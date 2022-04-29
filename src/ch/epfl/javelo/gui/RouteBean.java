@@ -1,9 +1,8 @@
 package ch.epfl.javelo.gui;
 
 import ch.epfl.javelo.routing.*;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.*;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
@@ -45,11 +44,16 @@ public final class RouteBean {
 
 
         // Si aucune position ne doit être mise en évidence, la propriété contenant la position contient NaN
+        this.highlightedPosition= new SimpleDoubleProperty();
         highlightedPosition.set(Double.NaN);
 
         // On installe un auditeur sur la liste contenant les points de passage pour que l'itinéraire et son profil
         // soient recalculés à chaque changement de cette liste
+        this.waypoints= FXCollections.observableArrayList();
         waypoints.addListener((ListChangeListener<? super Waypoint>) e -> updateRoute());
+        this.route= new SimpleObjectProperty<>();
+        this.elevationProfile=new SimpleObjectProperty<>();
+        this.cacheMemoire= new LinkedHashMap<>();
         // On calcule le meilleur itinéraire avec les points de passage actuels
         updateRoute();
 
@@ -77,9 +81,9 @@ public final class RouteBean {
         // Les itinéraires simples sont ensuite combinés en un unique itinéraire multiple
         List<Route> segments = new ArrayList<>(); // La liste dans laquelle on stocke tous les itinéraires simples
 
-        for (int i = 0; i <= waypoints().size(); i++) {
+        for (int i = 0; i < waypoints().size()-1; i++) {
             // On regarde dans le cache mémoire si la route entre les deux waypoints existe déjà
-            if (cacheMemoire.get(waypoints().subList(i, i + 1)) != null) {
+            if (cacheMemoire.get(waypoints().subList(i, i + 2)) != null) {
                 // Si elle existe déjà on y accède et on l'ajoute à notre itinéraire
                 segments.add(cacheMemoire.get(waypoints().subList(i, i + 1)));
             } else {
