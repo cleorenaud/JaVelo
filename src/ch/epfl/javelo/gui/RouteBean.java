@@ -4,6 +4,7 @@ import ch.epfl.javelo.routing.*;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
@@ -23,9 +24,9 @@ public final class RouteBean {
     public DoubleProperty highlightedPosition; // La position mise en évidence
     public ObjectProperty<ElevationProfile> elevationProfile; // Le profil de l'itinéraire
 
-    // TODO: ajouter final ?
-    private RouteComputer routeComputer;
+    private final RouteComputer routeComputer;
     private LinkedHashMap<List<Waypoint>, SingleRoute> cacheMemoire;
+
 
     private final static double MAX_STEP_LENGTH = 5;
 
@@ -43,22 +44,14 @@ public final class RouteBean {
         //waypoints.addListener(e -> update());
 
 
-        // Lorsque la liste des points de passage ne contient pas au moins deux éléments, alors ni l'itinéraire ni
-        // son profil n'existent (les propriétés correspondantes contiennent alors null)
-        if (waypoints().size() < 2) {
-            route.set(null);
-            elevationProfile.set(null);
-        }
-
         // Si aucune position ne doit être mise en évidence, la propriété contenant la position contient NaN
-        /*
-        if () {
-            highlightedPosition.set(Double.NaN);
-        }
-         */
+        highlightedPosition.set(Double.NaN);
 
+        // On installe un auditeur sur la liste contenant les points de passage pour que l'itinéraire et son profil
+        // soient recalculés à chaque changement de cette liste
+        waypoints.addListener((ListChangeListener<? super Waypoint>) e -> updateRoute());
         // On calcule le meilleur itinéraire avec les points de passage actuels
-        update();
+        updateRoute();
 
         // TODO: gestion si il n y a pas d'itinéraire entre deux points de passage
     }
@@ -67,7 +60,19 @@ public final class RouteBean {
      * Méthode permettant de recalculer l'itinéraire et son profil à chaque fois que la liste des points de passage
      * est modifiée
      */
-    private void update() {
+    private void updateRoute() {
+        // Lorsque la liste des points de passage ne contient pas au moins deux éléments, alors ni l'itinéraire ni
+        // son profil n'existent (les propriétés correspondantes contiennent alors null)
+        if (waypoints().size() < 2) {
+            route.set(null);
+            elevationProfile.set(null);
+            return;
+        }
+
+        // Pour éviter que le cache mémoire ne grossisse de manière incontrôlée on y stocke uniquement les itinéraires
+        // simples correspondant à l'itinéraire multiple courant
+
+
         // Pour chaque paire de Waypoints se suivant on détermine le meilleur itinéraire simple les reliant
         // Les itinéraires simples sont ensuite combinés en un unique itinéraire multiple
         List<Route> segments = new ArrayList<>(); // La liste dans laquelle on stocke tous les itinéraires simples
@@ -82,9 +87,16 @@ public final class RouteBean {
                 segments.add(routeComputer.bestRouteBetween(waypoints().get(i).nodeId(), waypoints().get(i + 1).nodeId()));
             }
         }
-        route.set(new MultiRoute(segments));
 
-        // On calcule le profil correspondant à notre itinéraire
+        // S'il existe au moins une paire de points de passage entre lesquels aucun itinéraire ne peut être trouvé,
+        // alors ni son l'itinéraire ni son profil n'existent
+        if(cacheMemoire.containsValue(null)) {
+            route.set(null);
+            elevationProfile.set(null);
+            return;
+        }
+
+        route.set(new MultiRoute(segments));
         elevationProfile.set(ElevationProfileComputer.elevationProfile(route(), MAX_STEP_LENGTH));
     }
 
