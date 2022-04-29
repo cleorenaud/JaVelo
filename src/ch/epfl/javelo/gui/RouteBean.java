@@ -98,6 +98,11 @@ public final class RouteBean {
 
         route.set(new MultiRoute(segments));
         elevationProfile.set(ElevationProfileComputer.elevationProfile(route(), MAX_STEP_LENGTH));
+
+        // Si la position mise en évidence n'est pas valide, on la définit comme NaN
+        if(!((0 <= highlightedPosition()) && (highlightedPosition() <= route().length()))) {
+            highlightedPosition.set(Double.NaN);
+        }
     }
 
 
