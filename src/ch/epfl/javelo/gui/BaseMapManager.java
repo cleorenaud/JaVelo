@@ -13,7 +13,6 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Pane;
 
 import java.io.IOException;
-import java.util.Map;
 
 
 /**
@@ -29,7 +28,7 @@ public final class BaseMapManager {
     private boolean redrawNeeded;
     private Pane pane;
     private Canvas canvas;
-    private ObjectProperty<Point2D> posSouris;
+    private ObjectProperty<Point2D> mousePosition;
 
     private static final int TILE_SIZE = 256;
 
@@ -150,20 +149,20 @@ public final class BaseMapManager {
 
         pane.setOnMousePressed((MouseEvent mouseEvent) -> {
             // On crée un ObjectProperty contenant la position à laquelle se trouvait la souris au moment où elle est pressée
-            this.posSouris = new SimpleObjectProperty<>(new Point2D(mouseEvent.getX(), mouseEvent.getY()));
+            this.mousePosition = new SimpleObjectProperty<>(new Point2D(mouseEvent.getX(), mouseEvent.getY()));
 
         });
 
         pane.setOnMouseDragged((MouseEvent mouseEvent) -> {
             // TODO: utiliser les méthodes add et substract
             Point2D newPosSouris = new Point2D(mouseEvent.getX(), mouseEvent.getY());
-            float deltaX = (float) (posSouris.get().getX() - newPosSouris.getX());
-            float deltaY = (float) (posSouris.get().getY() - newPosSouris.getY());
+            float deltaX = (float) (mousePosition.get().getX() - newPosSouris.getX());
+            float deltaY = (float) (mousePosition.get().getY() - newPosSouris.getY());
 
             MapViewParameters mapViewParameters = objectProperty.get();
             objectProperty.set(mapViewParameters.withMinXY(mapViewParameters.x() + deltaX, mapViewParameters.y() + deltaY));
 
-            posSouris.set(newPosSouris);
+            mousePosition.set(newPosSouris);
         });
 
         pane.setOnMouseReleased((MouseEvent mouseEvent) -> {
