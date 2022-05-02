@@ -57,7 +57,6 @@ public final class RouteBean {
         // On calcule le meilleur itinéraire avec les points de passage actuels
         updateRoute();
 
-        // TODO: gestion si il n y a pas d'itinéraire entre deux points de passage
     }
 
     /**

@@ -29,7 +29,7 @@ public final class Functions {
      * Classe imbriquée qui sert à définir la fonction constante
      */
     private static final class Constant implements DoubleUnaryOperator {
-        private final double CONSTANT;
+        private final double constant;
 
         /**
          * Constructeur de la classe Constant
@@ -37,7 +37,7 @@ public final class Functions {
          * @param y (double) : valeur de constante retournée par la fonction
          */
         public Constant(double y) {
-            this.CONSTANT = y;
+            this.constant = y;
         }
 
         /**
@@ -48,7 +48,7 @@ public final class Functions {
          */
         @Override
         public double applyAsDouble(double y) {
-            return CONSTANT;
+            return constant;
         }
     }
 
@@ -70,7 +70,7 @@ public final class Functions {
      * Classe imbriquée utilisée pour définir la fonction d'interpolation
      */
     private static final class Sampled implements DoubleUnaryOperator {
-        private final float[]  samples; // tableau d'échantillons
+        private final float[] samples; // tableau d'échantillons
         private final double xMax; // valeur du dernier x pour lequel on a un échantillon
         private final int nSamples; // le nombre d'échantillons
         private final double interval; // la longueur de l'intervalle entre deux échantillons

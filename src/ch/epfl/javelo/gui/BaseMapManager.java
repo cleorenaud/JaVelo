@@ -56,8 +56,8 @@ public final class BaseMapManager {
         canvas.heightProperty().bind(pane.heightProperty());
 
         installBindings();
+        installListeners();
         installHandlers();
-        redrawOnNextPulse();
 
         // On s'assure que JavaFX appelle bien la méthode redrawIfNeeded() à chaque battement
         canvas.sceneProperty().addListener((p, oldS, newS) -> {
@@ -145,7 +145,6 @@ public final class BaseMapManager {
                 double x = mouseEvent.getX();
                 double y = mouseEvent.getY();
                 waypointsManager.addWaypoint(x,y);
-                redrawOnNextPulse();
             }
         });
 
@@ -165,24 +164,10 @@ public final class BaseMapManager {
             objectProperty.set(mapViewParameters.withMinXY(mapViewParameters.x() + deltaX, mapViewParameters.y() + deltaY));
 
             posSouris.set(newPosSouris);
-
-            redrawOnNextPulse();
         });
 
         pane.setOnMouseReleased((MouseEvent mouseEvent) -> {
-            /*
-            Point2D newPosSouris = new Point2D.Double(mouseEvent.getX(), mouseEvent.getY());
-            float deltaX = (float) (posSouris.get().getX() - newPosSouris.getX());
-            float deltaY = (float) (posSouris.get().getY() - newPosSouris.getY());
-
-            MapViewParameters mapViewParameters = objectProperty.get();
-            objectProperty.set(mapViewParameters.withMinXY(mapViewParameters.x() + deltaX, mapViewParameters.y() + deltaY));
-
-            posSouris.set(newPosSouris);
-
-            redrawOnNextPulse();
-             */
-
+        
         });
 
         pane.setOnScroll((ScrollEvent scrollEvent) -> {
@@ -208,8 +193,6 @@ public final class BaseMapManager {
             float newY = (float) (Math.scalb(ySouris, difZoom) - yTranslation);
 
             objectProperty.setValue(new MapViewParameters(newZoomLevel, newX, newY));
-            redrawOnNextPulse();
-
         });
 
 
@@ -224,11 +207,10 @@ public final class BaseMapManager {
     }
 
     /**
-     * Méthode installant les auditeurs
+     * Méthode installant un auditeur sur l'ObjectProperty contenant nos MapViewParameters
      */
     private void installListeners() {
-        //objectProperty.addListener(e -> redrawOnNextPulse());
-
+        objectProperty.addListener(e -> redrawOnNextPulse());
     }
 
 }

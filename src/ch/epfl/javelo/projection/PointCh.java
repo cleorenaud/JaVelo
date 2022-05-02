@@ -31,7 +31,7 @@ public record PointCh(double e, double n) {
      * @return (double) : le carré de la distance
      */
     public double squaredDistanceTo(PointCh that) {
-        return Math2.squaredNorm(that.e() - this.e(), that.n() - this.n());
+        return Math2.squaredNorm(that.e() - e, that.n() - n);
     }
 
     /**
@@ -41,7 +41,7 @@ public record PointCh(double e, double n) {
      * @return (double) : la distance
      */
     public double distanceTo(PointCh that) {
-        return Math2.norm(that.e() - this.e(), that.n() - this.n());
+        return Math2.norm(that.e() - e, that.n() - n);
     }
 
     /**
