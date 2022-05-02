@@ -144,7 +144,7 @@ public final class BaseMapManager {
             if (mouseEvent.isStillSincePress()) {
                 double x = mouseEvent.getX();
                 double y = mouseEvent.getY();
-                waypointsManager.addWaypoint((int) x, (int) y);
+                waypointsManager.addWaypoint(x,y);
                 redrawOnNextPulse();
             }
         });

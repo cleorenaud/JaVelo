@@ -149,7 +149,7 @@ public final class RouteManager {
      */
     private void installHandlers(){
 
-        cercle.setOnMouseReleased((MouseEvent mouseEvent) -> { //gère l'ajout d'un point de passage
+        cercle.setOnMouseClicked((MouseEvent mouseEvent) -> { //gère l'ajout d'un point de passage
             double x= mouseEvent.getX();
             double y= mouseEvent.getY();
             Point2D point = cercle.localToParent(x,y);
@@ -162,22 +162,19 @@ public final class RouteManager {
             int noeudAvant = routeBean.waypoints.get(indexSegment).nodeId();
             int noeudApres= routeBean.waypoints.get(indexSegment+1).nodeId();
 
-            if(noeud==noeudAvant || noeud==noeudApres){
+            if(noeud == noeudAvant || noeud == noeudApres){
                 error();
             }else{
                 Waypoint newWaypoint = new Waypoint(location,noeud);
                 List<Waypoint> demiListe1 = routeBean.waypoints.subList(0, indexSegment + 1);
                 demiListe1.add(newWaypoint);
-                List<Waypoint> demiListe2= routeBean.waypoints.subList(indexSegment+1, routeBean.waypoints().size());
-                demiListe1.addAll(demiListe2);
-                routeBean.waypoints=FXCollections.observableArrayList(demiListe1);
             }
 
         });
     }
 
     private void replaceCircle(){
-        if(routeBean.waypoints.size()>=2){
+        if(routeBean.waypoints.size() >= 2){
             cercle.setVisible(true);
         }else{
             return; //ça ne sert à rien de chercher la position si pour l'instant elle ne doit pas être visible

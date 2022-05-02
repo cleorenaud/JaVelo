@@ -75,10 +75,10 @@ public final class WaypointsManager {
     /**
      * Méthode permettant d'ajouter un nouveau point de passage au nœud du graphe qui en est le plus proche
      *
-     * @param x (int) : la coordonnée x du point
-     * @param y (int) : la coordonnée y du point
+     * @param x (double) : la coordonnée x du point
+     * @param y (double) : la coordonnée y du point
      */
-    public void addWaypoint(int x, int y) {
+    public void addWaypoint(double x, double y) {
         PointWebMercator pWM=objectProperty.get().pointAt(x, y);
 
         if (inSwissBounds(pWM)){ //vérifie que le point est dans les limites suisses
