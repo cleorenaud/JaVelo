@@ -9,6 +9,7 @@ import javafx.collections.ObservableList;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Classe publique et finale représentant un bean JavaFX regroupant les propriétés relatives aux points de passage et à
@@ -24,7 +25,8 @@ public final class RouteBean {
     public ObjectProperty<ElevationProfile> elevationProfile; // Le profil de l'itinéraire
 
     private final RouteComputer routeComputer;
-    private LinkedHashMap<List<Waypoint>, SingleRoute> cacheMemoire;
+    private LinkedHashMap<List<Waypoint>, Route> cacheMemory;
+    private final int CAPACITY = 100;
 
 
     private final static double MAX_STEP_LENGTH = 5;
@@ -53,7 +55,7 @@ public final class RouteBean {
         waypoints.addListener((ListChangeListener<? super Waypoint>) e -> updateRoute());
         this.route= new SimpleObjectProperty<>();
         this.elevationProfile=new SimpleObjectProperty<>();
-        this.cacheMemoire= new LinkedHashMap<>();
+        this.cacheMemory = new LinkedHashMap<>();
         // On calcule le meilleur itinéraire avec les points de passage actuels
         updateRoute();
 
@@ -82,18 +84,20 @@ public final class RouteBean {
 
         for (int i = 0; i < waypoints().size()-1; i++) {
             // On regarde dans le cache mémoire si la route entre les deux waypoints existe déjà
-            if (cacheMemoire.get(waypoints().subList(i, i + 2)) != null) {
+            if (cacheMemory.get(waypoints().subList(i, i + 2)) != null) {
                 // Si elle existe déjà on y accède et on l'ajoute à notre itinéraire
-                segments.add(cacheMemoire.get(waypoints().subList(i, i + 1)));
+                segments.add(cacheMemory.get(waypoints().subList(i, i + 1)));
             } else {
                 // Si ce n'est pas le cas on la crée et on l'ajoute au cache mémoire et à notre itinéraire
-                segments.add(routeComputer.bestRouteBetween(waypoints().get(i).nodeId(), waypoints().get(i + 1).nodeId()));
+                Route bestRoute = routeComputer.bestRouteBetween(waypoints().get(i).nodeId(), waypoints().get(i + 1).nodeId());
+                segments.add(bestRoute);
+                addToCacheMemory(waypoints().subList(i, i + 1), bestRoute);
             }
         }
 
         // S'il existe au moins une paire de points de passage entre lesquels aucun itinéraire ne peut être trouvé,
         // alors ni son l'itinéraire ni son profil n'existent
-        if(cacheMemoire.containsValue(null)) {
+        if(cacheMemory.containsValue(null)) {
             route.set(null);
             elevationProfile.set(null);
             return;
@@ -106,6 +110,18 @@ public final class RouteBean {
         if(!((0 <= highlightedPosition()) && (highlightedPosition() <= route().length()))) {
             highlightedPosition.set(Double.NaN);
         }
+    }
+
+    private void addToCacheMemory(List<Waypoint> waypoints, Route route) {
+        List<Waypoint> key = null;
+        if (cacheMemory.size() == CAPACITY) {
+            for(Map.Entry<List<Waypoint>, Route> entry : cacheMemory.entrySet()) {
+                key = entry.getKey();
+                continue;
+            }
+            cacheMemory.remove(key);
+        }
+        cacheMemory.put(waypoints, route);
     }
 
 

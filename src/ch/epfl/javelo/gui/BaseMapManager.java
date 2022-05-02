@@ -167,7 +167,7 @@ public final class BaseMapManager {
         });
 
         pane.setOnMouseReleased((MouseEvent mouseEvent) -> {
-        
+
         });
 
         pane.setOnScroll((ScrollEvent scrollEvent) -> {

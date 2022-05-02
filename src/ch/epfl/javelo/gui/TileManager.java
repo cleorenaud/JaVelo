@@ -19,7 +19,7 @@ import javafx.scene.image.Image;
 public final class TileManager {
     private final Path path;
     private final String serverName;
-    private LinkedHashMap<TileId, Image> cacheMemoir;
+    private LinkedHashMap<TileId, Image> cacheMemory;
     private final int CAPACITY = 100;
 
     /**
@@ -31,14 +31,14 @@ public final class TileManager {
     public TileManager(Path path, String serverName) {
         this.path = path;
         this.serverName = serverName;
-        this.cacheMemoir = new LinkedHashMap<>(100, 2, true);
+        this.cacheMemory = new LinkedHashMap<>(100, 2, true);
     }
 
     public Image imageForTileAt(TileId tileId) throws IOException {
         Preconditions. checkArgument(TileId.isValid(tileId));
 
-        if(cacheMemoir.containsKey(tileId)){
-            return cacheMemoir.get(tileId);
+        if(cacheMemory.containsKey(tileId)){
+            return cacheMemory.get(tileId);
         }
         Image image;
 
@@ -69,15 +69,15 @@ public final class TileManager {
     }
 
     private void addToCacheMemoir(TileId tileId, Image image){
-        if(cacheMemoir.size()==CAPACITY){
+        if(cacheMemory.size()==CAPACITY){
             TileId key= null;
-            for (Map.Entry<TileId, Image> entry: cacheMemoir.entrySet()) {
+            for (Map.Entry<TileId, Image> entry: cacheMemory.entrySet()) {
                 key=entry.getKey();
                 continue;
             }
-            cacheMemoir.remove(key);
+            cacheMemory.remove(key);
         }
-        cacheMemoir.put(tileId, image);
+        cacheMemory.put(tileId, image);
 
     }
 
