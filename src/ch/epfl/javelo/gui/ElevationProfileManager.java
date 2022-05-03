@@ -7,7 +7,9 @@ import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.transform.Transform;
 
 /**
@@ -21,8 +23,11 @@ public final class ElevationProfileManager {
     private ObjectProperty<Rectangle2D> profileRect; // Propriété contenant le rectangle englobant le dessin du profil
     private ObjectProperty<Transform> transformObjectProperty; // Propriété contenant les transformations screenToWorld et worldToScreen
 
+    private BorderPane borderPane;
     private Pane pane;
+    private VBox vBox;
     private ObjectProperty<Point2D> mousePosition;
+
 
     private Insets edgeDistances = new Insets(10, 10, 20, 40);
 
@@ -31,6 +36,7 @@ public final class ElevationProfileManager {
      */
     public ElevationProfileManager(ReadOnlyObjectProperty<ElevationProfile> elevationProfileProperty,
                                    ReadOnlyDoubleProperty doubleProperty) {
+        //TODO : faire un appel à installHandlers et redraw
 
     }
 
@@ -55,7 +61,7 @@ public final class ElevationProfileManager {
     }
 
     /**
-     * Méthode permettant le passage de coordonnées du panneau JavaFX aux coordonnées du "monde réel'
+     * Méthode permettant le passage de coordonnées du panneau JavaFX aux coordonnées du "monde réel"
      */
     private void screenToWorld() {
         // TODO: quel type de paramètre et quel type de retour
@@ -67,5 +73,25 @@ public final class ElevationProfileManager {
      */
     private void worldToScreen() {
         // TODO: quel type de paramètre et quel type de retour
+    }
+
+    private void redraw(){
+        // TODO : cette méthode devra appeler drawLines, drawProfile et writeText
+    }
+
+    private void drawLines(){
+
+    }
+
+    private void drawProfile(){
+
+    }
+
+    private void writeText(){
+
+    }
+
+    private void installHandlers(){
+
     }
 }
