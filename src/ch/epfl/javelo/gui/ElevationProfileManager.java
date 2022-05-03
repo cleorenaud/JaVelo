@@ -38,11 +38,14 @@ public final class ElevationProfileManager {
     private final DoubleProperty mousePosition;
     private final Text textBottom;
 
-    ReadOnlyObjectProperty<ElevationProfile> elevationProfileProperty;
-    ReadOnlyDoubleProperty position;
+    private final ReadOnlyObjectProperty<ElevationProfile> elevationProfileProperty;
+    private final ReadOnlyDoubleProperty position;
 
+    private final Insets edgeDistances = new Insets(10, 10, 20, 40);
 
-    private Insets edgeDistances = new Insets(10, 10, 20, 40);
+    private double maxElevation;
+    private double minElevation;
+    private double length;
 
     /**
      * Constructeur public de la classe
@@ -116,6 +119,10 @@ public final class ElevationProfileManager {
     }
 
     private void redraw(){
+        maxElevation = elevationProfileProperty.get().maxElevation();
+        minElevation = elevationProfileProperty.get().minElevation();
+        length = elevationProfileProperty.get().length();
+
         // TODO : cette méthode devra appeler drawLines, drawProfile et writeText
     }
 
@@ -128,7 +135,16 @@ public final class ElevationProfileManager {
     }
 
     private void writeText(){
+        double totalDescent = elevationProfileProperty.get().totalDescent();
+        double totalAscent =  elevationProfileProperty.get().totalAscent();
+        String text = String.format("Longueur : %.1f km" +
+                "     Montée : %.0f m" +
+                "     Descente : %.0f m" +
+                "     Altitude : de %.0f m à %.0f m",
+                length/1000.0, totalAscent, totalDescent, minElevation,maxElevation
+        );
 
+        textBottom.setText(text);
     }
 
     private void installHandlers(){
