@@ -65,7 +65,7 @@ public final class ElevationProfileManager {
 
         this.textBottom = new Text();
         this.vBox= new VBox(textBottom);
-        vBox.setId("profile data");
+        vBox.setId("profile_data");
 
         this.line = new Line();
         this.polygon= new Polygon();
@@ -77,7 +77,7 @@ public final class ElevationProfileManager {
 
         this.borderPane= new BorderPane(pane);
         borderPane.setBottom(vBox);
-        borderPane.getStylesheets().add("elevation profile.ess");
+        borderPane.getStylesheets().add("elevation_profile.css");
 
         installHandlers();
         redraw();
