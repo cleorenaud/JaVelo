@@ -42,11 +42,18 @@ public final class ElevationProfileManager {
     private final ReadOnlyObjectProperty<ElevationProfile> elevationProfileProperty;
     private final ReadOnlyDoubleProperty position;
 
-    private final Insets edgeDistances = new Insets(10, 10, 20, 40);
 
     private double maxElevation;
     private double minElevation;
     private double length;
+    private double paneWidth;
+    private double paneHeight;
+
+    private final static Insets edgeDistances = new Insets(10, 10, 20, 40);
+    private final static int[] POS_STEPS =
+            { 1000, 2000, 5000, 10_000, 25_000, 50_000, 100_000 };
+    private final static int[] ELE_STEPS =
+            { 5, 10, 20, 25, 50, 100, 200, 250, 500, 1_000 };
 
     /**
      * Constructeur public de la classe
@@ -126,11 +133,17 @@ public final class ElevationProfileManager {
         maxElevation = elevationProfileProperty.get().maxElevation();
         minElevation = elevationProfileProperty.get().minElevation();
         length = elevationProfileProperty.get().length();
+        paneWidth= pane.getWidth()-50;
+        paneHeight= pane.getHeight()-30;
+
 
         // TODO : cette méthode devra appeler drawLines, drawProfile et writeText
     }
 
     private void drawLines(){
+
+
+
 
     }
 
