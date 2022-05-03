@@ -46,6 +46,10 @@ public final class ElevationProfileManager {
 
     /**
      * Constructeur public de la classe
+     * @param elevationProfileProperty (ReadOnlyObjectProperty<ElevationProfile>) : une propriété contenant
+     *                                 le profil à afficher
+     * @param position (ReadOnlyDoubleProperty) : une propriété contenant
+     *                 la position le long du profil à mettre en évidence
      */
     public ElevationProfileManager(ReadOnlyObjectProperty<ElevationProfile> elevationProfileProperty,
                                    ReadOnlyDoubleProperty position) {
