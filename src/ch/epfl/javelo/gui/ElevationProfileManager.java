@@ -13,6 +13,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.Polygon;
 import javafx.scene.text.Text;
+import javafx.scene.transform.Affine;
 import javafx.scene.transform.Transform;
 
 import static java.lang.Double.NaN;
@@ -108,6 +109,9 @@ public final class ElevationProfileManager {
      */
     private void screenToWorld() {
         // TODO: quel type de paramètre et quel type de retour
+        Transform transformX = new Affine();
+        Transform transformY = new Affine();
+        
 
     }
 
@@ -149,5 +153,9 @@ public final class ElevationProfileManager {
 
     private void installHandlers(){
 
+    }
+    private void innerRectangle() {
+        Pane innerRectangle = new Pane();
+        innerRectangle.setPrefSize(, pane.getHeight() - edgeDistances.getTop() - edgeDistances.getBottom());
     }
 }
