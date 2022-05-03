@@ -165,10 +165,6 @@ public final class BaseMapManager {
             mousePosition.set(newPosSouris);
         });
 
-        pane.setOnMouseReleased((MouseEvent mouseEvent) -> {
-
-        });
-
         pane.setOnScroll((ScrollEvent scrollEvent) -> {
             double xTranslation = scrollEvent.getX(); // La coordonnée x de la souris par rapport au coin supérieur gauche
             double yTranslation = scrollEvent.getY(); // La coordonnée y de la souris par rapport au coin supérieur gauche

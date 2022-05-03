@@ -156,6 +156,8 @@ public final class ElevationProfileManager {
     }
     private void innerRectangle() {
         Pane innerRectangle = new Pane();
-        innerRectangle.setPrefSize(, pane.getHeight() - edgeDistances.getTop() - edgeDistances.getBottom());
+        double prefWidth = pane.getWidth() - edgeDistances.getLeft() - edgeDistances.getRight();
+        double prefHeight = pane.getHeight() - edgeDistances.getTop() - edgeDistances.getBottom();
+        innerRectangle.setPrefSize(prefWidth, prefHeight);
     }
 }
