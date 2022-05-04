@@ -1,6 +1,7 @@
 package ch.epfl.javelo.gui;
 
 import ch.epfl.javelo.routing.ElevationProfile;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
@@ -84,22 +85,27 @@ public final class ElevationProfileManager {
         this.pane = new Pane(path, groupForText, polygon, line);
 
 
-        this.borderPane = new BorderPane(pane);
+        this.borderPane = new BorderPane();
+        borderPane.setCenter(pane);
         borderPane.setBottom(vBox);
         borderPane.getStylesheets().add("elevation_profile.css");
 
+
         installHandlers();
+        //installBindings();
+        installListeners();
         redraw();
+
 
     }
 
     /**
      * Méthode retournant le panneau contenant le dessin du profil
      *
-     * @return (Pane) : le panneau
+     * @return (BorderPane) : le panneau
      */
-    public Pane pane() {
-        return pane;
+    public BorderPane pane() {
+        return borderPane;
     }
 
     /**
@@ -114,15 +120,34 @@ public final class ElevationProfileManager {
     }
 
 
+
+    private void redraw() {
+        maxElevation = elevationProfileProperty.get().maxElevation();
+        minElevation = elevationProfileProperty.get().minElevation();
+        length = elevationProfileProperty.get().length();
+        rectWidth = pane.getWidth() - rectInsets.getRight() - rectInsets.getLeft();
+        rectHeight = pane.getHeight() - -rectInsets.getTop() - rectInsets.getBottom();
+
+        setTransforms();
+        setProfileRect();
+        drawLines();
+        drawProfile();
+        writeText();
+
+    }
+
     /**
      * Méthode permettant de créer les transformations
      */
     private void setTransforms() {
+        Affine STW = new Affine();
         double slopeX = length / rectWidth;
-        double bX = -40 * slopeX;
         double slopeY = -(maxElevation - minElevation) / rectHeight;
-        double bY = 10 * slopeY + maxElevation;
-        screenToWorld.set(new Affine(slopeX, 0, bX, 0, slopeY, bY));
+        STW.prependTranslation(-rectInsets.getLeft(),-rectHeight-rectInsets.getTop());
+        STW.prependScale(slopeX,slopeY);
+        STW.prependTranslation(0,minElevation);
+
+        screenToWorld.set(STW);
 
         try {
             worldToScreen.set(screenToWorld.get().createInverse());
@@ -132,18 +157,13 @@ public final class ElevationProfileManager {
 
     }
 
-    private void redraw() {
-        profileRect.get() = new Rectangle2D(rectInsets.getLeft(), rectInsets.getTop(), )
-        maxElevation = elevationProfileProperty.get().maxElevation();
-        minElevation = elevationProfileProperty.get().minElevation();
-        length = elevationProfileProperty.get().length();
-        rectWidth = pane.getWidth() - rectInsets.getRight() - rectInsets.getLeft();
-        rectHeight = pane.getHeight() - -rectInsets.getTop() - rectInsets.getBottom();
-
-        setTransforms();
-
-
-        // TODO : cette méthode devra appeler drawLines, drawProfile et writeText
+    /**
+     * Méthode permettant de créer les transformations
+     */
+    private void setProfileRect() {
+        if(rectWidth>0 && rectHeight>0){
+            profileRect.set(new Rectangle2D(rectInsets.getLeft(), rectInsets.getRight(), rectWidth, rectHeight));
+        }
     }
 
     private void drawLines() {
@@ -184,7 +204,7 @@ public final class ElevationProfileManager {
         }
         double numHLines = Math.floor(rectHeight / horLinesSpacing);
 
-        for (int i = 0; i < numHLines; i++) {
+        for (int i = 0; i <= numHLines; i++) {
             path.getElements().add(
                     new MoveTo(rectInsets.getLeft(), rectInsets.getTop() + rectHeight - (i * horLinesSpacing)));
             path.getElements().add(
@@ -194,6 +214,19 @@ public final class ElevationProfileManager {
     }
 
     private void drawProfile() {
+        polygon.getPoints().clear();
+        polygon.getPoints().add(rectInsets.getLeft());
+        polygon.getPoints().add(rectHeight + rectInsets.getTop());
+        for (int i = 0; i <rectWidth ; i++) {
+            double worldPos = screenToWorld.get().transform(i + rectInsets.getLeft(),0).getX();
+            double worldHeight = elevationProfileProperty.get().elevationAt(worldPos);
+            double screenHeight = worldToScreen.get().transform(0,worldHeight).getY();
+            polygon.getPoints().add((double) i + rectInsets.getLeft());
+            polygon.getPoints().add(screenHeight);
+        }
+        polygon.getPoints().add(rectWidth + rectInsets.getLeft());
+        polygon.getPoints().add(rectHeight + rectInsets.getTop());
+
 
     }
 
@@ -210,17 +243,38 @@ public final class ElevationProfileManager {
         textBottom.setText(text);
     }
 
-    private void installHandlers() {
+   private void installHandlers() {
         pane.setOnMouseMoved(e -> {
-            if ()
-
-
+            if (profileRect.get().contains(e.getX(), e.getY())){
+                Point2D newMousePosition = screenToWorld.get().transform(e.getX(), e.getY());
+                mousePosition.set(newMousePosition.getX());
+            }else{
+                mousePosition.set(NaN);
+            }
         });
 
         pane.setOnMouseExited(e -> {
+            mousePosition.set(NaN);
 
         });
 
+
+    }
+
+    private void installListeners(){
+        pane.widthProperty().addListener(e->redraw());
+        pane.heightProperty().addListener(e->redraw());
+        elevationProfileProperty.addListener(e->redraw());
+
+    }
+
+    private void installBindings(){
+        line.layoutXProperty().bind
+                (Bindings.createDoubleBinding(()->worldToScreen.get().transform(position.get(),0).getX()));
+
+        line.startYProperty().bind(Bindings.select(profileRect, "minY"));
+        line.endYProperty().bind(Bindings.select(profileRect, "maxY"));
+        //line.visibleProperty().bind(position.greaterThanOrEqualTo(0));
 
     }
 

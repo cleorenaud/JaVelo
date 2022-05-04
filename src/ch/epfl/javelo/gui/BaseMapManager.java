@@ -49,11 +49,6 @@ public final class BaseMapManager {
         this.canvas = new Canvas();
         pane.getChildren().add(canvas);
 
-        // Le Canvas n'était pas redimensionné automatiquement, contrairement au Pane, on utilise des liens JavaFX
-        // pour que la hauteur et la largeur de notre Canvas soient toujours égales à celle de notre Pane
-        canvas.widthProperty().bind(pane.widthProperty());
-        canvas.heightProperty().bind(pane.heightProperty());
-
         installBindings();
         installListeners();
         installHandlers();
@@ -197,8 +192,9 @@ public final class BaseMapManager {
      * Méthode créant les liens entre la taille de la fenêtre et la taille de notre Pane (et donc du Canvas également)
      */
     private void installBindings() {
-        canvas.widthProperty().addListener(e -> redrawOnNextPulse());
-        canvas.heightProperty().addListener(e -> redrawOnNextPulse());
+        canvas.widthProperty().bind(pane.widthProperty());
+        canvas.widthProperty().bind(pane.widthProperty());
+
     }
 
     /**
@@ -206,6 +202,8 @@ public final class BaseMapManager {
      */
     private void installListeners() {
         objectProperty.addListener(e -> redrawOnNextPulse());
+        canvas.widthProperty().addListener(e -> redrawOnNextPulse());
+        canvas.heightProperty().addListener(e -> redrawOnNextPulse());
     }
 
 }
