@@ -14,6 +14,7 @@ import javafx.scene.shape.Path;
 import javafx.scene.shape.Polygon;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Affine;
+import javafx.scene.transform.NonInvertibleTransformException;
 import javafx.scene.transform.Transform;
 
 import static java.lang.Double.NaN;
@@ -48,6 +49,8 @@ public final class ElevationProfileManager {
     private double length;
     private double paneWidth;
     private double paneHeight;
+    private Transform screenToWorld;
+    private Transform worldToScreen;
 
     private final static Insets edgeDistances = new Insets(10, 10, 20, 40);
     private final static int[] POS_STEPS =
@@ -111,22 +114,23 @@ public final class ElevationProfileManager {
         return mousePosition;
     }
 
-    /**
-     * Méthode permettant le passage de coordonnées du panneau JavaFX aux coordonnées du "monde réel"
-     */
-    private void screenToWorld() {
-        // TODO: quel type de paramètre et quel type de retour
-        Transform transformX = new Affine();
-        Transform transformY = new Affine();
-        
-
-    }
 
     /**
-     * Méthode permettant le passage de coordonnées du "monde réel" aux coordonnées du panneau JavaFX
+     * Méthode permettant de créer les tranformations
      */
-    private void worldToScreen() {
-        // TODO: quel type de paramètre et quel type de retour
+    private void setTransforms() {
+        double slopeX= length / paneWidth;
+        double bX = - 40 * slopeX;
+        double slopeY = -(maxElevation-minElevation)/paneHeight;
+        double bY= 10 * slopeY + maxElevation;
+        screenToWorld= new Affine(slopeX, 0, bX, 0, slopeY, bY);
+
+        try {
+            worldToScreen = screenToWorld.createInverse();
+        } catch (NonInvertibleTransformException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void redraw(){
@@ -135,6 +139,8 @@ public final class ElevationProfileManager {
         length = elevationProfileProperty.get().length();
         paneWidth= pane.getWidth()-50;
         paneHeight= pane.getHeight()-30;
+
+        setTransforms();
 
 
         // TODO : cette méthode devra appeler drawLines, drawProfile et writeText
