@@ -69,7 +69,7 @@ public final class ElevationProfileManager {
         this.mousePosition = new SimpleDoubleProperty(NaN);
         this.profileRect = new SimpleObjectProperty<>();
         this.screenToWorld = new SimpleObjectProperty<>();
-        this.worldToScreen =  new SimpleObjectProperty<>();
+        this.worldToScreen = new SimpleObjectProperty<>();
 
         this.textBottom = new Text();
         this.vBox = new VBox(textBottom);
@@ -137,8 +137,8 @@ public final class ElevationProfileManager {
         maxElevation = elevationProfileProperty.get().maxElevation();
         minElevation = elevationProfileProperty.get().minElevation();
         length = elevationProfileProperty.get().length();
-        rectWidth = pane.getWidth() - rectInsets.getRight()-rectInsets.getLeft();
-        rectHeight = pane.getHeight() - - rectInsets.getTop() - rectInsets.getBottom();
+        rectWidth = pane.getWidth() - rectInsets.getRight() - rectInsets.getLeft();
+        rectHeight = pane.getHeight() - -rectInsets.getTop() - rectInsets.getBottom();
 
         setTransforms();
 
@@ -211,13 +211,13 @@ public final class ElevationProfileManager {
     }
 
     private void installHandlers() {
-        pane.setOnMouseMoved(e->{
-            if()
+        pane.setOnMouseMoved(e -> {
+            if ()
 
 
         });
 
-        pane.setOnMouseExited(e->{
+        pane.setOnMouseExited(e -> {
 
         });
 
