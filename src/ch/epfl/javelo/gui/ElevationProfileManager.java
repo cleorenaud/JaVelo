@@ -25,7 +25,8 @@ import static java.lang.Double.NaN;
 public final class ElevationProfileManager {
 
     private final ObjectProperty<Rectangle2D> profileRect; // Propriété contenant le rectangle englobant le dessin du profil
-    private final ObjectProperty<Transform> transformObjectProperty; // Propriété contenant les transformations screenToWorld et worldToScreen
+    private final ObjectProperty<Transform> screenToWorld; // Propriété contenant les transformations screenToWorld et worldToScreen
+    private final ObjectProperty<Transform> worldToScreen;
 
     private final BorderPane borderPane;
     private final Pane pane;
@@ -37,6 +38,7 @@ public final class ElevationProfileManager {
     private final DoubleProperty mousePosition;
     private final Text textBottom;
 
+
     private final ReadOnlyObjectProperty<ElevationProfile> elevationProfileProperty;
     private final ReadOnlyDoubleProperty position;
 
@@ -46,8 +48,6 @@ public final class ElevationProfileManager {
     private double length;
     private double paneWidth;
     private double paneHeight;
-    private Transform screenToWorld;
-    private Transform worldToScreen;
 
     private final static Insets rectInsets = new Insets(10, 10, 20, 40);
     private final static int[] POS_STEPS = {1000, 2000, 5000, 10_000, 25_000, 50_000, 100_000};
@@ -67,7 +67,8 @@ public final class ElevationProfileManager {
         this.elevationProfileProperty = elevationProfileProperty;
         this.mousePosition = new SimpleDoubleProperty(NaN);
         this.profileRect = new SimpleObjectProperty<>();
-        this.transformObjectProperty = new SimpleObjectProperty<>();
+        this.screenToWorld = new SimpleObjectProperty<>();
+        this.worldToScreen =  new SimpleObjectProperty<>();
 
         this.textBottom = new Text();
         this.vBox = new VBox(textBottom);
@@ -80,6 +81,7 @@ public final class ElevationProfileManager {
         this.path = new Path();
         this.path.setId("grid");
         this.pane = new Pane(path, groupForText, polygon, line);
+
 
         this.borderPane = new BorderPane(pane);
         borderPane.setBottom(vBox);
@@ -119,10 +121,10 @@ public final class ElevationProfileManager {
         double bX = -40 * slopeX;
         double slopeY = -(maxElevation - minElevation) / paneHeight;
         double bY = 10 * slopeY + maxElevation;
-        screenToWorld = new Affine(slopeX, 0, bX, 0, slopeY, bY);
+        screenToWorld.set(new Affine(slopeX, 0, bX, 0, slopeY, bY));
 
         try {
-            worldToScreen = screenToWorld.createInverse();
+            worldToScreen.set(screenToWorld.get().createInverse());
         } catch (NonInvertibleTransformException e) {
             e.printStackTrace();
         }
@@ -204,13 +206,17 @@ public final class ElevationProfileManager {
     }
 
     private void installHandlers() {
+        pane.setOnMouseMoved(e->{
+            if()
+
+
+        });
+
+        pane.setOnMouseExited(e->{
+
+        });
+
 
     }
 
-    private void innerRectangle() {
-        Pane innerRectangle = new Pane();
-        double prefWidth = pane.getWidth() - rectInsets.getLeft() - rectInsets.getRight();
-        double prefHeight = pane.getHeight() - rectInsets.getTop() - rectInsets.getBottom();
-        innerRectangle.setPrefSize(prefWidth, prefHeight);
-    }
 }
