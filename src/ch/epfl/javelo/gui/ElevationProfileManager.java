@@ -47,8 +47,8 @@ public final class ElevationProfileManager {
     private double maxElevation;
     private double minElevation;
     private double length;
-    private double paneWidth;
-    private double paneHeight;
+    private double rectWidth;
+    private double rectHeight;
 
     private final static Insets rectInsets = new Insets(10, 10, 20, 40);
     private final static int[] POS_STEPS = {1000, 2000, 5000, 10_000, 25_000, 50_000, 100_000};
@@ -118,9 +118,9 @@ public final class ElevationProfileManager {
      * Méthode permettant de créer les transformations
      */
     private void setTransforms() {
-        double slopeX = length / paneWidth;
+        double slopeX = length / rectWidth;
         double bX = -40 * slopeX;
-        double slopeY = -(maxElevation - minElevation) / paneHeight;
+        double slopeY = -(maxElevation - minElevation) / rectHeight;
         double bY = 10 * slopeY + maxElevation;
         screenToWorld.set(new Affine(slopeX, 0, bX, 0, slopeY, bY));
 
@@ -133,11 +133,12 @@ public final class ElevationProfileManager {
     }
 
     private void redraw() {
+        profileRect.get() = new Rectangle2D(rectInsets.getLeft(), rectInsets.getTop(), )
         maxElevation = elevationProfileProperty.get().maxElevation();
         minElevation = elevationProfileProperty.get().minElevation();
         length = elevationProfileProperty.get().length();
-        paneWidth = pane.getWidth() - 50;
-        paneHeight = pane.getHeight() - 30;
+        rectWidth = pane.getWidth() - rectInsets.getRight()-rectInsets.getLeft();
+        rectHeight = pane.getHeight() - - rectInsets.getTop() - rectInsets.getBottom();
 
         setTransforms();
 
