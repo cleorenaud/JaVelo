@@ -67,7 +67,7 @@ public final class ElevationProfileManager {
                                    ReadOnlyDoubleProperty position) {
         this.position = position;
         this.elevationProfileProperty = elevationProfileProperty;
-        this.mousePosition = new SimpleDoubleProperty(NaN);
+        this.mousePosition = new SimpleDoubleProperty();
         this.profileRect = new SimpleObjectProperty<>();
         this.screenToWorld = new SimpleObjectProperty<>();
         this.worldToScreen = new SimpleObjectProperty<>();
@@ -91,10 +91,10 @@ public final class ElevationProfileManager {
         borderPane.getStylesheets().add("elevation_profile.css");
 
 
-        installHandlers();
-        //installBindings();
-        installListeners();
         redraw();
+        installHandlers();
+        installBindings();
+        installListeners();
 
 
     }
@@ -115,7 +115,7 @@ public final class ElevationProfileManager {
      *
      * @return (ReadOnlyObjectProperty < Point2D >) : la propriété
      */
-    public DoubleProperty mousePositionOnProfileProperty() {
+    public ReadOnlyDoubleProperty mousePositionOnProfileProperty() {
         return mousePosition;
     }
 
@@ -130,7 +130,7 @@ public final class ElevationProfileManager {
 
         setTransforms();
         setProfileRect();
-        drawLines();
+        //drawLines();
         drawProfile();
         writeText();
 
@@ -255,7 +255,6 @@ public final class ElevationProfileManager {
 
         pane.setOnMouseExited(e -> {
             mousePosition.set(NaN);
-
         });
 
 
@@ -270,11 +269,12 @@ public final class ElevationProfileManager {
 
     private void installBindings(){
         line.layoutXProperty().bind
-                (Bindings.createDoubleBinding(()->worldToScreen.get().transform(position.get(),0).getX()));
+                (Bindings.createDoubleBinding(()->worldToScreen.get().transform(position.get(),0).getX(),
+                        position));
 
         line.startYProperty().bind(Bindings.select(profileRect, "minY"));
         line.endYProperty().bind(Bindings.select(profileRect, "maxY"));
-        //line.visibleProperty().bind(position.greaterThanOrEqualTo(0));
+        line.visibleProperty().bind(position.greaterThanOrEqualTo(0));
 
     }
 
