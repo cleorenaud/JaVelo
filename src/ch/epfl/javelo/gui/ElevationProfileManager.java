@@ -143,7 +143,7 @@ public final class ElevationProfileManager {
     }
 
     private void drawLines() {
-        Path lines = new Path(); // Nœud représentant la totalité des lignes verticale et horizontales composant la grille du profil
+       path.getElements().clear(); // Nœud représentant la totalité des lignes verticale et horizontales composant la grille du profil
 
         double rectWidth = pane.getWidth() - rectInsets.getRight() - rectInsets.getLeft();
         double rectHeight = pane.getHeight() - rectInsets.getTop() - rectInsets.getBottom();
@@ -160,9 +160,9 @@ public final class ElevationProfileManager {
         double numVLines = Math.floor(rectWidth / verticalSpacing);
 
         for (int i = 0; i < numVLines; i++) {
-            lines.getElements().add(
+            path.getElements().add(
                     new MoveTo(rectInsets.getLeft() + (i * verticalSpacing), rectInsets.getTop()));
-            lines.getElements().add(
+            path.getElements().add(
                     new LineTo(rectInsets.getLeft(), rectInsets.getTop() + rectHeight));
         }
 
@@ -170,7 +170,7 @@ public final class ElevationProfileManager {
         double horizontalSpacing = 0;
         for (int i : ELE_STEPS) {
             horizontalSpacing = (maxElevation - minElevation) * 1000 / i; // On convertit l'altitude en kilomètres
-            // horizontalSpacing = worldToScreen.deltaTransform(0, horizontalSpacing); // On transforme la valeur obtenue
+            horizontalSpacing = worldToScreen.deltaTransform(0, horizontalSpacing); // On transforme la valeur obtenue
             if (horizontalSpacing >= 50) {
                 break;
             }
@@ -178,9 +178,9 @@ public final class ElevationProfileManager {
         double numHLines = Math.floor(rectHeight / horizontalSpacing);
 
         for (int i = 0; i < numHLines; i++) {
-            lines.getElements().add(
+            path.getElements().add(
                     new MoveTo(rectInsets.getLeft(), rectInsets.getTop() + rectHeight - (i * horizontalSpacing)));
-            lines.getElements().add(
+            path.getElements().add(
                     new LineTo(rectInsets.getLeft() + rectWidth, rectInsets.getTop() + rectHeight));
         }
 
