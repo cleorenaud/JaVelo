@@ -148,10 +148,7 @@ public final class ElevationProfileManager {
 
     private void drawLines() {
         path.getElements().clear(); // Nœud représentant la totalité des lignes verticale et horizontales composant la grille du profil
-
-        double rectWidth = pane.getWidth() - rectInsets.getRight() - rectInsets.getLeft();
-        double rectHeight = pane.getHeight() - rectInsets.getTop() - rectInsets.getBottom();
-
+        
         // On itère sur POS_STEPS pour déterminer quel est l'espacement entre les lignes verticales
         double vertLinesSpacing = 0;
         for (int i : POS_STEPS) {
