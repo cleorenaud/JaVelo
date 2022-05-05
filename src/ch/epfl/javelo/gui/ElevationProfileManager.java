@@ -262,13 +262,8 @@ public final class ElevationProfileManager {
     }
 
     private void installBindings() {
-        line.layoutXProperty().bind
-<<<<<<< Updated upstream
-                (Bindings.createDoubleBinding(()->worldToScreen.get().transform(position.get(),0).getX(),
-                        position));
-=======
-                (Bindings.createDoubleBinding(() -> worldToScreen.get().transform(position.get(), 0).getX()));
->>>>>>> Stashed changes
+        line.layoutXProperty().bind(Bindings.createDoubleBinding(()->worldToScreen.get().transform(position.get(),0).getX(),
+                position));
 
         line.startYProperty().bind(Bindings.select(profileRect, "minY"));
         line.endYProperty().bind(Bindings.select(profileRect, "maxY"));
