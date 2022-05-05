@@ -32,7 +32,7 @@ public final class ElevationProfileManager {
 
     private final BorderPane borderPane;
     private final Pane pane;
-    private final Path path;
+    private final Path grid; // chemin représentant la grid
     private final Group groupForText;
     private final Polygon polygon;
     private final Line line;
@@ -80,9 +80,9 @@ public final class ElevationProfileManager {
         this.polygon = new Polygon();
         this.polygon.setId("profile");
         this.groupForText = new Group();
-        this.path = new Path();
-        this.path.setId("grid");
-        this.pane = new Pane(path, groupForText, polygon, line);
+        this.grid = new Path();
+        this.grid.setId("grid");
+        this.pane = new Pane(grid, groupForText, polygon, line);
 
 
         this.borderPane = new BorderPane();
@@ -120,7 +120,6 @@ public final class ElevationProfileManager {
     }
 
 
-
     private void redraw() {
         maxElevation = elevationProfileProperty.get().maxElevation();
         minElevation = elevationProfileProperty.get().minElevation();
@@ -143,9 +142,9 @@ public final class ElevationProfileManager {
         Affine STW = new Affine();
         double slopeX = length / rectWidth;
         double slopeY = -(maxElevation - minElevation) / rectHeight;
-        STW.prependTranslation(-rectInsets.getLeft(),-rectHeight-rectInsets.getTop());
-        STW.prependScale(slopeX,slopeY);
-        STW.prependTranslation(0,minElevation);
+        STW.prependTranslation(-rectInsets.getLeft(), -rectHeight - rectInsets.getTop());
+        STW.prependScale(slopeX, slopeY);
+        STW.prependTranslation(0, minElevation);
 
         screenToWorld.set(STW);
 
@@ -161,55 +160,50 @@ public final class ElevationProfileManager {
      * Méthode permettant de créer les transformations
      */
     private void setProfileRect() {
-        if(rectWidth>0 && rectHeight>0){
+        if (rectWidth > 0 && rectHeight > 0) {
             profileRect.set(new Rectangle2D(rectInsets.getLeft(), rectInsets.getRight(), rectWidth, rectHeight));
         }
     }
 
     private void drawLines() {
-        path.getElements().clear(); // Nœud représentant la totalité des lignes verticale et horizontales composant la grille du profil
-        
-        // On itère sur POS_STEPS pour déterminer quel est l'espacement entre les lignes verticales
-        double vertLinesSpacing = 0;
+        grid.getElements().clear(); // Nœud représentant la totalité des lignes verticale et horizontales composant la grille du profil
+
+        double posStepsX = POS_STEPS[POS_STEPS.length - 1];
+        double pixelIntX = 0;
         for (int i : POS_STEPS) {
-            // On calcule la distance entre chaque ligne horizontale pour chaque valeur de POS_STEPS dans le "monde réel"
-            // puis on la convertit dans le système de coordonnées JavaFX
-            Point2D vertInterval = worldToScreen.get().deltaTransform(length / i, 0);
-            // Si l'intervalle entre deux lignes verticales est supérieur ou égal à 25 on a notre valeur de POS_STEPS à utiliser
-            if (vertInterval.getX() >= 25) {
+            pixelIntX = i * rectWidth / length;
+            if (pixelIntX >= 25) {
+                posStepsX = i;
                 break;
             }
-            vertLinesSpacing = vertInterval.getX();
         }
-        double numVLines = Math.floor(rectWidth / vertLinesSpacing);
+        double numVLines = Math.floor(length / posStepsX);
 
-        for (int i = 0; i < numVLines; i++) {
-            path.getElements().add(
-                    new MoveTo(rectInsets.getLeft() + (i * vertLinesSpacing), rectInsets.getTop()));
-            path.getElements().add(
-                    new LineTo(rectInsets.getLeft(), rectInsets.getTop() + rectHeight));
+        for (int i = 0; i <= numVLines; i++) {
+            grid.getElements().add(
+                    new MoveTo(rectInsets.getLeft() + (i * pixelIntX), rectInsets.getTop()));
+            grid.getElements().add(
+                    new LineTo(rectInsets.getLeft() + (i * pixelIntX), rectInsets.getTop() + rectHeight));
         }
 
-        // On itère sur ELE_STEPS pour déterminer quel est l'espacement entre les lignes horizontales
-        double horLinesSpacing = 0;
+        double posStepsY = POS_STEPS[POS_STEPS.length - 1];
+        double pixelIntY = 0;
         for (int i : ELE_STEPS) {
-            // On calcule la distance entre chaque ligne verticale pour chaque valeur de ELE_STEPS dans le "monde réel"
-            // puis on la convertit dans le système de coordonnées JavaFX
-            Point2D horInterval = worldToScreen.get().deltaTransform(0, (maxElevation - minElevation) / i);
-            // Si l'intervalle entre deux lignes horizontales est supérieur ou égal à 50 on a notre valeur de ELE_STEPS à utiliser
-            if (horInterval.getY() >= 50) {
+            pixelIntY = i * rectHeight / length;
+            if (pixelIntY >= 50) {
+                posStepsY = i;
                 break;
             }
-            horLinesSpacing = horInterval.getY();
         }
-        double numHLines = Math.floor(rectHeight / horLinesSpacing);
+        double numHLines = Math.floor(length / posStepsY);
 
         for (int i = 0; i <= numHLines; i++) {
-            path.getElements().add(
-                    new MoveTo(rectInsets.getLeft(), rectInsets.getTop() + rectHeight - (i * horLinesSpacing)));
-            path.getElements().add(
-                    new LineTo(rectInsets.getLeft() + rectWidth, rectInsets.getTop() + rectHeight));
+            grid.getElements().add(
+                    new MoveTo(rectInsets.getLeft(), rectInsets.getTop() + rectHeight - (i * pixelIntY)));
+            grid.getElements().add(
+                    new LineTo(rectInsets.getLeft() + rectWidth, rectInsets.getTop() + rectHeight - (i * pixelIntY)));
         }
+
 
     }
 
@@ -217,10 +211,10 @@ public final class ElevationProfileManager {
         polygon.getPoints().clear();
         polygon.getPoints().add(rectInsets.getLeft());
         polygon.getPoints().add(rectHeight + rectInsets.getTop());
-        for (int i = 0; i <rectWidth ; i++) {
-            double worldPos = screenToWorld.get().transform(i + rectInsets.getLeft(),0).getX();
+        for (int i = 0; i < rectWidth; i++) {
+            double worldPos = screenToWorld.get().transform(i + rectInsets.getLeft(), 0).getX();
             double worldHeight = elevationProfileProperty.get().elevationAt(worldPos);
-            double screenHeight = worldToScreen.get().transform(0,worldHeight).getY();
+            double screenHeight = worldToScreen.get().transform(0, worldHeight).getY();
             polygon.getPoints().add((double) i + rectInsets.getLeft());
             polygon.getPoints().add(screenHeight);
         }
@@ -243,12 +237,12 @@ public final class ElevationProfileManager {
         textBottom.setText(text);
     }
 
-   private void installHandlers() {
+    private void installHandlers() {
         pane.setOnMouseMoved(e -> {
-            if (profileRect.get().contains(e.getX(), e.getY())){
+            if (profileRect.get().contains(e.getX(), e.getY())) {
                 Point2D newMousePosition = screenToWorld.get().transform(e.getX(), e.getY());
                 mousePosition.set(newMousePosition.getX());
-            }else{
+            } else {
                 mousePosition.set(NaN);
             }
         });
@@ -260,17 +254,21 @@ public final class ElevationProfileManager {
 
     }
 
-    private void installListeners(){
-        pane.widthProperty().addListener(e->redraw());
-        pane.heightProperty().addListener(e->redraw());
-        elevationProfileProperty.addListener(e->redraw());
+    private void installListeners() {
+        pane.widthProperty().addListener(e -> redraw());
+        pane.heightProperty().addListener(e -> redraw());
+        elevationProfileProperty.addListener(e -> redraw());
 
     }
 
-    private void installBindings(){
+    private void installBindings() {
         line.layoutXProperty().bind
+<<<<<<< Updated upstream
                 (Bindings.createDoubleBinding(()->worldToScreen.get().transform(position.get(),0).getX(),
                         position));
+=======
+                (Bindings.createDoubleBinding(() -> worldToScreen.get().transform(position.get(), 0).getX()));
+>>>>>>> Stashed changes
 
         line.startYProperty().bind(Bindings.select(profileRect, "minY"));
         line.endYProperty().bind(Bindings.select(profileRect, "maxY"));
