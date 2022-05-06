@@ -6,11 +6,13 @@ import javafx.beans.property.*;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
+import javafx.geometry.VPos;
 import javafx.scene.Group;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.*;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
@@ -26,24 +28,22 @@ import static java.lang.Double.NaN;
  */
 public final class ElevationProfileManager {
 
-    private final ObjectProperty<Rectangle2D> profileRect; // Propriété contenant le rectangle englobant le dessin du profil
-    private final ObjectProperty<Transform> screenToWorld; // Propriété contenant les transformations screenToWorld et worldToScreen
-    private final ObjectProperty<Transform> worldToScreen;
-
-    private final BorderPane borderPane;
-    private final Pane pane;
-    private final Path grid; // chemin représentant la grid
-    private final Group groupForText;
-    private final Polygon polygon;
-    private final Line line;
-    private final VBox vBox;
+    private final BorderPane mainPane; // borderPane représentant la fenêtre
+    private final Pane centerArea; // pane représentant la partie centrale de l'écran contenant le profil
+    private final Path grid; // chemin représentant la grille
+    private final Group labelsText; // groupe représentant les étiquettes de la grille
+    private final Polygon graphProfile; // polygone représentant le graphe du profil
+    private final Line highlightedPosLine; // ligne représentant la position mise en évidence
     private final DoubleProperty mousePosition;
-    private final Text textBottom;
+    private final VBox bottomArea; // vbox représentant la partie basse de l'écran contenant les statistiques du profil
+    private final Text profileStats; // texte contenant les statistiques du profil
 
+    private final ObjectProperty<Rectangle2D> profileRect; // Propriété contenant le rectangle englobant le dessin du profil
+    private final ObjectProperty<Transform> screenToWorld; // Propriété contenant la transformation screenToWorld
+    private final ObjectProperty<Transform> worldToScreen; // Propriété contenant la transformation worldToScreen
 
-    private final ReadOnlyObjectProperty<ElevationProfile> elevationProfileProperty;
-    private final ReadOnlyDoubleProperty position;
-
+    private final ReadOnlyObjectProperty<ElevationProfile> elevationProfileProperty; // Propriété contenant le profil à afficher
+    private final ReadOnlyDoubleProperty position; // Propriété contenant la position le long du profil à mettre en évidence
 
     private double maxElevation;
     private double minElevation;
@@ -72,23 +72,23 @@ public final class ElevationProfileManager {
         this.screenToWorld = new SimpleObjectProperty<>();
         this.worldToScreen = new SimpleObjectProperty<>();
 
-        this.textBottom = new Text();
-        this.vBox = new VBox(textBottom);
-        vBox.setId("profile_data");
+        this.profileStats = new Text();
+        this.bottomArea = new VBox(profileStats);
+        bottomArea.setId("profile_data");
 
-        this.line = new Line();
-        this.polygon = new Polygon();
-        this.polygon.setId("profile");
-        this.groupForText = new Group();
+        this.highlightedPosLine = new Line();
+        this.graphProfile = new Polygon();
+        this.graphProfile.setId("profile");
+        this.labelsText = new Group();
         this.grid = new Path();
         this.grid.setId("grid");
-        this.pane = new Pane(grid, groupForText, polygon, line);
+        this.centerArea = new Pane(grid, labelsText, graphProfile, highlightedPosLine);
 
 
-        this.borderPane = new BorderPane();
-        borderPane.setCenter(pane);
-        borderPane.setBottom(vBox);
-        borderPane.getStylesheets().add("elevation_profile.css");
+        this.mainPane = new BorderPane();
+        mainPane.setCenter(centerArea);
+        mainPane.setBottom(bottomArea);
+        mainPane.getStylesheets().add("elevation_profile.css");
 
 
         redraw();
@@ -100,12 +100,12 @@ public final class ElevationProfileManager {
     }
 
     /**
-     * Méthode retournant le panneau contenant le dessin du profil
+     * Méthode retournant le panneau contenant le dessin du profil et ses statistiques
      *
      * @return (BorderPane) : le panneau
      */
     public BorderPane pane() {
-        return borderPane;
+        return mainPane;
     }
 
     /**
@@ -124,13 +124,15 @@ public final class ElevationProfileManager {
         maxElevation = elevationProfileProperty.get().maxElevation();
         minElevation = elevationProfileProperty.get().minElevation();
         length = elevationProfileProperty.get().length();
-        rectWidth = pane.getWidth() - rectInsets.getRight() - rectInsets.getLeft();
-        rectHeight = pane.getHeight() - -rectInsets.getTop() - rectInsets.getBottom();
+        rectWidth = centerArea.getWidth() - rectInsets.getRight() - rectInsets.getLeft();
+        rectHeight = centerArea.getHeight() - -rectInsets.getTop() - rectInsets.getBottom();
 
         setTransforms();
-        setProfileRect();
-        //drawLines();
+        if (rectWidth > 0 && rectHeight > 0) {
+            profileRect.set(new Rectangle2D(rectInsets.getLeft(), rectInsets.getRight(), rectWidth, rectHeight));
+        }
         drawProfile();
+        drawLines();
         writeText();
 
     }
@@ -157,17 +159,16 @@ public final class ElevationProfileManager {
     }
 
     /**
-     * Méthode permettant de créer les transformations
+     * Méthode permettant le (re)dessin de la grille derrière le profil
      */
-    private void setProfileRect() {
-        if (rectWidth > 0 && rectHeight > 0) {
-            profileRect.set(new Rectangle2D(rectInsets.getLeft(), rectInsets.getRight(), rectWidth, rectHeight));
-        }
-    }
-
     private void drawLines() {
-        grid.getElements().clear(); // Nœud représentant la totalité des lignes verticale et horizontales composant la grille du profil
+        // On commence par "réinitialiser" la totalité des lignes composant la grille du profil et les étiquettes
+        // représentant les graduations
+        grid.getElements().clear();
+        labelsText.getChildren().clear();
 
+        // Pour dessiner les lignes verticales on itère sur les valeurs de POS_STEPS pour trouver la plus petite nous
+        // permettant d'avoir au moins 25 unités JavaFX entre deux lignes verticales
         double posStepsX = POS_STEPS[POS_STEPS.length - 1];
         double pixelIntX = 0;
         for (int i : POS_STEPS) {
@@ -177,49 +178,69 @@ public final class ElevationProfileManager {
                 break;
             }
         }
-        double numVLines = Math.floor(length / posStepsX);
+        double numVLines = Math.floor(length / posStepsX); // le nombre de lignes à dessiner (exceptée celle à l'origine)
 
         for (int i = 0; i <= numVLines; i++) {
             grid.getElements().add(
                     new MoveTo(rectInsets.getLeft() + (i * pixelIntX), rectInsets.getTop()));
             grid.getElements().add(
                     new LineTo(rectInsets.getLeft() + (i * pixelIntX), rectInsets.getTop() + rectHeight));
+            // On crée maintenant les étiquettes correspondant aux graduations
+            Text label = new Text(String.valueOf((int) (i * posStepsX / 1000)));
+            label.textOriginProperty().set(VPos.TOP);
+            label.setX(rectInsets.getLeft() + (i * pixelIntX) - label.prefWidth(0) / 2);
+            label.setY(rectInsets.getTop() + rectHeight);
+            label.setFont(Font.font("Avenir", 10));
+            //label.getStyleClass().add(grid_label, horizontal);
+            labelsText.getChildren().add(label);
         }
 
-        double posStepsY = POS_STEPS[POS_STEPS.length - 1];
+
+        // Pour dessiner les lignes horizontales on itère sur les valeurs de ELE_STEPS pour trouver la plus petite nous
+        // permettant d'avoir au moins 50 unités JavaFX entre deux lignes horizontales
+        double posStepsY = ELE_STEPS[ELE_STEPS.length - 1];
         double pixelIntY = 0;
         for (int i : ELE_STEPS) {
-            pixelIntY = i * rectHeight / length;
+            pixelIntY = i * rectHeight / (maxElevation - minElevation);
             if (pixelIntY >= 50) {
                 posStepsY = i;
                 break;
             }
         }
-        double numHLines = Math.floor(length / posStepsY);
+        double numHLines = Math.floor((maxElevation - minElevation) / posStepsY); // le nombre de lignes à dessiner (exceptée celle à l'origine)
 
+        System.out.println((maxElevation - minElevation));
         for (int i = 0; i <= numHLines; i++) {
             grid.getElements().add(
                     new MoveTo(rectInsets.getLeft(), rectInsets.getTop() + rectHeight - (i * pixelIntY)));
             grid.getElements().add(
                     new LineTo(rectInsets.getLeft() + rectWidth, rectInsets.getTop() + rectHeight - (i * pixelIntY)));
+            // On crée maintenant les étiquettes correspondant aux graduations
+            Text label = new Text(String.valueOf((int) (i * posStepsY)));
+            label.textOriginProperty().set(VPos.CENTER);
+            label.setX(rectInsets.getLeft() - label.prefWidth(0) - 2);
+            label.setY(rectInsets.getTop() + rectHeight - (i * pixelIntY));
+            label.setFont(Font.font("Avenir", 10));
+            //label.getStyleClass().add(grid_label, horizontal);
+            labelsText.getChildren().add(label);
         }
 
 
     }
 
     private void drawProfile() {
-        polygon.getPoints().clear();
-        polygon.getPoints().add(rectInsets.getLeft());
-        polygon.getPoints().add(rectHeight + rectInsets.getTop());
+        graphProfile.getPoints().clear();
+        graphProfile.getPoints().add(rectInsets.getLeft());
+        graphProfile.getPoints().add(rectHeight + rectInsets.getTop());
         for (int i = 0; i < rectWidth; i++) {
             double worldPos = screenToWorld.get().transform(i + rectInsets.getLeft(), 0).getX();
             double worldHeight = elevationProfileProperty.get().elevationAt(worldPos);
             double screenHeight = worldToScreen.get().transform(0, worldHeight).getY();
-            polygon.getPoints().add((double) i + rectInsets.getLeft());
-            polygon.getPoints().add(screenHeight);
+            graphProfile.getPoints().add((double) i + rectInsets.getLeft());
+            graphProfile.getPoints().add(screenHeight);
         }
-        polygon.getPoints().add(rectWidth + rectInsets.getLeft());
-        polygon.getPoints().add(rectHeight + rectInsets.getTop());
+        graphProfile.getPoints().add(rectWidth + rectInsets.getLeft());
+        graphProfile.getPoints().add(rectHeight + rectInsets.getTop());
 
 
     }
@@ -234,11 +255,11 @@ public final class ElevationProfileManager {
                 length / 1000.0, totalAscent, totalDescent, minElevation, maxElevation
         );
 
-        textBottom.setText(text);
+        profileStats.setText(text);
     }
 
     private void installHandlers() {
-        pane.setOnMouseMoved(e -> {
+        centerArea.setOnMouseMoved(e -> {
             if (profileRect.get().contains(e.getX(), e.getY())) {
                 Point2D newMousePosition = screenToWorld.get().transform(e.getX(), e.getY());
                 mousePosition.set(newMousePosition.getX());
@@ -247,7 +268,7 @@ public final class ElevationProfileManager {
             }
         });
 
-        pane.setOnMouseExited(e -> {
+        centerArea.setOnMouseExited(e -> {
             mousePosition.set(NaN);
         });
 
@@ -255,20 +276,18 @@ public final class ElevationProfileManager {
     }
 
     private void installListeners() {
-        pane.widthProperty().addListener(e -> redraw());
-        pane.heightProperty().addListener(e -> redraw());
+        centerArea.widthProperty().addListener(e -> redraw());
+        centerArea.heightProperty().addListener(e -> redraw());
         elevationProfileProperty.addListener(e -> redraw());
 
     }
 
     private void installBindings() {
-        line.layoutXProperty().bind(Bindings.createDoubleBinding(()->worldToScreen.get().transform(position.get(),0).getX(),
-                position));
-
-        line.startYProperty().bind(Bindings.select(profileRect, "minY"));
-        line.endYProperty().bind(Bindings.select(profileRect, "maxY"));
-        line.visibleProperty().bind(position.greaterThanOrEqualTo(0));
-
+        highlightedPosLine.layoutXProperty().bind(Bindings.createDoubleBinding(() -> 
+                        worldToScreen.get().transform(position.get(),0).getX(), position));
+        highlightedPosLine.startYProperty().bind(Bindings.select(profileRect, "minY"));
+        highlightedPosLine.endYProperty().bind(Bindings.select(profileRect, "maxY"));
+        highlightedPosLine.visibleProperty().bind(position.greaterThanOrEqualTo(0));
     }
 
 }
