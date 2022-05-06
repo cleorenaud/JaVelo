@@ -2,19 +2,14 @@ package ch.epfl.javelo.gui;
 
 import ch.epfl.javelo.projection.PointCh;
 import ch.epfl.javelo.projection.PointWebMercator;
-import ch.epfl.javelo.projection.WebMercator;
 import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
-import javafx.scene.Group;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polyline;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -27,10 +22,10 @@ public final class RouteManager {
     private final RouteBean routeBean;
     private final ReadOnlyObjectProperty<MapViewParameters> mapViewParameters;
     private final Consumer<String> errorConsumer;
-    private final Pane carte;
+    private final Pane pane;
     private int zoomActu;
     private final Polyline itineraire;
-    private final Circle cercle;
+    private final Circle circle;
     private List<PointCh> points;
     private static final int RADIUS = 5;
 
@@ -47,15 +42,15 @@ public final class RouteManager {
         this.mapViewParameters= mapViewParameters;
         this.errorConsumer= errorConsumer;
         this.points = new ArrayList();
-        this.carte = new Pane();
+        this.pane = new Pane();
         zoomActu=mapViewParameters.get().zoomLevel();
         this.itineraire= new Polyline();
         itineraire.setId("route");
-        this.cercle = new Circle(RADIUS);
-        cercle.setId("highlight");
-        carte.getChildren().add(itineraire);
-        carte.getChildren().add(cercle);
-        carte.setPickOnBounds(false);
+        this.circle = new Circle(RADIUS);
+        circle.setId("highlight");
+        pane.getChildren().add(itineraire);
+        pane.getChildren().add(circle);
+        pane.setPickOnBounds(false);
         installListeners(); //méthode s'occupant d'ajouter les auditeurs
         installHandlers(); //méthode s'occupant d'ajouter la gestion dévénement du cercle
         recreate();
@@ -67,7 +62,7 @@ public final class RouteManager {
      * @return (Pane) : le pane
      */
     public Pane pane(){
-        return carte;
+        return pane;
     }
 
     /**
@@ -78,7 +73,7 @@ public final class RouteManager {
 
         if(routeBean.route.get()==null){
             itineraire.setVisible(false);
-            cercle.setVisible(false);
+            circle.setVisible(false);
         }else{
             this.points=new ArrayList(routeBean.route.get().points());
             PointWebMercator point1 = PointWebMercator.ofPointCh(points.get(0));
@@ -105,7 +100,7 @@ public final class RouteManager {
      * méthode privée permettant de replacer l'itinéraire
      */
     private void replace(){
-        if(routeBean.waypoints.size()>1){
+        if(routeBean.route.get() != null){
             itineraire.setVisible(true);
         }else{
             return; //inutile de chercher la position si on ne doit pas voir la route
@@ -149,10 +144,10 @@ public final class RouteManager {
      */
     private void installHandlers(){
 
-        cercle.setOnMouseClicked((MouseEvent mouseEvent) -> { //gère l'ajout d'un point de passage
+        circle.setOnMouseClicked((MouseEvent mouseEvent) -> { //gère l'ajout d'un point de passage
             double x= mouseEvent.getX();
             double y= mouseEvent.getY();
-            Point2D point = cercle.localToParent(x,y);
+            Point2D point = circle.localToParent(x,y);
 
             PointCh location = mapViewParameters.get().pointAt(point.getX(), point.getY()).toPointCh();
             int noeud=routeBean.route.get().nodeClosestTo(routeBean.highlightedPosition());
@@ -175,15 +170,15 @@ public final class RouteManager {
 
     private void replaceCircle(){
         if(routeBean.waypoints.size() >= 2){
-            cercle.setVisible(true);
+            circle.setVisible(true);
         }else{
             return; //ça ne sert à rien de chercher la position si pour l'instant elle ne doit pas être visible
         }
         double posCercle = routeBean.highlightedPosition.get();
         PointWebMercator pointCercle = PointWebMercator.ofPointCh(routeBean.route.get().pointAt(posCercle));
 
-        cercle.setLayoutX(mapViewParameters.get().viewX(pointCercle));
-        cercle.setLayoutY(mapViewParameters.get().viewY(pointCercle));
+        circle.setLayoutX(mapViewParameters.get().viewX(pointCercle));
+        circle.setLayoutY(mapViewParameters.get().viewY(pointCercle));
 
     }
 
