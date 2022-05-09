@@ -2,6 +2,7 @@ package ch.epfl.javelo.gui;
 
 import ch.epfl.javelo.data.Graph;
 import ch.epfl.javelo.routing.*;
+import com.sun.jdi.BooleanValue;
 import javafx.application.Application;
 import javafx.beans.property.*;
 import javafx.beans.value.ObservableBooleanValue;
@@ -39,51 +40,81 @@ public final class JaVelo extends Application {
         String tileServerHost = "tile.openstreetmap.org";
         TileManager tileManager =
                 new TileManager(cacheBasePath, tileServerHost);
-        CostFunction costFunction = new CityBikeCF(graph);
         RouteBean routeBean = new RouteBean(new RouteComputer(graph, new CityBikeCF(graph)));
         ErrorManager errorManager = new ErrorManager();
         Consumer<String> errorConsumer = (s -> errorManager.displayError(s));
 
         AnnotatedMapManager mapPane = new AnnotatedMapManager(graph, tileManager, routeBean, errorConsumer);
 
-        ElevationProfile profile = ElevationProfileComputer
-                .elevationProfile(routeBean.route(), 5);
-        ObjectProperty<ElevationProfile> profileProperty = new SimpleObjectProperty<>(profile);
-        DoubleProperty highlightProperty = new SimpleDoubleProperty(NaN);
-        ElevationProfileManager profileManager = new ElevationProfileManager(profileProperty, highlightProperty);
+
 
         SplitPane splitPane = new SplitPane();
         splitPane.setOrientation(Orientation.VERTICAL);
-        splitPane.getChildrenUnmodifiable().add(mapPane.pane());
+        splitPane.getItems().add(mapPane.pane());
 
-        if (routeBean.route != null) {
-            splitPane.getChildrenUnmodifiable().add(profileManager.pane());
-            SplitPane.setResizableWithParent(profileManager.pane(), false);
-        }
+        routeBean.highlightedPosition.bind(
+                mapPane.mousePositionOnRouteProperty());
 
-        MenuBar menuBar = new MenuBar();
+       MenuBar menuBar = new MenuBar();
         Menu menu = new Menu("Fichier");
         menuBar.getMenus().add(menu);
         MenuItem menuItem = new MenuItem("Exporter GPX");
         menu.getItems().add(menuItem);
-        // TODO: bonne façon de faire ?
-        ObservableBooleanValue routeIsNull = new ReadOnlyBooleanWrapper(routeBean.route() == null);
+        ObservableBooleanValue routeIsNull = new
+        routeBean.route.addListener(e->{
+            if(routeBean.route() != null){
+                ElevationProfile profile = ElevationProfileComputer
+                        .elevationProfile(routeBean.route(), 5);
+                ObjectProperty<ElevationProfile> profileProperty = new SimpleObjectProperty<>(profile);
+                ElevationProfileManager profileManager = new ElevationProfileManager(profileProperty, highlightProperty);
+                splitPane.getChildrenUnmodifiable().add(profileManager.pane());
+                SplitPane.setResizableWithParent(profileManager.pane(), false);
+
+                menuItem.setOnAction(e -> {
+                    try {
+                        GpxGenerator.writeGpx("javelo.gpx", routeBean.route(), profile);
+                    } catch (IOException exception) {
+                        throw new UncheckedIOException(exception);
+                    }
+                });
+
+                if (mapPane.mousePositionOnRouteProperty().get() >= 0) {
+                    highlightProperty.bind(mapPane.mousePositionOnRouteProperty());
+                } else {
+                    highlightProperty.bind(profileManager.mousePositionOnProfileProperty());
+                }
+            }
+        });
         menuItem.disableProperty().bind(routeIsNull);
         menuBar.setUseSystemMenuBar(true);
 
-        menuItem.setOnAction(e -> {
-            try {
-                GpxGenerator.writeGpx("javelo.gpx", routeBean.route(), profile);
-            } catch (IOException exception) {
-                throw new UncheckedIOException(exception);
-            }
-        });
 
-        if (mapPane.mousePositionOnRouteProperty().get() >= 0) {
-            highlightProperty.bind(mapPane.mousePositionOnRouteProperty());
-        } else {
-            highlightProperty.bind(profileManager.mousePositionOnProfileProperty());
-        }
+
+
+       /* if (routeBean.route() != null) {
+
+            ElevationProfile profile = ElevationProfileComputer
+                    .elevationProfile(routeBean.route(), 5);
+            ObjectProperty<ElevationProfile> profileProperty = new SimpleObjectProperty<>(profile);
+            ElevationProfileManager profileManager = new ElevationProfileManager(profileProperty, highlightProperty);
+            splitPane.getChildrenUnmodifiable().add(profileManager.pane());
+            SplitPane.setResizableWithParent(profileManager.pane(), false);
+
+            menuItem.setOnAction(e -> {
+                try {
+                    GpxGenerator.writeGpx("javelo.gpx", routeBean.route(), profile);
+                } catch (IOException exception) {
+                    throw new UncheckedIOException(exception);
+                }
+            });
+
+            if (mapPane.mousePositionOnRouteProperty().get() >= 0) {
+                highlightProperty.bind(mapPane.mousePositionOnRouteProperty());
+            } else {
+                highlightProperty.bind(profileManager.mousePositionOnProfileProperty());
+            }
+        }*/
+
 
         StackPane mainPane = new StackPane(splitPane, errorManager.pane(), menuBar);
         primaryStage.setMinWidth(800);
@@ -91,6 +122,13 @@ public final class JaVelo extends Application {
         primaryStage.setScene(new Scene(mainPane));
         primaryStage.setTitle("JaVelo");
         primaryStage.show();
+
+
+        routeIsNull.addListener(e->{
+            if(routeBean.route() != null){
+                System.out.println("pas nul");
+            }
+        });
 
 
     }

@@ -32,7 +32,10 @@ public final class AnnotatedMapManager {
     public AnnotatedMapManager(Graph graph, TileManager tileManager, RouteBean routeBean, Consumer<String> errorConsumer) {
         this.routeBean = routeBean;
         this.mousePositionOnRoute = new SimpleDoubleProperty();
-        this.mapViewParametersProperty = new SimpleObjectProperty<>();
+        MapViewParameters mapViewParameters =
+                new MapViewParameters(12, 543200, 370650);
+
+        this.mapViewParametersProperty =  new SimpleObjectProperty<>(mapViewParameters);
 
         ObservableList<Waypoint> waypoints = routeBean.waypointsProperty();
         WaypointsManager waypointsManager = new WaypointsManager(graph, mapViewParametersProperty, waypoints, errorConsumer);
@@ -41,9 +44,10 @@ public final class AnnotatedMapManager {
 
         // Empilement des panneaux contenant le fond de carte, l'itinéraire et les points de passage
         annotatedMap = new StackPane(baseMapManager.pane(), routeManager.pane(), waypointsManager.pane());
-        annotatedMap.setStyle("map.css");
+        annotatedMap.getStylesheets().add("map.css");
 
         installHandler();
+
     }
 
     /**
@@ -70,18 +74,21 @@ public final class AnnotatedMapManager {
      */
     private void installHandler() {
         annotatedMap.setOnMouseMoved(e -> {
-
-            PointWebMercator PWMMouse= mapViewParametersProperty.get().pointAt(e.getX(), e.getY());
-            PointCh pointMouse  = PWMMouse.toPointCh();
-            RoutePoint pointClosestToMouse = routeBean.route().pointClosestTo(pointMouse);
-            PointCh closestMousePointCh = pointClosestToMouse.point();
-            PointWebMercator PWMClosest = PointWebMercator.ofPointCh(closestMousePointCh);
-            double deltaX = mapViewParametersProperty.get().viewX(PWMMouse)-
-                    mapViewParametersProperty.get().viewX(PWMClosest);
-            double deltaY = mapViewParametersProperty.get().viewY(PWMMouse)-
-                    mapViewParametersProperty.get().viewY(PWMClosest);
-            if (Math2.norm(deltaX, deltaY)<=15){
-                mousePositionOnRoute.set(pointClosestToMouse.position());
+            if(routeBean.route()!= null){
+                PointWebMercator PWMMouse= mapViewParametersProperty.get().pointAt(e.getX(), e.getY());
+                PointCh pointMouse  = PWMMouse.toPointCh();
+                RoutePoint pointClosestToMouse = routeBean.route().pointClosestTo(pointMouse);
+                PointCh closestMousePointCh = pointClosestToMouse.point();
+                PointWebMercator PWMClosest = PointWebMercator.ofPointCh(closestMousePointCh);
+                double deltaX = mapViewParametersProperty.get().viewX(PWMMouse)-
+                        mapViewParametersProperty.get().viewX(PWMClosest);
+                double deltaY = mapViewParametersProperty.get().viewY(PWMMouse)-
+                        mapViewParametersProperty.get().viewY(PWMClosest);
+                if (Math2.norm(deltaX, deltaY)<=15){
+                    mousePositionOnRoute.set(pointClosestToMouse.position());
+                }else{
+                    mousePositionOnRoute.set(Double.NaN);
+                }
             }else{
                 mousePositionOnRoute.set(Double.NaN);
             }

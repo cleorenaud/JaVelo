@@ -171,9 +171,11 @@ public final class RouteManager {
     }
 
     private void replaceCircle() {
-        if (routeBean.waypoints.size() >= 2) {
+
+        if (routeBean.route()!=null && !Double.isNaN(routeBean.highlightedPosition.get())) {
             circle.setVisible(true);
         } else {
+            circle.setVisible(false);
             return; //ça ne sert à rien de chercher la position si pour l'instant elle ne doit pas être visible
         }
         double posCercle = routeBean.highlightedPosition.get();
@@ -181,6 +183,7 @@ public final class RouteManager {
 
         circle.setLayoutX(mapViewParameters.get().viewX(pointCercle));
         circle.setLayoutY(mapViewParameters.get().viewY(pointCercle));
+
 
     }
 
