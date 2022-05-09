@@ -20,6 +20,7 @@ import java.util.function.Consumer;
  * @author : Roxanne Chevalley (339716)
  */
 public final class RouteManager {
+    // TODO: 09/05/2022 relire le nom des variables
     private final RouteBean routeBean;
     private final ReadOnlyObjectProperty<MapViewParameters> mapViewParameters;
     private final Consumer<String> errorConsumer;
@@ -29,8 +30,6 @@ public final class RouteManager {
     private final Circle circle;
     private List<PointCh> points;
     private static final int RADIUS = 5;
-
-    // TODO: 09/05/2022 relire classe
 
     /**
      * Constructeur public de la classe RouteManager
