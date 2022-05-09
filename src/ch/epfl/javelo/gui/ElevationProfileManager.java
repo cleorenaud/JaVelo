@@ -67,6 +67,7 @@ public final class ElevationProfileManager {
                                    ReadOnlyDoubleProperty position) {
         this.position = position;
         this.elevationProfileProperty = elevationProfileProperty;
+
         this.mousePosition = new SimpleDoubleProperty();
         this.profileRect = new SimpleObjectProperty<>();
         this.screenToWorld = new SimpleObjectProperty<>();
@@ -84,19 +85,15 @@ public final class ElevationProfileManager {
         this.grid.setId("grid");
         this.centerArea = new Pane(grid, labelsText, graphProfile, highlightedPosLine);
 
-
         this.mainPane = new BorderPane();
         mainPane.setCenter(centerArea);
         mainPane.setBottom(bottomArea);
         mainPane.getStylesheets().add("elevation_profile.css");
 
-
-        redraw();
         installHandlers();
         installBindings();
         installListeners();
-
-
+        redraw();
     }
 
     /**
@@ -209,8 +206,7 @@ public final class ElevationProfileManager {
         }
         double numHLines = Math.floor((maxElevation - minElevation) / posStepsY); // le nombre de lignes à dessiner (exceptée celle à l'origine)
 
-        System.out.println((maxElevation - minElevation));
-        for (int i = 0; i <= numHLines; i++) {
+        for (int i = 1; i <= numHLines; i++) {
             grid.getElements().add(
                     new MoveTo(rectInsets.getLeft(), rectInsets.getTop() + rectHeight - (i * pixelIntY)));
             grid.getElements().add(
@@ -241,8 +237,6 @@ public final class ElevationProfileManager {
         }
         graphProfile.getPoints().add(rectWidth + rectInsets.getLeft());
         graphProfile.getPoints().add(rectHeight + rectInsets.getTop());
-
-
     }
 
     private void writeText() {
@@ -254,7 +248,6 @@ public final class ElevationProfileManager {
                         "     Altitude : de %.0f m à %.0f m",
                 length / 1000.0, totalAscent, totalDescent, minElevation, maxElevation
         );
-
         profileStats.setText(text);
     }
 
