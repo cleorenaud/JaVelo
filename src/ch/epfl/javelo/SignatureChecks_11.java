@@ -1,4 +1,4 @@
-package ch.epfl.sigcheck;
+package ch.epfl.javelo;
 
 // Attention : cette classe n'est *pas* un test JUnit, et son code n'est
 // pas destiné à être exécuté. Son seul but est de vérifier, autant que
@@ -7,8 +7,7 @@ package ch.epfl.sigcheck;
 
 final class SignatureChecks_11 {
     private SignatureChecks_11() {}
-    // TODO: 09/05/2022 enlever les commentaire et vérifier les signatures
-    /*
+
     void checkJaVelo() throws Exception {
         v01 = new ch.epfl.javelo.gui.JaVelo();
         ch.epfl.javelo.gui.JaVelo.main(v02);
@@ -19,5 +18,5 @@ final class SignatureChecks_11 {
     java.lang.String[] v02;
     javafx.stage.Stage v03;
 
-     */
+
 }

@@ -5,7 +5,6 @@ import ch.epfl.javelo.routing.*;
 import javafx.application.Application;
 import javafx.beans.property.*;
 import javafx.beans.value.ObservableBooleanValue;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.control.Menu;
@@ -27,6 +26,10 @@ import static java.lang.Float.NaN;
  */
 public final class JaVelo extends Application {
 
+    public static void main(String[] args) {
+        launch(args);
+    }
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         Graph graph = Graph.loadFrom(Path.of("javelo-data"));
@@ -37,11 +40,11 @@ public final class JaVelo extends Application {
         TileManager tileManager =
                 new TileManager(cacheBasePath, tileServerHost);
         CostFunction costFunction = new CityBikeCF(graph);
-        RouteBean routeBean = new RouteBean(new RouteComputer(graph,new CityBikeCF(graph)));
+        RouteBean routeBean = new RouteBean(new RouteComputer(graph, new CityBikeCF(graph)));
         ErrorManager errorManager = new ErrorManager();
         Consumer<String> errorConsumer = (s -> errorManager.displayError(s));
 
-        AnnotatedMapManager mapPane  = new AnnotatedMapManager(graph, tileManager, routeBean, errorConsumer);
+        AnnotatedMapManager mapPane = new AnnotatedMapManager(graph, tileManager, routeBean, errorConsumer);
 
         ElevationProfile profile = ElevationProfileComputer
                 .elevationProfile(routeBean.route(), 5);
@@ -53,7 +56,7 @@ public final class JaVelo extends Application {
         splitPane.setOrientation(Orientation.VERTICAL);
         splitPane.getChildrenUnmodifiable().add(mapPane.pane());
 
-        if(routeBean.route != null){
+        if (routeBean.route != null) {
             splitPane.getChildrenUnmodifiable().add(profileManager.pane());
             SplitPane.setResizableWithParent(profileManager.pane(), false);
         }
@@ -61,7 +64,7 @@ public final class JaVelo extends Application {
         MenuBar menuBar = new MenuBar();
         Menu menu = new Menu("Fichier");
         menuBar.getMenus().add(menu);
-        MenuItem menuItem =new MenuItem("Exporter GPX");
+        MenuItem menuItem = new MenuItem("Exporter GPX");
         menu.getItems().add(menuItem);
         // TODO: bonne façon de faire ?
         ObservableBooleanValue routeIsNull = new ReadOnlyBooleanWrapper(routeBean.route() == null);
