@@ -20,17 +20,15 @@ public final class AnnotatedMapManager {
     private final Consumer<String> errorConsumer; // Un "consommateur d'erreurs" permettant de signaler une erreur
 
     private final StackPane annotatedMap; // Le panneau contenant la carte annotée
-   // private final ObjectProperty<Point2D> mousePositionOnRoute; // Propriété contenant la position du pointeur de la souris le long de l'itinéraire
+    // private final ObjectProperty<Point2D> mousePositionOnRoute; // Propriété contenant la position du pointeur de la souris le long de l'itinéraire
     // TODO: 09/05/2022 déterminer quel type de property utiliser pour la souris et uniformiser avec les autres classes
 
     /**
      * Constructeur public de la classe
      */
-<<<<<<< Updated upstream
     //public AnnotatedMapManager(Graph graph,) {
 
     //}
-=======
     public AnnotatedMapManager(Graph graph, TileManager tileManager, RouteBean routeBean, Consumer<String> errorConsumer) {
         this.graph = graph;
         this.tileManager = tileManager;
@@ -41,9 +39,9 @@ public final class AnnotatedMapManager {
         ObjectProperty<MapViewParameters> mapViewParametersProperty = new SimpleObjectProperty<>();
         //mapViewParametersProperty.addListener();
         ObservableList<Waypoint> waypoints = routeBean.waypointsProperty();
-        WaypointsManager waypointsManager = new WaypointsManager(graph, mapViewParametersProperty, waypoints,errorConsumer);
+        WaypointsManager waypointsManager = new WaypointsManager(graph, mapViewParametersProperty, waypoints, errorConsumer);
         BaseMapManager baseMapManager = new BaseMapManager(tileManager, waypointsManager, mapViewParametersProperty);
-        RouteManager routeManager = new RouteManager(routeBean, mapViewParametersProperty,errorConsumer);
+        RouteManager routeManager = new RouteManager(routeBean, mapViewParametersProperty, errorConsumer);
 
         // Empilement des panneaux contenant le fond de carte, l'itinéraire et les points de passage
         annotatedMap = new StackPane();
@@ -63,7 +61,6 @@ public final class AnnotatedMapManager {
     }
 
 
-
     /**
      * Méthode retournant la propriété contenant la position du pointeur le long de l'itinéraire
      *
@@ -73,9 +70,4 @@ public final class AnnotatedMapManager {
         //return mousePositionOnRoute;
         return null;
     }
-
-
-
-
->>>>>>> Stashed changes
 }
