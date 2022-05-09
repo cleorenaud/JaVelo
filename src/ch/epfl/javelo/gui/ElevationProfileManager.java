@@ -125,12 +125,12 @@ public final class ElevationProfileManager {
         rectWidth = centerArea.getWidth() - rectInsets.getRight() - rectInsets.getLeft();
         rectHeight = centerArea.getHeight() - -rectInsets.getTop() - rectInsets.getBottom();
 
+        writeText();
         setTransforms();
         if (rectWidth > 0 && rectHeight > 0) {
-            profileRect.set(new Rectangle2D(rectInsets.getLeft(), rectInsets.getRight(), rectWidth, rectHeight));
+            profileRect.set(new Rectangle2D(rectInsets.getLeft(), rectInsets.getTop(), rectWidth, rectHeight));
             drawProfile();
             drawLines();
-            writeText();
         }
 
     }
