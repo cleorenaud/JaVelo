@@ -18,8 +18,6 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Consumer;
 
 public final class Stage8Test extends Application {
