@@ -30,7 +30,6 @@ public final class BaseMapManager {
     private Pane pane;
     private Canvas canvas;
     private ObjectProperty<Point2D> mousePosition;
-    private SimpleLongProperty minScrollTime = new SimpleLongProperty();
 
     private static final int TILE_SIZE = 256;
 
@@ -164,7 +163,14 @@ public final class BaseMapManager {
             mousePosition.set(newPosSouris);
         });
 
+        SimpleLongProperty minScrollTime = new SimpleLongProperty();
         pane.setOnScroll((ScrollEvent scrollEvent) -> {
+            if (scrollEvent.getDeltaY() == 0d) return;
+            long currentTime = System.currentTimeMillis();
+            if (currentTime < minScrollTime.get()) return;
+            minScrollTime.set(currentTime + 200);
+            int zoomDelta = (int) Math.signum(scrollEvent.getDeltaY());
+
             double xTranslation = scrollEvent.getX(); // La coordonnée x de la souris par rapport au coin supérieur gauche
             double yTranslation = scrollEvent.getY(); // La coordonnée y de la souris par rapport au coin supérieur gauche
             float xSouris = (float) (objectProperty.get().x() + xTranslation); // La coordonnée x de la souris
@@ -175,13 +181,8 @@ public final class BaseMapManager {
             // supérieur gauche de la fenêtre
             objectProperty.set(objectProperty.get().withMinXY(xSouris, ySouris));
 
-            if (scrollEvent.getDeltaY() == 0d) return;
-            long currentTime = System.currentTimeMillis();
-            if (currentTime < minScrollTime.get()) return;
-            minScrollTime.set(currentTime + 200);
-            int zoomDelta = (int) Math.signum(scrollEvent.getDeltaY());
             int oldZoomLevel = objectProperty.get().zoomLevel();
-            int newZoomLevel = (int) (oldZoomLevel + zoomDelta);
+            int newZoomLevel = oldZoomLevel + zoomDelta;
             newZoomLevel = Math2.clamp(8, newZoomLevel, 19);
 
             int difZoom = newZoomLevel - oldZoomLevel;
