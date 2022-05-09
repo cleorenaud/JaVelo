@@ -3,6 +3,7 @@ package ch.epfl.javelo.gui;
 import ch.epfl.javelo.Math2;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
@@ -29,6 +30,7 @@ public final class BaseMapManager {
     private Pane pane;
     private Canvas canvas;
     private ObjectProperty<Point2D> mousePosition;
+    private SimpleLongProperty minScrollTime = new SimpleLongProperty();
 
     private static final int TILE_SIZE = 256;
 
@@ -173,10 +175,13 @@ public final class BaseMapManager {
             // supérieur gauche de la fenêtre
             objectProperty.set(objectProperty.get().withMinXY(xSouris, ySouris));
 
-            // On calcule le nouveau zoom selon le degré dont la molette à été tournée
-            double delta = Math.round(scrollEvent.getDeltaY());
+            if (scrollEvent.getDeltaY() == 0d) return;
+            long currentTime = System.currentTimeMillis();
+            if (currentTime < minScrollTime.get()) return;
+            minScrollTime.set(currentTime + 200);
+            int zoomDelta = (int) Math.signum(scrollEvent.getDeltaY());
             int oldZoomLevel = objectProperty.get().zoomLevel();
-            int newZoomLevel = (int) (oldZoomLevel + delta);
+            int newZoomLevel = (int) (oldZoomLevel + zoomDelta);
             newZoomLevel = Math2.clamp(8, newZoomLevel, 19);
 
             int difZoom = newZoomLevel - oldZoomLevel;
