@@ -1,7 +1,11 @@
 package ch.epfl.javelo.gui;
 
+import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.data.Graph;
+import ch.epfl.javelo.projection.PointCh;
+import ch.epfl.javelo.projection.PointWebMercator;
 import ch.epfl.javelo.routing.Route;
+import ch.epfl.javelo.routing.RoutePoint;
 import javafx.beans.property.*;
 import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
@@ -75,13 +79,19 @@ public final class AnnotatedMapManager {
      */
     private void installHandler() {
         annotatedMap.setOnMouseMoved(e -> {
-            
-            mouseActualPosition.set(new Point2D(e.getX(), e.getY()));
 
-
-            if (mouseActualPosition.get().distance() <= 15) {
-                mousePositionOnRoute.set();
-            } else {
+            PointWebMercator PWMMouse= mapViewParametersProperty.get().pointAt(e.getX(), e.getY());
+            PointCh pointMouse  = PWMMouse.toPointCh();
+            RoutePoint pointClosestToMouse = routeBean.route().pointClosestTo(pointMouse);
+            PointCh closestMousePointCh = pointClosestToMouse.point();
+            PointWebMercator PWMClosest = PointWebMercator.ofPointCh(closestMousePointCh);
+            double deltaX = mapViewParametersProperty.get().viewX(PWMMouse)-
+                    mapViewParametersProperty.get().viewX(PWMClosest);
+            double deltaY = mapViewParametersProperty.get().viewY(PWMMouse)-
+                    mapViewParametersProperty.get().viewY(PWMClosest);
+            if (Math2.norm(deltaX, deltaY)<=15){
+                mousePositionOnRoute.set(pointClosestToMouse.position());
+            }else{
                 mousePositionOnRoute.set(Double.NaN);
             }
         });
@@ -91,10 +101,4 @@ public final class AnnotatedMapManager {
         });
     }
 
-    /**
-     * Méthode installant les auditeurs
-     */
-    private void installListeners() {
-        //mapViewParametersProperty.addListener(e -> redraw());
-    }
 }
