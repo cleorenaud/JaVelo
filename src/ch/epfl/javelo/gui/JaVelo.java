@@ -30,7 +30,9 @@ public final class JaVelo extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Graph graph = Graph.loadFrom(Path.of("javelo-data"));
+        graph=Graph.loadFrom(Path.of("ch_west")); //TODO : a supprimer plus tard, pour les tests
         Path cacheBasePath = Path.of("osm-cache");
+        cacheBasePath = Path.of(".");  //TODO : a supprimer plus tard, pour tester
         String tileServerHost = "tile.openstreetmap.org";
         TileManager tileManager =
                 new TileManager(cacheBasePath, tileServerHost);
@@ -73,6 +75,12 @@ public final class JaVelo extends Application {
                 throw new UncheckedIOException(exception);
             }
         });
+
+        if(mapPane.mousePositionOnRouteProperty().get() >=0){
+            highlightProperty.bind(mapPane.mousePositionOnRouteProperty());
+        }else{
+            highlightProperty.bind(profileManager.mousePositionOnProfileProperty());
+        }
 
         StackPane mainPane = new StackPane(splitPane, errorManager.pane(), menuBar);
         primaryStage.setMinWidth(800);
