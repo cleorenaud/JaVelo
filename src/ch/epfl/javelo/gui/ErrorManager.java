@@ -18,6 +18,8 @@ public final class ErrorManager {
     private final static Duration ENTER_DURATION = new Duration(200);
     private final static Duration LEAVE_DURATION = new Duration (500);
     private final static Duration PAUSE_DURATION = new Duration (2000);
+    private final static double FADE_MAX =0.8;
+    private final static double FADE_MIN = 0;
     private final Pane errorPane;
     private final VBox errorVbox;
     private final Text errorMessage;
@@ -36,16 +38,16 @@ public final class ErrorManager {
         errorPane.setMouseTransparent(true);
 
         this.enterTransition = new FadeTransition(ENTER_DURATION, errorVbox);
-        enterTransition.setFromValue(0);
-        enterTransition.setToValue(0.8);
+        enterTransition.setFromValue(FADE_MIN);
+        enterTransition.setToValue(FADE_MAX);
 
         this.leaveTransition = new FadeTransition(LEAVE_DURATION, errorVbox);
-        leaveTransition.setFromValue(0.8);
-        leaveTransition.setToValue(0);
+        leaveTransition.setFromValue(FADE_MAX);
+        leaveTransition.setToValue(FADE_MIN);
 
         this.pauseTransition = new PauseTransition(PAUSE_DURATION);
         this.fullAnimation  = new SequentialTransition(errorVbox, enterTransition,leaveTransition, pauseTransition);
-        //TODO  : faut-il laisser le errorVbox à chaque fois
+        //TODO  : faut-il laisser le errorVbox à chaque fois ?
     };
 
     /**
@@ -57,10 +59,10 @@ public final class ErrorManager {
     }
 
     public void displayError(String message){
+        fullAnimation.stop();
         java.awt.Toolkit.getDefaultToolkit().beep();
-       // errorMessage.
-
-
+        errorMessage.setText(message);
+        fullAnimation.play();
     }
 
 }
