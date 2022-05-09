@@ -90,10 +90,11 @@ public final class ElevationProfileManager {
         mainPane.setBottom(bottomArea);
         mainPane.getStylesheets().add("elevation_profile.css");
 
+        redraw();
         installHandlers();
         installBindings();
         installListeners();
-        redraw();
+
     }
 
     /**
