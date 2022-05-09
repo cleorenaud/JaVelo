@@ -127,10 +127,10 @@ public final class ElevationProfileManager {
         setTransforms();
         if (rectWidth > 0 && rectHeight > 0) {
             profileRect.set(new Rectangle2D(rectInsets.getLeft(), rectInsets.getRight(), rectWidth, rectHeight));
+            drawProfile();
+            drawLines();
+            writeText();
         }
-        drawProfile();
-        drawLines();
-        writeText();
 
     }
 
@@ -166,11 +166,11 @@ public final class ElevationProfileManager {
 
         // Pour dessiner les lignes verticales on itère sur les valeurs de POS_STEPS pour trouver la plus petite nous
         // permettant d'avoir au moins 25 unités JavaFX entre deux lignes verticales
-        double posStepsX = POS_STEPS[POS_STEPS.length - 1];
+        int posStepsX = POS_STEPS[POS_STEPS.length - 1];
         double pixelIntX = 0;
         for (int i : POS_STEPS) {
             pixelIntX = i * rectWidth / length;
-            if (pixelIntX >= 25) {
+            if (pixelIntX >= 50) {
                 posStepsX = i;
                 break;
             }
@@ -184,40 +184,46 @@ public final class ElevationProfileManager {
                     new LineTo(rectInsets.getLeft() + (i * pixelIntX), rectInsets.getTop() + rectHeight));
             // On crée maintenant les étiquettes correspondant aux graduations
             Text label = new Text(String.valueOf((int) (i * posStepsX / 1000)));
+            label.setFont(Font.font("Avenir", 10));
             label.textOriginProperty().set(VPos.TOP);
             label.setX(rectInsets.getLeft() + (i * pixelIntX) - label.prefWidth(0) / 2);
             label.setY(rectInsets.getTop() + rectHeight);
-            label.setFont(Font.font("Avenir", 10));
-            //label.getStyleClass().add(grid_label, horizontal);
+            label.getStyleClass().add("grid_label");
+            label.getStyleClass().add("horizontal");
             labelsText.getChildren().add(label);
         }
 
 
         // Pour dessiner les lignes horizontales on itère sur les valeurs de ELE_STEPS pour trouver la plus petite nous
         // permettant d'avoir au moins 50 unités JavaFX entre deux lignes horizontales
-        double posStepsY = ELE_STEPS[ELE_STEPS.length - 1];
+        int posStepsY = ELE_STEPS[ELE_STEPS.length - 1];
         double pixelIntY = 0;
         for (int i : ELE_STEPS) {
             pixelIntY = i * rectHeight / (maxElevation - minElevation);
-            if (pixelIntY >= 50) {
+            if (pixelIntY >=25) {
                 posStepsY = i;
                 break;
             }
         }
-        double numHLines = Math.floor((maxElevation - minElevation) / posStepsY); // le nombre de lignes à dessiner (exceptée celle à l'origine)
+        // le nombre de lignes à dessiner
+        double numHLines = Math.floor((maxElevation - minElevation - minElevation % posStepsY) / posStepsY) + 1;
 
+        // On cherche l'écart entre la première ligne à dessiner et l'origine 
+        int firstStepReal = (int) (minElevation % posStepsY);
+        double firstStepScreen = firstStepReal * pixelIntY / posStepsY;
         for (int i = 1; i <= numHLines; i++) {
             grid.getElements().add(
-                    new MoveTo(rectInsets.getLeft(), rectInsets.getTop() + rectHeight - (i * pixelIntY)));
+                    new MoveTo(rectInsets.getLeft(), rectInsets.getTop() + rectHeight - (i * pixelIntY) + firstStepScreen));
             grid.getElements().add(
-                    new LineTo(rectInsets.getLeft() + rectWidth, rectInsets.getTop() + rectHeight - (i * pixelIntY)));
+                    new LineTo(rectInsets.getLeft() + rectWidth, rectInsets.getTop() + rectHeight - (i * pixelIntY) + firstStepScreen));
             // On crée maintenant les étiquettes correspondant aux graduations
-            Text label = new Text(String.valueOf((int) (i * posStepsY)));
+            Text label = new Text(String.valueOf((int) (i * posStepsY + minElevation - firstStepReal)));
             label.textOriginProperty().set(VPos.CENTER);
-            label.setX(rectInsets.getLeft() - label.prefWidth(0) - 2);
-            label.setY(rectInsets.getTop() + rectHeight - (i * pixelIntY));
             label.setFont(Font.font("Avenir", 10));
-            //label.getStyleClass().add(grid_label, horizontal);
+            label.setX(rectInsets.getLeft() - label.prefWidth(0) - 2);
+            label.setY(rectInsets.getTop() + rectHeight - (i * pixelIntY) + firstStepScreen);
+            label.getStyleClass().add("grid_label");
+            label.getStyleClass().add("vertical");
             labelsText.getChildren().add(label);
         }
 
