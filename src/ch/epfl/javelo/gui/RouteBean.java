@@ -19,6 +19,8 @@ import java.util.Map;
  */
 public final class RouteBean {
 
+    // TODO: 09/05/2022 enlever les méthodes qui ne sont pas appelées
+
     public ObservableList<Waypoint> waypoints; // La liste (observable) des points de passage
     public ObjectProperty<Route> route; // L'itinéraire permettant de relier les points de passage
     public DoubleProperty highlightedPosition; // La position mise en évidence
@@ -122,6 +124,16 @@ public final class RouteBean {
             cacheMemory.remove(key);
         }
         cacheMemory.put(waypoints, route);
+    }
+
+    public int indexOfNonEmptySegmentAt(double position) {
+        int index = route().indexOfSegmentAt(position);
+        for (int i = 0; i <= index; i += 1) {
+            int n1 = waypoints.get(i).nodeId();
+            int n2 = waypoints.get(i + 1).nodeId();
+            if (n1 == n2) index += 1;
+        }
+        return index;
     }
 
 
