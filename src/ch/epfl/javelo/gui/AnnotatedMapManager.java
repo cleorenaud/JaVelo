@@ -20,29 +20,20 @@ import java.util.function.Consumer;
  */
 public final class AnnotatedMapManager {
 
-    private final Graph graph; // Le graphe du réseau routier
-    private final TileManager tileManager; // Le gestionnaire de tuiles OpenStreetMap
     private final RouteBean routeBean; // Le bean de l'itinéraire
-    private final Consumer<String> errorConsumer; // Un "consommateur d'erreurs" permettant de signaler une erreur
 
     private final StackPane annotatedMap; // Le panneau contenant la carte annotée
     private final DoubleProperty mousePositionOnRoute; // Propriété contenant la position du pointeur de la souris le long de l'itinéraire
-    private final ObjectProperty<Point2D> mouseActualPosition; // Propriété contenant la position actuelle de la souris
     private final ObjectProperty<MapViewParameters> mapViewParametersProperty;
 
     /**
      * Constructeur public de la classe
      */
     public AnnotatedMapManager(Graph graph, TileManager tileManager, RouteBean routeBean, Consumer<String> errorConsumer) {
-        this.graph = graph;
-        this.tileManager = tileManager;
         this.routeBean = routeBean;
-        this.errorConsumer = errorConsumer;
-
         this.mousePositionOnRoute = new SimpleDoubleProperty();
-        mouseActualPosition = new SimpleObjectProperty();
-
         this.mapViewParametersProperty = new SimpleObjectProperty<>();
+
         ObservableList<Waypoint> waypoints = routeBean.waypointsProperty();
         WaypointsManager waypointsManager = new WaypointsManager(graph, mapViewParametersProperty, waypoints, errorConsumer);
         BaseMapManager baseMapManager = new BaseMapManager(tileManager, waypointsManager, mapViewParametersProperty);
