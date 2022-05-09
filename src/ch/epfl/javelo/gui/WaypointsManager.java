@@ -87,13 +87,7 @@ public final class WaypointsManager {
                 return;
             }
             Waypoint wayPoint = new Waypoint(pointOfXY, closestNode);
-            if (wayPointsList.size() < 2) {
-                wayPointsList.add(wayPoint);
-            } else { //s'il y a plus que deux points insérer le nouveau point au milieu
-                Waypoint lastPoint = wayPointsList.remove(wayPointsList.size() - 1);
-                wayPointsList.add(wayPoint);
-                wayPointsList.add(lastPoint);
-            }
+            wayPointsList.add(wayPoint);
         }else{
             nodeError(); //si le point n'est pas dans les limites suisses
         }

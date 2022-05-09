@@ -49,15 +49,17 @@ public final class BaseMapManager {
         this.canvas = new Canvas();
         pane.getChildren().add(canvas);
 
-        installBindings();
         installListeners();
         installHandlers();
+        installBindings();
 
         // On s'assure que JavaFX appelle bien la méthode redrawIfNeeded() à chaque battement
         canvas.sceneProperty().addListener((p, oldS, newS) -> {
             assert oldS == null;
             newS.addPreLayoutPulseListener(this::redrawIfNeeded);
         });
+
+
 
 
     }
@@ -193,7 +195,7 @@ public final class BaseMapManager {
      */
     private void installBindings() {
         canvas.widthProperty().bind(pane.widthProperty());
-        canvas.widthProperty().bind(pane.widthProperty());
+        canvas.heightProperty().bind(pane.heightProperty());
 
     }
 
