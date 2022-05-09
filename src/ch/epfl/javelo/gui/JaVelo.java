@@ -32,10 +32,10 @@ public final class JaVelo extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Graph graph = Graph.loadFrom(Path.of("javelo-data"));
-        graph=Graph.loadFrom(Path.of("ch_west")); //TODO : a supprimer plus tard, pour les tests
-        Path cacheBasePath = Path.of("osm-cache");
-        cacheBasePath = Path.of(".");  //TODO : a supprimer plus tard, pour tester
+        //Graph graph = Graph.loadFrom(Path.of("javelo-data"));
+        Graph graph = Graph.loadFrom(Path.of("ch_west")); //TODO : a supprimer plus tard, pour les tests
+        //Path cacheBasePath = Path.of("osm-cache");
+        Path cacheBasePath = Path.of(".");  //TODO : a supprimer plus tard, pour tester
         String tileServerHost = "tile.openstreetmap.org";
         TileManager tileManager =
                 new TileManager(cacheBasePath, tileServerHost);
@@ -79,9 +79,9 @@ public final class JaVelo extends Application {
             }
         });
 
-        if(mapPane.mousePositionOnRouteProperty().get() >=0){
+        if (mapPane.mousePositionOnRouteProperty().get() >= 0) {
             highlightProperty.bind(mapPane.mousePositionOnRouteProperty());
-        }else{
+        } else {
             highlightProperty.bind(profileManager.mousePositionOnProfileProperty());
         }
 
