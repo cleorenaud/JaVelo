@@ -8,9 +8,11 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.geometry.VPos;
 import javafx.scene.Group;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -74,8 +76,10 @@ public final class ElevationProfileManager {
         this.worldToScreen = new SimpleObjectProperty<>();
 
         this.profileStats = new Text();
+        writeText();
         this.bottomArea = new VBox(profileStats);
         bottomArea.setId("profile_data");
+
 
         this.highlightedPosLine = new Line();
         this.graphProfile = new Polygon();
@@ -123,7 +127,7 @@ public final class ElevationProfileManager {
         minElevation = elevationProfileProperty.get().minElevation();
         length = elevationProfileProperty.get().length();
         rectWidth = centerArea.getWidth() - rectInsets.getRight() - rectInsets.getLeft();
-        rectHeight = centerArea.getHeight() - -rectInsets.getTop() - rectInsets.getBottom();
+        rectHeight = centerArea.getHeight() - rectInsets.getTop() - rectInsets.getBottom();
 
         writeText();
         setTransforms();
@@ -142,7 +146,7 @@ public final class ElevationProfileManager {
         Affine STW = new Affine();
         double slopeX = length / rectWidth;
         double slopeY = -(maxElevation - minElevation) / rectHeight;
-        STW.prependTranslation(-rectInsets.getLeft(), -rectHeight - rectInsets.getTop());
+        STW.prependTranslation(-rectInsets.getLeft(), -rectHeight -rectInsets.getTop());
         STW.prependScale(slopeX, slopeY);
         STW.prependTranslation(0, minElevation);
 
@@ -260,7 +264,7 @@ public final class ElevationProfileManager {
 
     private void installHandlers() {
         centerArea.setOnMouseMoved(e -> {
-            if (profileRect.get().contains(e.getX(), e.getY())) {
+            if (profileRect.get() != null && profileRect.get().contains(e.getX(), e.getY())) {
                 Point2D newMousePosition = screenToWorld.get().transform(e.getX(), e.getY());
                 mousePosition.set(newMousePosition.getX());
             } else {

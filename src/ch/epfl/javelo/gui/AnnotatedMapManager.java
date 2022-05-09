@@ -10,7 +10,7 @@ public final class AnnotatedMapManager {
     /**
      * Constructeur public de la classe
      */
-    public AnnotatedMapManager(Graph graph,) {
+    //public AnnotatedMapManager(Graph graph,) {
 
-    }
+    //}
 }
