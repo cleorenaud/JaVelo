@@ -57,6 +57,7 @@ public final class Stage8Test extends Application {
         primaryStage.setMinWidth(600);
         primaryStage.setMinHeight(300);
         primaryStage.setScene(new Scene(mainPane));
+        primaryStage.setTitle("JaVelo");
         primaryStage.show();
     }
 
