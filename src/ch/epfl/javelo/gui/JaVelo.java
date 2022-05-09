@@ -3,16 +3,20 @@ package ch.epfl.javelo.gui;
 import ch.epfl.javelo.data.Graph;
 import ch.epfl.javelo.routing.*;
 import javafx.application.Application;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.*;
+import javafx.beans.value.ObservableBooleanValue;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.util.function.Consumer;
 
@@ -52,7 +56,25 @@ public final class JaVelo extends Application {
             SplitPane.setResizableWithParent(profileManager.pane(), false);
         }
 
-        StackPane mainPane = new StackPane(splitPane, errorManager.pane());
+        MenuBar menuBar = new MenuBar();
+        Menu menu = new Menu("Fichier");
+        menuBar.getMenus().add(menu);
+        MenuItem menuItem =new MenuItem("Exporter GPX");
+        menu.getItems().add(menuItem);
+        // TODO: bonne façon de faire ?
+        ObservableBooleanValue routeIsNull = new ReadOnlyBooleanWrapper(routeBean.route() == null);
+        menuItem.disableProperty().bind(routeIsNull);
+        menuBar.setUseSystemMenuBar(true);
+
+        menuItem.setOnAction(e -> {
+            try {
+                GpxGenerator.writeGpx("javelo.gpx", routeBean.route(), profile);
+            } catch (IOException exception) {
+                throw new UncheckedIOException(exception);
+            }
+        });
+
+        StackPane mainPane = new StackPane(splitPane, errorManager.pane(), menuBar);
         primaryStage.setMinWidth(800);
         primaryStage.setMinHeight(600);
         primaryStage.setScene(new Scene(mainPane));
