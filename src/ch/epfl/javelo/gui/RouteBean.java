@@ -30,7 +30,6 @@ public final class RouteBean {
     private LinkedHashMap<List<Waypoint>, Route> cacheMemory;
     private final int CAPACITY = 100;
 
-
     private final static double MAX_STEP_LENGTH = 5;
 
 
@@ -44,8 +43,8 @@ public final class RouteBean {
         this.routeComputer = routeComputer;
 
         // On installe un auditeur sur la liste contenant les points de passage
-        //waypoints.addListener(e -> update());
-
+        //waypoints.addListener((ListChangeListener<? super Waypoint>) e -> updateRoute());
+        // TODO: 09/05/2022 verifier ligne au dessus
 
         // Si aucune position ne doit être mise en évidence, la propriété contenant la position contient NaN
         this.highlightedPosition= new SimpleDoubleProperty();

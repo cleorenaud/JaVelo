@@ -29,6 +29,8 @@ public final class RouteManager {
     private List<PointCh> points;
     private static final int RADIUS = 5;
 
+    // TODO: 09/05/2022 relire classe
+
     /**
      * Constructeur public de la classe RouteManager
      * @param routeBean (RouteBean) : le bean de l'itinéraire
