@@ -48,15 +48,15 @@ public final class RouteBean {
         // TODO: 09/05/2022 verifier ligne au dessus
 
         // Si aucune position ne doit être mise en évidence, la propriété contenant la position contient NaN
-        this.highlightedPosition= new SimpleDoubleProperty();
+        this.highlightedPosition = new SimpleDoubleProperty();
         highlightedPosition.set(Double.NaN);
 
         // On installe un auditeur sur la liste contenant les points de passage pour que l'itinéraire et son profil
         // soient recalculés à chaque changement de cette liste
-        this.waypoints= FXCollections.observableArrayList();
+        this.waypoints = FXCollections.observableArrayList();
         waypoints.addListener((ListChangeListener<? super Waypoint>) e -> updateRoute());
-        this.route= new SimpleObjectProperty<>();
-        this.elevationProfile=new SimpleObjectProperty<>();
+        this.route = new SimpleObjectProperty<>();
+        this.elevationProfile = new SimpleObjectProperty<>();
         this.cacheMemory = new LinkedHashMap<>();
         // On calcule le meilleur itinéraire avec les points de passage actuels
         updateRoute();
@@ -84,7 +84,7 @@ public final class RouteBean {
         // Les itinéraires simples sont ensuite combinés en un unique itinéraire multiple
         List<Route> segments = new ArrayList<>(); // La liste dans laquelle on stocke tous les itinéraires simples
 
-        for (int i = 0; i < waypoints().size()-1; i++) {
+        for (int i = 0; i < waypoints().size() - 1; i++) {
             // On regarde dans le cache mémoire si la route entre les deux waypoints existe déjà
             if (cacheMemory.get(waypoints().subList(i, i + 2)) != null) {
                 // Si elle existe déjà on y accède et on l'ajoute à notre itinéraire
@@ -93,7 +93,7 @@ public final class RouteBean {
                 // Si ce n'est pas le cas on la crée et on l'ajoute au cache mémoire et à notre itinéraire
                 // Si deux points de passage successifs sont associés au même nœud alors on ne calcule pas l'itinéraire
                 // entre ces deux points
-                if(waypoints().get(i).nodeId() != waypoints().get(i + 1).nodeId()) {
+                if (waypoints().get(i).nodeId() != waypoints().get(i + 1).nodeId()) {
                     Route bestRoute = routeComputer.bestRouteBetween(waypoints().get(i).nodeId(), waypoints().get(i + 1).nodeId());
                     segments.add(bestRoute);
                     addToCacheMemory(waypoints().subList(i, i + 1), bestRoute);
@@ -103,7 +103,7 @@ public final class RouteBean {
 
         // S'il existe au moins une paire de points de passage entre lesquels aucun itinéraire ne peut être trouvé,
         // alors ni son l'itinéraire ni son profil n'existent
-        if(cacheMemory.containsValue(null)) {
+        if (cacheMemory.containsValue(null)) {
             route.set(null);
             elevationProfile.set(null);
             return;
@@ -117,7 +117,7 @@ public final class RouteBean {
     private void addToCacheMemory(List<Waypoint> waypoints, Route route) {
         List<Waypoint> key = null;
         if (cacheMemory.size() == CAPACITY) {
-            for(Map.Entry<List<Waypoint>, Route> entry : cacheMemory.entrySet()) {
+            for (Map.Entry<List<Waypoint>, Route> entry : cacheMemory.entrySet()) {
                 key = entry.getKey();
                 continue;
             }
@@ -215,5 +215,14 @@ public final class RouteBean {
      */
     public ReadOnlyObjectProperty<ElevationProfile> elevationProfileProperty() {
         return elevationProfile;
+    }
+
+    /**
+     * Méthode retournant le profil de l'itinéraire
+     *
+     * @return (ElevationProfile) : le profil
+     */
+    public ElevationProfile elevationProfile() {
+        return elevationProfile.get();
     }
 }
