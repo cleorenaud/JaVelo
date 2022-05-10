@@ -59,14 +59,14 @@ public final class JaVelo extends Application {
                 (routeBean.elevationProfileProperty(), routeBean.highlightedPosition);
 
         routeBean.elevationProfileProperty().isNull().addListener(e->{
-            splitPane.getItems().retainAll(mapPane.pane());
+            //System.out.println("hey");
+            splitPane.getItems().remove(profileManager.pane());
 
             if(routeBean.elevationProfile() != null){
-
                 splitPane.getItems().add(profileManager.pane());
                 SplitPane.setResizableWithParent(profileManager.pane(), false);
-
             }
+
         });
 
         routeBean.highlightedPositionProperty().bind(Bindings.

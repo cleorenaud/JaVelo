@@ -88,7 +88,7 @@ public final class RouteBean {
             // On regarde dans le cache mémoire si la route entre les deux waypoints existe déjà
             if (cacheMemory.get(waypoints().subList(i, i + 2)) != null) {
                 // Si elle existe déjà on y accède et on l'ajoute à notre itinéraire
-                segments.add(cacheMemory.get(waypoints().subList(i, i + 1)));
+                segments.add(cacheMemory.get(waypoints().subList(i, i + 2)));
             } else {
                 // Si ce n'est pas le cas on la crée et on l'ajoute au cache mémoire et à notre itinéraire
                 // Si deux points de passage successifs sont associés au même nœud alors on ne calcule pas l'itinéraire
@@ -96,7 +96,7 @@ public final class RouteBean {
                 if (waypoints().get(i).nodeId() != waypoints().get(i + 1).nodeId()) {
                     Route bestRoute = routeComputer.bestRouteBetween(waypoints().get(i).nodeId(), waypoints().get(i + 1).nodeId());
                     segments.add(bestRoute);
-                    addToCacheMemory(waypoints().subList(i, i + 1), bestRoute);
+                    addToCacheMemory(waypoints().subList(i, i + 2), bestRoute);
                 }
             }
         }
@@ -110,6 +110,7 @@ public final class RouteBean {
         }
 
         if(segments.isEmpty()){
+            System.out.println("c'est nul");
             route.set(null);
             elevationProfile.set(null);
         }else{
