@@ -58,7 +58,7 @@ public final class JaVelo extends Application {
         ElevationProfileManager profileManager = new ElevationProfileManager
                 (routeBean.elevationProfileProperty(), routeBean.highlightedPosition);
 
-        routeBean.elevationProfileProperty().addListener(e->{
+        routeBean.elevationProfileProperty().isNull().addListener(e->{
             splitPane.getItems().retainAll(mapPane.pane());
 
             if(routeBean.elevationProfile() != null){

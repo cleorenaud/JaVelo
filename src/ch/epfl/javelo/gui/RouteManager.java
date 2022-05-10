@@ -23,7 +23,6 @@ public final class RouteManager {
     // TODO: 09/05/2022 relire le nom des variables
     private final RouteBean routeBean;
     private final ReadOnlyObjectProperty<MapViewParameters> mapViewParameters;
-    private final Consumer<String> errorConsumer;
     private final Pane pane;
     private int zoomActu;
     private final Polyline itineraire;
@@ -37,13 +36,10 @@ public final class RouteManager {
      * @param routeBean         (RouteBean) : le bean de l'itinéraire
      * @param mapViewParameters (ReadOnlyObjectProperty<MapViewParameters>) : une propriété JavaFX,
      *                          contenant les paramètres de la carte affichée,
-     * @param errorConsumer     (Consumer<String>) : un consommateur d'erreurs permettant de signaler une erreur.
      */
-    public RouteManager(RouteBean routeBean, ReadOnlyObjectProperty<MapViewParameters> mapViewParameters,
-                        Consumer<String> errorConsumer) {
+    public RouteManager(RouteBean routeBean, ReadOnlyObjectProperty<MapViewParameters> mapViewParameters) {
         this.routeBean = routeBean;
         this.mapViewParameters = mapViewParameters;
-        this.errorConsumer = errorConsumer;
         this.points = new ArrayList();
         this.pane = new Pane();
         zoomActu = mapViewParameters.get().zoomLevel();
@@ -155,17 +151,10 @@ public final class RouteManager {
             int noeud = routeBean.route.get().nodeClosestTo(routeBean.highlightedPosition());
 
 
-            int indexSegment = routeBean.route.get().indexOfSegmentAt(routeBean.highlightedPosition());
-            int noeudAvant = routeBean.waypoints.get(indexSegment).nodeId();
-            int noeudApres = routeBean.waypoints.get(indexSegment + 1).nodeId();
-
-            if (noeud == noeudAvant || noeud == noeudApres) {
-                error();
-            } else {
-                Waypoint newWaypoint = new Waypoint(location, noeud);
-                List<Waypoint> demiListe1 = routeBean.waypoints.subList(0, indexSegment + 1);
-                demiListe1.add(newWaypoint);
-            }
+            int indexSegment = routeBean.indexOfNonEmptySegmentAt(routeBean.highlightedPosition());
+            Waypoint newWaypoint = new Waypoint(location, noeud);
+            List<Waypoint> demiListe1 = routeBean.waypoints.subList(0, indexSegment + 1);
+            demiListe1.add(newWaypoint);
 
         });
     }
@@ -187,9 +176,6 @@ public final class RouteManager {
 
     }
 
-    private void error() {
-        errorConsumer.accept("Un point de passage est déjà présent à cet endroit !");
-    }
 
 
 }

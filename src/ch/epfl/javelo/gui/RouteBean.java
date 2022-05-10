@@ -109,8 +109,14 @@ public final class RouteBean {
             return;
         }
 
-        route.set(new MultiRoute(segments));
-        elevationProfile.set(ElevationProfileComputer.elevationProfile(route(), MAX_STEP_LENGTH));
+        if(segments.isEmpty()){
+            route.set(null);
+            elevationProfile.set(null);
+        }else{
+            route.set(new MultiRoute(segments));
+            elevationProfile.set(ElevationProfileComputer.elevationProfile(route(), MAX_STEP_LENGTH));
+        }
+
 
     }
 

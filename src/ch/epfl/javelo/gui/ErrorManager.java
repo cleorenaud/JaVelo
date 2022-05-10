@@ -4,6 +4,7 @@ import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.Transition;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -20,33 +21,34 @@ public final class ErrorManager {
     private final static Duration PAUSE_DURATION = new Duration (2000);
     private final static double FADE_MAX =0.8;
     private final static double FADE_MIN = 0;
-    private final Pane errorPane;
+    private final BorderPane errorPane;
     private final VBox errorVbox;
     private final Text errorMessage;
     private final FadeTransition enterTransition;
     private final FadeTransition leaveTransition;
     private final PauseTransition pauseTransition;
-    private final SequentialTransition fullAnimation;
+    private final SequentialTransition fullTransition;
+
     /**
      * constructeur public dénué d'argument
      */
     public ErrorManager(){
-        this.errorPane = new Pane();
         this.errorMessage = new Text();
         this.errorVbox = new VBox(errorMessage);
-        errorVbox.setId("error.css");
+        errorVbox.getStylesheets().add("error.css");
+        this.errorPane = new BorderPane(errorVbox);
         errorPane.setMouseTransparent(true);
 
-        this.enterTransition = new FadeTransition(ENTER_DURATION, errorVbox);
+        this.enterTransition = new FadeTransition(ENTER_DURATION);
         enterTransition.setFromValue(FADE_MIN);
         enterTransition.setToValue(FADE_MAX);
 
-        this.leaveTransition = new FadeTransition(LEAVE_DURATION, errorVbox);
+        this.leaveTransition = new FadeTransition(LEAVE_DURATION);
         leaveTransition.setFromValue(FADE_MAX);
         leaveTransition.setToValue(FADE_MIN);
 
         this.pauseTransition = new PauseTransition(PAUSE_DURATION);
-        this.fullAnimation  = new SequentialTransition(errorVbox, enterTransition,leaveTransition, pauseTransition);
+        this.fullTransition  = new SequentialTransition(errorVbox, enterTransition, pauseTransition, leaveTransition);
         //TODO  : faut-il laisser le errorVbox à chaque fois ?
     };
 
@@ -54,15 +56,15 @@ public final class ErrorManager {
      * méthode retournant le panneau sur lequel les messages d'erreurs apparaissent
      * @return
      */
-    public Pane pane(){
+    public BorderPane pane(){
         return errorPane;
     }
 
     public void displayError(String message){
-        fullAnimation.stop();
+        fullTransition.stop();
         java.awt.Toolkit.getDefaultToolkit().beep();
         errorMessage.setText(message);
-        fullAnimation.play();
+        fullTransition.play();
     }
 
 }

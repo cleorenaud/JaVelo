@@ -2,8 +2,10 @@ package ch.epfl.javelo.gui;
 
 import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.data.Graph;
+import ch.epfl.javelo.projection.Ch1903;
 import ch.epfl.javelo.projection.PointCh;
 import ch.epfl.javelo.projection.PointWebMercator;
+import ch.epfl.javelo.projection.SwissBounds;
 import ch.epfl.javelo.routing.Route;
 import ch.epfl.javelo.routing.RoutePoint;
 import javafx.beans.property.*;
@@ -40,7 +42,7 @@ public final class AnnotatedMapManager {
         ObservableList<Waypoint> waypoints = routeBean.waypointsProperty();
         WaypointsManager waypointsManager = new WaypointsManager(graph, mapViewParametersProperty, waypoints, errorConsumer);
         BaseMapManager baseMapManager = new BaseMapManager(tileManager, waypointsManager, mapViewParametersProperty);
-        RouteManager routeManager = new RouteManager(routeBean, mapViewParametersProperty, errorConsumer);
+        RouteManager routeManager = new RouteManager(routeBean, mapViewParametersProperty);
 
         // Empilement des panneaux contenant le fond de carte, l'itinéraire et les points de passage
         annotatedMap = new StackPane(baseMapManager.pane(), routeManager.pane(), waypointsManager.pane());
@@ -76,16 +78,22 @@ public final class AnnotatedMapManager {
         annotatedMap.setOnMouseMoved(e -> {
             if(routeBean.route()!= null){
                 PointWebMercator PWMMouse= mapViewParametersProperty.get().pointAt(e.getX(), e.getY());
-                PointCh pointMouse  = PWMMouse.toPointCh();
-                RoutePoint pointClosestToMouse = routeBean.route().pointClosestTo(pointMouse);
-                PointCh closestMousePointCh = pointClosestToMouse.point();
-                PointWebMercator PWMClosest = PointWebMercator.ofPointCh(closestMousePointCh);
-                double deltaX = mapViewParametersProperty.get().viewX(PWMMouse)-
-                        mapViewParametersProperty.get().viewX(PWMClosest);
-                double deltaY = mapViewParametersProperty.get().viewY(PWMMouse)-
-                        mapViewParametersProperty.get().viewY(PWMClosest);
-                if (Math2.norm(deltaX, deltaY)<=15){
-                    mousePositionOnRoute.set(pointClosestToMouse.position());
+                double east = Ch1903.e(PWMMouse.lon(), PWMMouse.lat());
+                double north = Ch1903.n(PWMMouse.lon(), PWMMouse.lat());
+                if(SwissBounds.containsEN(east,north)){
+                    PointCh pointMouse  = PWMMouse.toPointCh();
+                    RoutePoint pointClosestToMouse = routeBean.route().pointClosestTo(pointMouse);
+                    PointCh closestMousePointCh = pointClosestToMouse.point();
+                    PointWebMercator PWMClosest = PointWebMercator.ofPointCh(closestMousePointCh);
+                    double deltaX = mapViewParametersProperty.get().viewX(PWMMouse)-
+                            mapViewParametersProperty.get().viewX(PWMClosest);
+                    double deltaY = mapViewParametersProperty.get().viewY(PWMMouse)-
+                            mapViewParametersProperty.get().viewY(PWMClosest);
+                    if (Math2.norm(deltaX, deltaY)<=15){
+                        mousePositionOnRoute.set(pointClosestToMouse.position());
+                    }else{
+                        mousePositionOnRoute.set(Double.NaN);
+                    }
                 }else{
                     mousePositionOnRoute.set(Double.NaN);
                 }
