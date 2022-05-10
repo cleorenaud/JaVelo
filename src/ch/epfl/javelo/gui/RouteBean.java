@@ -110,7 +110,6 @@ public final class RouteBean {
         }
 
         if(segments.isEmpty()){
-            System.out.println("c'est nul");
             route.set(null);
             elevationProfile.set(null);
         }else{

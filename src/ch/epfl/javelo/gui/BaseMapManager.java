@@ -106,11 +106,6 @@ public final class BaseMapManager {
                 try {
                     TileManager.TileId tileId = new TileManager.TileId(objectProperty.get().zoomLevel(), indexXLeftTile + i, indexYLeftTile + j);
                     Image image = tileManager.imageForTileAt(tileId);
-                    if (!TileManager.TileId.isValid(tileId)) {
-                        System.out.println("zoom " + mapViewParameters.zoomLevel());
-                        System.out.println("x " + indexXLeftTile + i);
-                        System.out.println("y " + indexYLeftTile + j);
-                    }
                     graphicsContext.drawImage(image, TILE_SIZE * i - xInTile, TILE_SIZE * j - yInTile, TILE_SIZE, TILE_SIZE);
 
                 } catch (IOException e) {

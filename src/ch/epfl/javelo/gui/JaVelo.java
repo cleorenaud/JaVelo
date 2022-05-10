@@ -5,8 +5,6 @@ import ch.epfl.javelo.routing.*;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
-import javafx.beans.property.*;
-import javafx.beans.value.ObservableBooleanValue;
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.control.Menu;
@@ -19,6 +17,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 
@@ -35,6 +34,7 @@ public final class JaVelo extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+
         //Graph graph = Graph.loadFrom(Path.of("javelo-data"));
         Graph graph = Graph.loadFrom(Path.of("ch_west")); //TODO : a supprimer plus tard, pour les tests
         //Path cacheBasePath = Path.of("osm-cache");
@@ -58,11 +58,14 @@ public final class JaVelo extends Application {
         ElevationProfileManager profileManager = new ElevationProfileManager
                 (routeBean.elevationProfileProperty(), routeBean.highlightedPosition);
 
-        routeBean.elevationProfileProperty().isNull().addListener(e->{
-            //System.out.println("hey");
-            splitPane.getItems().remove(profileManager.pane());
 
-            if(routeBean.elevationProfile() != null){
+        routeBean.elevationProfileProperty().addListener((p, oldP, newP)->
+        {
+            if(newP == null && oldP != null){
+                splitPane.getItems().retainAll(mapPane.pane());
+            }
+
+            if(newP != null && oldP==null){
                 splitPane.getItems().add(profileManager.pane());
                 SplitPane.setResizableWithParent(profileManager.pane(), false);
             }
