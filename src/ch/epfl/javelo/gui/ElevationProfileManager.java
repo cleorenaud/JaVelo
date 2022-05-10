@@ -71,12 +71,12 @@ public final class ElevationProfileManager {
         this.elevationProfileProperty = elevationProfileProperty;
 
         this.mousePosition = new SimpleDoubleProperty();
+        mousePosition.set(NaN);
         this.profileRect = new SimpleObjectProperty<>();
         this.screenToWorld = new SimpleObjectProperty<>();
         this.worldToScreen = new SimpleObjectProperty<>();
 
         this.profileStats = new Text();
-        writeText();
         this.bottomArea = new VBox(profileStats);
         bottomArea.setId("profile_data");
 
@@ -123,6 +123,12 @@ public final class ElevationProfileManager {
 
 
     private void redraw() {
+        if(elevationProfileProperty.get() == null) {
+            worldToScreen.set(new Affine(0,0,0,0,0,0));
+            mousePosition.set(NaN);
+            return;
+        }
+
         maxElevation = elevationProfileProperty.get().maxElevation();
         minElevation = elevationProfileProperty.get().minElevation();
         length = elevationProfileProperty.get().length();
