@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.util.function.Consumer;
 
 public final class Stage8Test extends Application {
+
     public static void main(String[] args) { launch(args); }
 
     @Override

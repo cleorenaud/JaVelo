@@ -97,6 +97,7 @@ public final class SingleRoute implements Route {
      */
     @Override
     public PointCh pointAt(double position) {
+
         // Une position supérieure à la longueur de l'itinéraire est considérée comme équivalente à cette longueur
         // Une position inférieure à la longueur de l'itinéraire est considérée comme équivalente à zéro
         position = Math2.clamp(0, position, this.length());

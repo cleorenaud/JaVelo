@@ -193,7 +193,6 @@ public final class WaypointsManager {
             installHandlers(pin);
         }
 
-
         replace(); //replace les marqueurs
 
     }

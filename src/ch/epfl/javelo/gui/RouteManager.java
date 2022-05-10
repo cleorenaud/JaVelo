@@ -79,7 +79,6 @@ public final class RouteManager {
             double posXInit = mapViewParameters.get().viewX(point1);
             double posYInit = mapViewParameters.get().viewY(point1);
 
-
             for (PointCh point : points) {//crée un itinéraire commençant à (0,0) qu'on va par la suite replacer
                 PointWebMercator pointWM = PointWebMercator.ofPointCh(point);
                 double posX = mapViewParameters.get().viewX(pointWM);
@@ -87,10 +86,8 @@ public final class RouteManager {
                 itineraire.getPoints().add(posX - posXInit);
                 itineraire.getPoints().add(posY - posYInit);
             }
-
             replace();
         }
-
 
     }
 

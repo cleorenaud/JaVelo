@@ -54,12 +54,16 @@ public final class ErrorManager {
 
     /**
      * méthode retournant le panneau sur lequel les messages d'erreurs apparaissent
-     * @return
+     * @return BorderPane : le panneau
      */
     public BorderPane pane(){
         return errorPane;
     }
 
+    /**
+     * méthode publique permettant d'afficher un message d'erreur
+     * @param message (String) : le message à afficher
+     */
     public void displayError(String message){
         fullTransition.stop();
         java.awt.Toolkit.getDefaultToolkit().beep();

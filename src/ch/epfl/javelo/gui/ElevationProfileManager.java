@@ -80,7 +80,6 @@ public final class ElevationProfileManager {
         this.bottomArea = new VBox(profileStats);
         bottomArea.setId("profile_data");
 
-
         this.highlightedPosLine = new Line();
         this.graphProfile = new Polygon();
         this.graphProfile.setId("profile");

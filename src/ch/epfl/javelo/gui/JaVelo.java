@@ -75,7 +75,6 @@ public final class JaVelo extends Application {
                         .otherwise(profileManager.mousePositionOnProfileProperty()));
 
 
-
         MenuBar menuBar = new MenuBar();
         Menu menu = new Menu("Fichier");
         menuBar.getMenus().add(menu);
