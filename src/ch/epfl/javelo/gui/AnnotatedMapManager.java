@@ -4,11 +4,9 @@ import ch.epfl.javelo.Math2;
 import ch.epfl.javelo.data.Graph;
 import ch.epfl.javelo.projection.PointCh;
 import ch.epfl.javelo.projection.PointWebMercator;
-import ch.epfl.javelo.routing.Route;
 import ch.epfl.javelo.routing.RoutePoint;
 import javafx.beans.property.*;
 import javafx.collections.ObservableList;
-import javafx.geometry.Point2D;
 import javafx.scene.layout.StackPane;
 
 import java.util.function.Consumer;
