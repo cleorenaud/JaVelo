@@ -20,6 +20,7 @@ import java.util.Map;
 public final class RouteBean {
 
     // TODO: 09/05/2022 enlever les méthodes qui ne sont pas appelées
+    // TODO: 10/05/2022 vérifier si il faut mettre en private plutôt que public
 
     public ObservableList<Waypoint> waypoints; // La liste (observable) des points de passage
     public ObjectProperty<Route> route; // L'itinéraire permettant de relier les points de passage
@@ -90,9 +91,13 @@ public final class RouteBean {
                 segments.add(cacheMemory.get(waypoints().subList(i, i + 1)));
             } else {
                 // Si ce n'est pas le cas on la crée et on l'ajoute au cache mémoire et à notre itinéraire
-                Route bestRoute = routeComputer.bestRouteBetween(waypoints().get(i).nodeId(), waypoints().get(i + 1).nodeId());
-                segments.add(bestRoute);
-                addToCacheMemory(waypoints().subList(i, i + 1), bestRoute);
+                // Si deux points de passage successifs sont associés au même nœud alors on ne calcule pas l'itinéraire
+                // entre ces deux points
+                if(waypoints().get(i).nodeId() != waypoints().get(i + 1).nodeId()) {
+                    Route bestRoute = routeComputer.bestRouteBetween(waypoints().get(i).nodeId(), waypoints().get(i + 1).nodeId());
+                    segments.add(bestRoute);
+                    addToCacheMemory(waypoints().subList(i, i + 1), bestRoute);
+                }
             }
         }
 

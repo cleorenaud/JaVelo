@@ -2,7 +2,6 @@ package ch.epfl.javelo.gui;
 
 import ch.epfl.javelo.data.Graph;
 import ch.epfl.javelo.routing.*;
-import com.sun.jdi.BooleanValue;
 import javafx.application.Application;
 import javafx.beans.property.*;
 import javafx.beans.value.ObservableBooleanValue;
@@ -20,10 +19,11 @@ import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.util.function.Consumer;
 
-import static java.lang.Float.NaN;
 
 /**
  * Classe publique et instantiable qui est la classe principale de l'application
+ * @author Roxanne Chevalley (339716)
+ * @author Cléo Renaud (325156)
  */
 public final class JaVelo extends Application {
 
