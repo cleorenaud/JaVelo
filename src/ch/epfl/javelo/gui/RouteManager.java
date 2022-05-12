@@ -70,11 +70,11 @@ public final class RouteManager {
     private void recreate() {
         itineraire.getPoints().clear();
 
-        if (routeBean.route.get() == null) {
+        if (routeBean.route() == null) {
             itineraire.setVisible(false);
             circle.setVisible(false);
         } else {
-            this.points = new ArrayList(routeBean.route.get().points());
+            this.points = new ArrayList(routeBean.route().points());
             PointWebMercator point1 = PointWebMercator.ofPointCh(points.get(0));
             double posXInit = mapViewParameters.get().viewX(point1);
             double posYInit = mapViewParameters.get().viewY(point1);
@@ -95,7 +95,7 @@ public final class RouteManager {
      * Méthode privée permettant de replacer l'itinéraire
      */
     private void replace() {
-        if (routeBean.route.get() != null) {
+        if (routeBean.route() != null) {
             itineraire.setVisible(true);
         } else {
             return; // inutile de chercher la position si on ne doit pas voir la route
@@ -113,7 +113,7 @@ public final class RouteManager {
     private void installListeners() {
 
         //auditeur qui permet de récréer le dessin de l'itinéraire lorsque la liste des points de passage change
-        routeBean.waypoints.addListener((ListChangeListener<? super Waypoint>) e -> {
+        routeBean.waypointsProperty().addListener((ListChangeListener<? super Waypoint>) e -> {
             recreate();
         });
 
@@ -130,7 +130,7 @@ public final class RouteManager {
         });
 
         //auditeur qui permet de replacer le dessin du cercle lorsque sa position change
-        routeBean.highlightedPosition.addListener(e -> replaceCircle());
+        routeBean.highlightedPositionProperty().addListener(e -> replaceCircle());
 
     }
 
@@ -145,12 +145,12 @@ public final class RouteManager {
             Point2D point = circle.localToParent(x, y);
 
             PointCh location = mapViewParameters.get().pointAt(point.getX(), point.getY()).toPointCh();
-            int noeud = routeBean.route.get().nodeClosestTo(routeBean.highlightedPosition());
+            int noeud = routeBean.route().nodeClosestTo(routeBean.highlightedPosition());
 
 
             int indexSegment = routeBean.indexOfNonEmptySegmentAt(routeBean.highlightedPosition());
             Waypoint newWaypoint = new Waypoint(location, noeud);
-            List<Waypoint> demiListe1 = routeBean.waypoints.subList(0, indexSegment + 1);
+            List<Waypoint> demiListe1 = routeBean.waypoints().subList(0, indexSegment + 1);
             demiListe1.add(newWaypoint);
 
         });
@@ -158,14 +158,14 @@ public final class RouteManager {
 
     private void replaceCircle() {
 
-        if (routeBean.route()!=null && !Double.isNaN(routeBean.highlightedPosition.get())) {
+        if (routeBean.route()!=null && !Double.isNaN(routeBean.highlightedPosition())) {
             circle.setVisible(true);
         } else {
             circle.setVisible(false);
             return; //ça ne sert à rien de chercher la position si pour l'instant elle ne doit pas être visible
         }
-        double posCercle = routeBean.highlightedPosition.get();
-        PointWebMercator pointCercle = PointWebMercator.ofPointCh(routeBean.route.get().pointAt(posCercle));
+        double posCercle = routeBean.highlightedPosition();
+        PointWebMercator pointCercle = PointWebMercator.ofPointCh(routeBean.route().pointAt(posCercle));
 
         circle.setLayoutX(mapViewParameters.get().viewX(pointCercle));
         circle.setLayoutY(mapViewParameters.get().viewY(pointCercle));

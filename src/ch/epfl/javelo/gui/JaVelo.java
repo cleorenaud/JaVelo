@@ -17,7 +17,6 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 
@@ -56,7 +55,7 @@ public final class JaVelo extends Application {
 
 
         ElevationProfileManager profileManager = new ElevationProfileManager
-                (routeBean.elevationProfileProperty(), routeBean.highlightedPosition);
+                (routeBean.elevationProfileProperty(), routeBean.highlightedPositionProperty());
 
 
         routeBean.elevationProfileProperty().addListener((p, oldP, newP)->

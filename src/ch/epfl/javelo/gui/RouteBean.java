@@ -20,12 +20,11 @@ import java.util.Map;
 public final class RouteBean {
 
     // TODO: 09/05/2022 enlever les méthodes qui ne sont pas appelées
-    // TODO: 10/05/2022 vérifier si il faut mettre en private plutôt que public
 
-    public ObservableList<Waypoint> waypoints; // La liste (observable) des points de passage
-    public ObjectProperty<Route> route; // L'itinéraire permettant de relier les points de passage
-    public DoubleProperty highlightedPosition; // La position mise en évidence
-    public ObjectProperty<ElevationProfile> elevationProfile; // Le profil de l'itinéraire
+    private ObservableList<Waypoint> waypoints; // La liste (observable) des points de passage
+    private ObjectProperty<Route> route; // L'itinéraire permettant de relier les points de passage
+    private DoubleProperty highlightedPosition; // La position mise en évidence
+    private ObjectProperty<ElevationProfile> elevationProfile; // Le profil de l'itinéraire
 
     private final RouteComputer routeComputer;
     private LinkedHashMap<List<Waypoint>, Route> cacheMemory;
