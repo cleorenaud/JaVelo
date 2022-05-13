@@ -19,19 +19,16 @@ import java.util.Map;
  */
 public final class RouteBean {
 
-    // TODO: 09/05/2022 enlever les méthodes qui ne sont pas appelées
-
     private ObservableList<Waypoint> waypoints; // La liste (observable) des points de passage
     private ObjectProperty<Route> route; // L'itinéraire permettant de relier les points de passage
     private DoubleProperty highlightedPosition; // La position mise en évidence
     private ObjectProperty<ElevationProfile> elevationProfile; // Le profil de l'itinéraire
 
     private final RouteComputer routeComputer;
+
     private LinkedHashMap<List<Waypoint>, Route> cacheMemory;
     private final int CAPACITY = 100;
-
     private final static double MAX_STEP_LENGTH = 5;
-
 
     /**
      * Constructeur public de la classe
@@ -41,10 +38,6 @@ public final class RouteBean {
      */
     public RouteBean(RouteComputer routeComputer) {
         this.routeComputer = routeComputer;
-
-        // On installe un auditeur sur la liste contenant les points de passage
-        //waypoints.addListener((ListChangeListener<? super Waypoint>) e -> updateRoute());
-        // TODO: 09/05/2022 verifier ligne au dessus
 
         // Si aucune position ne doit être mise en évidence, la propriété contenant la position contient NaN
         this.highlightedPosition = new SimpleDoubleProperty();
@@ -83,19 +76,24 @@ public final class RouteBean {
         // Les itinéraires simples sont ensuite combinés en un unique itinéraire multiple
         List<Route> segments = new ArrayList<>(); // La liste dans laquelle on stocke tous les itinéraires simples
 
+
         for (int i = 0; i < waypoints().size() - 1; i++) {
             // On regarde dans le cache mémoire si la route entre les deux waypoints existe déjà
-            if (cacheMemory.get(waypoints().subList(i, i + 2)) != null) {
+            List<Waypoint> subList = new ArrayList<>(2);
+            subList.add(waypoints().get(i));
+            subList.add(waypoints().get(i+1));
+
+            if (cacheMemory.get(subList) != null) {
                 // Si elle existe déjà on y accède et on l'ajoute à notre itinéraire
-                segments.add(cacheMemory.get(waypoints().subList(i, i + 2)));
-            } else {
+                segments.add(cacheMemory.get(subList));
+            } else{
                 // Si ce n'est pas le cas on la crée et on l'ajoute au cache mémoire et à notre itinéraire
                 // Si deux points de passage successifs sont associés au même nœud alors on ne calcule pas l'itinéraire
                 // entre ces deux points
                 if (waypoints().get(i).nodeId() != waypoints().get(i + 1).nodeId()) {
                     Route bestRoute = routeComputer.bestRouteBetween(waypoints().get(i).nodeId(), waypoints().get(i + 1).nodeId());
                     segments.add(bestRoute);
-                    addToCacheMemory(waypoints().subList(i, i + 2), bestRoute);
+                    addToCacheMemory(subList, bestRoute);
                 }
             }
         }
@@ -108,10 +106,10 @@ public final class RouteBean {
             return;
         }
 
-        if(segments.isEmpty()){
+        if (segments.isEmpty()) {
             route.set(null);
             elevationProfile.set(null);
-        }else{
+        } else {
             route.set(new MultiRoute(segments));
             elevationProfile.set(ElevationProfileComputer.elevationProfile(route(), MAX_STEP_LENGTH));
         }
@@ -141,23 +139,13 @@ public final class RouteBean {
         return index;
     }
 
-
     /**
      * Méthode retournant la propriété représentant la liste (observable) des points de passage
      *
      * @return (ObservableListe < Waypoint >) : la propriété
      */
-    public ObservableList<Waypoint> waypointsProperty() {
+    public ObservableList<Waypoint> waypoints() {
         return waypoints;
-    }
-
-    /**
-     * Méthode retournant la liste (observable) des points de passage
-     *
-     * @return (List < Waypoint >) : la liste (observable) des points de passage
-     */
-    public List<Waypoint> waypoints() {
-        return waypoints.stream().toList();
     }
 
     /**

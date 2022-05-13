@@ -41,28 +41,28 @@ public final class WaypointsManager {
     /**
      * Constructeur public de la classe
      *
-     * @param graph          (Graph) : le graphe du réseau routier
+     * @param graph                           (Graph) : le graphe du réseau routier
      * @param mapViewParametersObjectProperty (ObjectProperty) : une propriété JavaFX contenant les paramètres de la carte affichée
-     * @param wayPoints (List<Waypoint>) : la liste de tous les points de passage
-     *                       //@param erreurConsumer (Consumer<String>) :
+     * @param wayPoints                       (List<Waypoint>) : la liste de tous les points de passage
+     *                                        //@param erreurConsumer (Consumer<String>) :
      */
     public WaypointsManager(Graph graph, ObjectProperty<MapViewParameters> mapViewParametersObjectProperty,
                             ObservableList<Waypoint> wayPoints, Consumer<String> errorConsumer) {
         this.graph = graph;
         this.mapViewParametersObjectProperty = mapViewParametersObjectProperty;
-        this.wayPointsList=wayPoints;
+        this.wayPointsList = wayPoints;
         this.errorConsumer = errorConsumer;
         this.pane = new Pane();
 
 
         pane.setPickOnBounds(false);
-        installListeners(); //méthode s'occupant d'ajouter les auditeurs
+        installListeners(); // Méthode s'occupant d'ajouter les auditeurs
         recreate();
 
     }
 
     /**
-     * méthode publique permettant d'obtenir le pane qui contient le dessin des marqueurs
+     * Méthode publique permettant d'obtenir le pane qui contient le dessin des marqueurs
      *
      * @return (Pane) : le pane
      */
@@ -77,26 +77,26 @@ public final class WaypointsManager {
      * @param y (double) : la coordonnée y du point
      */
     public void addWaypoint(double x, double y) {
-        PointWebMercator pWM= mapViewParametersObjectProperty.get().pointAt(x, y);
+        PointWebMercator pWM = mapViewParametersObjectProperty.get().pointAt(x, y);
 
-        if (inSwissBounds(pWM)){ //vérifie que le point est dans les limites suisses
+        if (inSwissBounds(pWM)) { // On vérifie que le point est dans les limites suisses
             PointCh pointOfXY = pWM.toPointCh();
             int closestNode = graph.nodeClosestTo(pointOfXY, SEARCH_DISTANCE);
-            if (closestNode == -1) { //s'il n'y a pas de noeuds proches du points
+            if (closestNode == -1) { // S'il n'y a pas de nœuds proches du point
                 nodeError();
                 return;
             }
             Waypoint wayPoint = new Waypoint(pointOfXY, closestNode);
             wayPointsList.add(wayPoint);
-        }else{
-            nodeError(); //si le point n'est pas dans les limites suisses
+        } else {
+            nodeError(); // Si le point n'est pas dans les limites suisses
         }
 
     }
 
 
     /**
-     * méthode privée installant la gestion d'événement pour chaque marqueur
+     * Méthode privée installant la gestion d'événement pour chaque marqueur
      *
      * @param pin (Group) : le marqueur sur lequel il faut installer la gestion d'événement
      */
@@ -126,29 +126,29 @@ public final class WaypointsManager {
             Waypoint pointPassage = pinsToWaypoint.get(pin); //le wayPoint associé au marqueur
 
             if (!mouseEvent.isStillSincePress()) { //si la souris s'est déplacée on déplace le marqueur
-                PointWebMercator pWM= mapViewParametersObjectProperty.get().pointAt
+                PointWebMercator pWM = mapViewParametersObjectProperty.get().pointAt
                         (newPlace.getX(), newPlace.getY());
 
-                if(inSwissBounds(pWM)){//vérifie que le point est dans les limites suisses
+                if (inSwissBounds(pWM)) {//vérifie que le point est dans les limites suisses
                     PointCh newPCh = pWM.toPointCh();
                     int i = wayPointsList.indexOf(pointPassage);
                     int node = graph.nodeClosestTo(newPCh, SEARCH_DISTANCE);
 
-                    if (node == -1) { //on a pas trouvé de noeud proche -> erreur
+                    if (node == -1) { // On n'a pas trouvé de nœud proche -> erreur
                         nodeError();
-                        replace(); //on remet le noeud là où on l'a pris au début
-                    } else { //on change le waypoint
+                        replace(); // On remet le nœud là où on l'a pris au début
+                    } else { // On change le waypoint
                         Waypoint newWaypoint = new Waypoint(newPCh, node);
                         wayPointsList.set(i, newWaypoint);
                         pinsToWaypoint.put(pin, newWaypoint);
                     }
-                }else{
+                } else {
                     nodeError();
-                    replace(); //on remet le noeud là où on l'a pris au début
+                    replace(); // On remet le nœud là où on l'a pris au début
                 }
 
 
-            } else {//si on ne s'est pas déplacé
+            } else { // Si on ne s'est pas déplacé
                 wayPointsList.remove(pinsToWaypoint.get(pin));
             }
 
@@ -157,7 +157,7 @@ public final class WaypointsManager {
     }
 
     /**
-     * méthode privée recréant les marqueurs
+     * Méthode privée recréant les marqueurs
      */
     private void recreate() {
 
@@ -167,7 +167,7 @@ public final class WaypointsManager {
 
         for (int i = 0; i < wayPointsList.size(); i++) {
 
-            //dessin des marqueurs grâce aux SVG Paths
+            // Dessin des marqueurs grâce aux SVG Paths
             SVGPath child1 = new SVGPath();
             child1.setContent(SON_CONTENT1);
             child1.getStyleClass().add("pin_outside");
@@ -177,7 +177,7 @@ public final class WaypointsManager {
             Group pin = new Group(child1, child2);
             pin.getStyleClass().add("pin");
 
-            //coloriage des marqueurs
+            // Coloriage des marqueurs
             if (i == 0) {
                 pin.getStyleClass().add("first");
             } else if (i == wayPointsList.size() - 1) {
@@ -187,18 +187,18 @@ public final class WaypointsManager {
             }
 
 
-            //installation du gestionnaire d'événement des marqueurs et placement de ceux ci
+            // Installation du gestionnaire d'événement des marqueurs et placement de ceux ci
             pinsToWaypoint.put(pin, wayPointsList.get(i));
             pane.getChildren().add(pin);
             installHandlers(pin);
         }
 
-        replace(); //replace les marqueurs
+        replace(); // Replace les marqueurs
 
     }
 
     /**
-     * méthode privée replaçant les marqueurs
+     * Méthode privée replaçant les marqueurs
      */
     private void replace() {
         for (Node pin : pane.getChildren()) {
@@ -212,7 +212,7 @@ public final class WaypointsManager {
     }
 
     /**
-     * méthode privée s'occupant d'ajouter les auditeurs nécessaires
+     * Méthode privée s'occupant d'ajouter les auditeurs nécessaires
      */
     private void installListeners() {
         wayPointsList.addListener((ListChangeListener<? super Waypoint>) e -> recreate());
@@ -220,16 +220,16 @@ public final class WaypointsManager {
     }
 
     /**
-     * méthode se chargeant de l'affichage d'erreur
+     * Méthode privée se chargeant de l'affichage d'erreur
      */
     private void nodeError() {
         errorConsumer.accept("Aucune route à proximité !");
     }
 
-    private boolean inSwissBounds(PointWebMercator pWM){
-        double corE= Ch1903.e(pWM.lon(),pWM.lat());
-        double corN=Ch1903.n(pWM.lon(),pWM.lat());
-        return SwissBounds.containsEN(corE,corN);
+    private boolean inSwissBounds(PointWebMercator pWM) {
+        double corE = Ch1903.e(pWM.lon(), pWM.lat());
+        double corN = Ch1903.n(pWM.lon(), pWM.lat());
+        return SwissBounds.containsEN(corE, corN);
     }
 
 
