@@ -39,7 +39,7 @@ public final class AnnotatedMapManager {
 
         this.mapViewParametersProperty =  new SimpleObjectProperty<>(mapViewParameters);
 
-        ObservableList<Waypoint> waypoints = routeBean.waypointsProperty();
+        ObservableList<Waypoint> waypoints = routeBean.waypoints();
         WaypointsManager waypointsManager = new WaypointsManager(graph, mapViewParametersProperty, waypoints, errorConsumer);
         BaseMapManager baseMapManager = new BaseMapManager(tileManager, waypointsManager, mapViewParametersProperty);
         RouteManager routeManager = new RouteManager(routeBean, mapViewParametersProperty);

@@ -17,7 +17,6 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 
@@ -40,8 +39,7 @@ public final class JaVelo extends Application {
         //Path cacheBasePath = Path.of("osm-cache");
         Path cacheBasePath = Path.of(".");  //TODO : a supprimer plus tard, pour tester
         String tileServerHost = "tile.openstreetmap.org";
-        TileManager tileManager =
-                new TileManager(cacheBasePath, tileServerHost);
+        TileManager tileManager = new TileManager(cacheBasePath, tileServerHost);
         RouteBean routeBean = new RouteBean(new RouteComputer(graph, new CityBikeCF(graph)));
         ErrorManager errorManager = new ErrorManager();
         Consumer<String> errorConsumer = (s -> errorManager.displayError(s));
@@ -56,7 +54,7 @@ public final class JaVelo extends Application {
 
 
         ElevationProfileManager profileManager = new ElevationProfileManager
-                (routeBean.elevationProfileProperty(), routeBean.highlightedPosition);
+                (routeBean.elevationProfileProperty(), routeBean.highlightedPositionProperty());
 
 
         routeBean.elevationProfileProperty().addListener((p, oldP, newP)->

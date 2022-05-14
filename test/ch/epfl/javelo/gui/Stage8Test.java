@@ -41,8 +41,8 @@ public final class Stage8Test extends Application {
                         new Waypoint(new PointCh(2532697, 1152350), 159049),
                         new Waypoint(new PointCh(2538659, 1154350), 117669));
         RouteBean routeBean = new RouteBean(new RouteComputer(graph,new CityBikeCF(graph)));
-        waypoints= routeBean.waypoints;
-        routeBean.highlightedPosition.setValue(1000);
+        waypoints= routeBean.waypoints();
+        routeBean.highlightedPositionProperty().setValue(1000);
 
         Consumer<String> errorConsumer = new ErrorConsumer();
 
