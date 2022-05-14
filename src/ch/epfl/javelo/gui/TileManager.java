@@ -17,8 +17,10 @@ import javafx.scene.image.Image;
  * @author Roxanne Chevalley (339716)
  */
 public final class TileManager {
+
     private final Path path;
     private final String serverName;
+
     private LinkedHashMap<TileId, Image> cacheMemory;
     private final int CAPACITY = 100;
 
@@ -35,9 +37,9 @@ public final class TileManager {
     }
 
     public Image imageForTileAt(TileId tileId) throws IOException {
-        Preconditions. checkArgument(TileId.isValid(tileId));
+        Preconditions.checkArgument(TileId.isValid(tileId));
 
-        if(cacheMemory.containsKey(tileId)){
+        if (cacheMemory.containsKey(tileId)) {
             return cacheMemory.get(tileId);
         }
         Image image;
@@ -45,34 +47,33 @@ public final class TileManager {
         Path dir = path.resolve(String.valueOf(tileId.zoomLevel()));
         dir = dir.resolve(String.valueOf(tileId.x()));
         Path tilePath = dir.resolve(String.valueOf(tileId.y()) + ".png");
-        if(!Files.exists(tilePath)){
+        if (!Files.exists(tilePath)) {
             Files.createDirectories(dir);
-            URL u = new URL("https://tile.openstreetmap.org/" + tileId.zoomLevel() +
-                    "/" + tileId.x  +  "/" + tileId.y + ".png");
+            URL u = new URL(serverName + tileId.zoomLevel() + "/" + tileId.x + "/" + tileId.y + ".png");
             URLConnection c = u.openConnection();
             c.setRequestProperty("User-Agent", "JaVelo");
-            try(InputStream i = c.getInputStream()) {
+            try (InputStream i = c.getInputStream()) {
                 FileOutputStream file = new FileOutputStream(tilePath.toString());
                 i.transferTo(file);
             }
         }
         if (Files.exists(tilePath)) {
             File file = tilePath.toFile();
-            try (InputStream inputStream = new FileInputStream(file)){
+            try (InputStream inputStream = new FileInputStream(file)) {
                 image = new Image(inputStream);
-                addToCacheMemoir(tileId, image);
+                addToCacheMemory(tileId, image);
                 return image;
             }
         }
         return null;
-        
+
     }
 
-    private void addToCacheMemoir(TileId tileId, Image image){
-        if(cacheMemory.size()==CAPACITY){
-            TileId key= null;
-            for (Map.Entry<TileId, Image> entry: cacheMemory.entrySet()) {
-                key=entry.getKey();
+    private void addToCacheMemory(TileId tileId, Image image) {
+        if (cacheMemory.size() == CAPACITY) {
+            TileId key = null;
+            for (Map.Entry<TileId, Image> entry : cacheMemory.entrySet()) {
+                key = entry.getKey();
                 continue;
             }
             cacheMemory.remove(key);
@@ -82,7 +83,7 @@ public final class TileManager {
     }
 
     /**
-     * Enregistrement imbriqué
+     * Enregistrement imbriqué représentant l'identité d'une tuile OSM
      *
      * @param zoomLevel (int) : le niveau de zoom de la tuile
      * @param x         (int) : l'index X de la tuile
@@ -94,11 +95,13 @@ public final class TileManager {
             int zoomLevel = tileId.zoomLevel();
             int x = tileId.x();
             int y = tileId.y();
-            if ((0 <= x && x <= Math.pow(2, zoomLevel) - 1) && (0 <= y && y <= Math.pow(2, zoomLevel) - 1) && (0 <= zoomLevel) && (zoomLevel<=20)) {
+            if ((0 <= x && x <= Math.pow(2, zoomLevel) - 1) && (0 <= y && y <= Math.pow(2, zoomLevel) - 1) &&
+                    (0 <= zoomLevel) && (zoomLevel <= 20)) {
                 return true;
             }
             return false;
         }
 
     }
+
 }
