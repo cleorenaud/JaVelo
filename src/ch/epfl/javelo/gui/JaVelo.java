@@ -61,6 +61,7 @@ public final class JaVelo extends Application {
 
         routeBean.elevationProfileProperty().addListener((p, oldP, newP)->
         {
+
             if(newP == null && oldP != null){
                 splitPane.getItems().retainAll(mapPane.pane());
             }
