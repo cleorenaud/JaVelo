@@ -218,5 +218,5 @@ public final class RouteBean {
     public ElevationProfile elevationProfile() {
         return elevationProfile.get();
     }
-    
+
 }
