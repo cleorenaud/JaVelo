@@ -15,7 +15,6 @@ import javafx.scene.layout.Pane;
 
 import java.io.IOException;
 
-
 /**
  * Classe publique et finale qui gère l'affichage et interaction avec le fond de carte
  *
@@ -32,7 +31,7 @@ public final class BaseMapManager {
     private Canvas canvas;
     private ObjectProperty<Point2D> mousePosition;
 
-    private static final int TILE_SIZE = 256;
+    private final int TILE_SIZE = 256;
 
     /**
      * Constructeur public de la classe
@@ -105,7 +104,6 @@ public final class BaseMapManager {
                     TileManager.TileId tileId = new TileManager.TileId(this.mapViewParametersProperty.get().zoomLevel(), indexXLeftTile + i, indexYLeftTile + j);
                     Image image = tileManager.imageForTileAt(tileId);
                     graphicsContext.drawImage(image, TILE_SIZE * i - xInTile, TILE_SIZE * j - yInTile, TILE_SIZE, TILE_SIZE);
-
                 } catch (IOException e) {
                     // ignore
                 }
@@ -115,7 +113,7 @@ public final class BaseMapManager {
     }
 
     /**
-     * Méthode privée permettant de demander un redessin au prochain battement
+     * Méthode privée permettant de demander un re-dessin au prochain battement
      */
     private void redrawOnNextPulse() {
         redrawNeeded = true;
@@ -126,8 +124,6 @@ public final class BaseMapManager {
      * Méthode privée installant les gestionnaires d'événements
      */
     private void installHandlers() {
-        // On installe les gestionnaires d'événements gérant le glissement et le zoom de la carte
-
         mapBackground.setOnMouseClicked((MouseEvent mouseEvent) -> {
             if (mouseEvent.isStillSincePress()) {
                 double x = mouseEvent.getX();
@@ -139,7 +135,6 @@ public final class BaseMapManager {
         mapBackground.setOnMousePressed((MouseEvent mouseEvent) -> {
             // On crée un ObjectProperty contenant la position à laquelle se trouvait la souris au moment où elle est pressée
             this.mousePosition = new SimpleObjectProperty<>(new Point2D(mouseEvent.getX(), mouseEvent.getY()));
-
         });
 
         mapBackground.setOnMouseDragged((MouseEvent mouseEvent) -> {

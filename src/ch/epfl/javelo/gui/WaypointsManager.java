@@ -47,7 +47,7 @@ public final class WaypointsManager {
      * @param graph                     (Graph) : le graphe du réseau routier
      * @param mapViewParametersProperty (ObjectProperty) : une propriété JavaFX contenant les paramètres de la carte affichée
      * @param wayPoints                 (List<Waypoint>) : la liste de tous les points de passage
-     *                                  //@param erreurConsumer (Consumer<String>) :
+     * @param errorConsumer (Consumer<String>) : message d'erreur sous la forme d'une chaîne de caractères
      */
     public WaypointsManager(Graph graph, ObjectProperty<MapViewParameters> mapViewParametersProperty,
                             ObservableList<Waypoint> wayPoints, Consumer<String> errorConsumer) {
@@ -58,12 +58,13 @@ public final class WaypointsManager {
         this.waypointsPane = new Pane();
 
         waypointsPane.setPickOnBounds(false);
+
         installListeners();
         recreate();
     }
 
     /**
-     * Méthode publique permettant d'obtenir le pane qui contient le dessin des marqueurs
+     * Méthode permettant d'obtenir le pane qui contient le dessin des marqueurs
      *
      * @return (Pane) : le pane
      */
@@ -94,8 +95,7 @@ public final class WaypointsManager {
         }
 
     }
-
-
+    
     /**
      * Méthode privée installant la gestion d'événement pour chaque marqueur
      *
@@ -228,5 +228,5 @@ public final class WaypointsManager {
         double corN = Ch1903.n(pWM.lon(), pWM.lat());
         return SwissBounds.containsEN(corE, corN);
     }
-    
+
 }
