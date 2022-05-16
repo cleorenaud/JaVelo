@@ -38,7 +38,7 @@ public final class JaVelo extends Application {
         Graph graph = Graph.loadFrom(Path.of("ch_west")); //TODO : a supprimer plus tard, pour les tests
         //Path cacheBasePath = Path.of("osm-cache");
         Path cacheBasePath = Path.of(".");  //TODO : a supprimer plus tard, pour tester
-        String tileServerHost = "tile.openstreetmap.org";
+        String tileServerHost = "https://tile.openstreetmap.org/";
         TileManager tileManager = new TileManager(cacheBasePath, tileServerHost);
         RouteBean routeBean = new RouteBean(new RouteComputer(graph, new CityBikeCF(graph)));
         ErrorManager errorManager = new ErrorManager();
