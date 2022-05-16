@@ -107,9 +107,10 @@ public final class TileManager {
         /**
          * Méthode publique et statique permettant de déterminer si les paramètres passés en arguments constituent une
          * identité de tuile valide
+         *
          * @param zoomLevel (int) : le niveau de zoom
-         * @param x (int) : l'index x de la tuile
-         * @param y (int) : l'index y de la tuile
+         * @param x         (int) : l'index x de la tuile
+         * @param y         (int) : l'index y de la tuile
          * @return (boolean) : true si les paramètres constituent une identité de tuile valide et false autrement
          */
         public static boolean isValid(int zoomLevel, int x, int y) {

@@ -95,7 +95,7 @@ public final class WaypointsManager {
         }
 
     }
-    
+
     /**
      * Méthode privée installant la gestion d'événement pour chaque marqueur
      *
