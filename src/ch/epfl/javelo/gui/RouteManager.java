@@ -97,12 +97,11 @@ public final class RouteManager {
      * Méthode privée permettant de replacer l'itinéraire
      */
     private void replace() {
-        // TODO: 16/05/2022 meilleure façon d'écrire le if else ?
-        if (routeBean.route() != null) {
-            route.setVisible(true);
-        } else {
+        if (routeBean.route() == null) {
             return; // Inutile de chercher la position si on ne doit pas voir la route
         }
+        route.setVisible(true);
+
         PointWebMercator debut = PointWebMercator.ofPointCh(points.get(0));
         route.setLayoutX(mapViewParametersProperty.get().viewX(debut));
         route.setLayoutY(mapViewParametersProperty.get().viewY(debut));

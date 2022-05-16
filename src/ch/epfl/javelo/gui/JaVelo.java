@@ -19,9 +19,9 @@ import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.util.function.Consumer;
 
-
 /**
  * Classe publique et instantiable qui est la classe principale de l'application
+ *
  * @author Roxanne Chevalley (339716)
  * @author Cléo Renaud (325156)
  */
@@ -53,24 +53,21 @@ public final class JaVelo extends Application {
         ElevationProfileManager profileManager = new ElevationProfileManager
                 (routeBean.elevationProfileProperty(), routeBean.highlightedPositionProperty());
 
-
-        routeBean.elevationProfileProperty().addListener((p, oldP, newP)->
-        {
-            if(newP == null && oldP != null){
+        routeBean.elevationProfileProperty().addListener((p, oldP, newP) -> {
+            if (newP == null && oldP != null) {
                 splitPane.getItems().retainAll(mapPane.pane());
             }
 
-            if(newP != null && oldP==null){
+            if (newP != null && oldP == null) {
                 splitPane.getItems().add(profileManager.pane());
                 SplitPane.setResizableWithParent(profileManager.pane(), false);
             }
-
         });
 
         routeBean.highlightedPositionProperty().bind(Bindings.
-                        when(mapPane.mousePositionOnRouteProperty().greaterThanOrEqualTo(0))
-                        .then(mapPane.mousePositionOnRouteProperty())
-                        .otherwise(profileManager.mousePositionOnProfileProperty()));
+                when(mapPane.mousePositionOnRouteProperty().greaterThanOrEqualTo(0))
+                .then(mapPane.mousePositionOnRouteProperty())
+                .otherwise(profileManager.mousePositionOnProfileProperty()));
 
         MenuBar menuBar = new MenuBar();
         Menu menu = new Menu("Fichier");
