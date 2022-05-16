@@ -13,7 +13,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 
-
 /**
  * Classe non instantiable représentant un générateur d'itinéraire au format GPX
  *
@@ -35,8 +34,7 @@ public final class GpxGenerator {
      * @return (Document) : le document GPX correspondant à l'itinéraire
      */
     public static Document createGpx(Route route, ElevationProfile elevationProfile) {
-
-        Document doc = newDocument(); // voir plus bas
+        Document doc = newDocument();
 
         Element root = doc.createElementNS(
                 "http://www.topografix.com/GPX/1/1",
@@ -84,7 +82,7 @@ public final class GpxGenerator {
     }
 
     /**
-     * Méthode permettant de créer un nouveau Document
+     * Méthode privée permettant de créer un nouveau Document
      * (donnée à l'étape 7 du projet)
      *
      * @return (Document) : un nouveau Document
@@ -141,5 +139,5 @@ public final class GpxGenerator {
             throw new Error(e); // Should never happen
         }
     }
-    
+
 }

@@ -25,7 +25,7 @@ public final class TileManager {
     private final int CAPACITY = 100;
 
     /**
-     * Constructeur de la classe TileManager
+     * Constructeur public de la classe TileManager
      *
      * @param path       (Path) : le chemin d'accès au répertoire contenant le cache disque
      * @param serverName (String) : le nom du serveur de tuile
@@ -36,14 +36,21 @@ public final class TileManager {
         this.cacheMemory = new LinkedHashMap<>(100, 2, true);
     }
 
+    /**
+     * Méthode retournant l'image correspondant à l'identité de la tuile passée en argument
+     *
+     * @param tileId (TileId) : l'identité de la tuile
+     * @return (Image) : l'image correspondante
+     * @throws IOException en cas d'erreur d'entrée/sortie
+     */
     public Image imageForTileAt(TileId tileId) throws IOException {
-        Preconditions.checkArgument(TileId.isValid(tileId));
+        Preconditions.checkArgument(TileId.isValid(tileId.zoomLevel, tileId.x(), tileId.y()));
 
         if (cacheMemory.containsKey(tileId)) {
             return cacheMemory.get(tileId);
         }
-        Image image;
 
+        Image tileImage;
         Path dir = path.resolve(String.valueOf(tileId.zoomLevel()));
         dir = dir.resolve(String.valueOf(tileId.x()));
         Path tilePath = dir.resolve(String.valueOf(tileId.y()) + ".png");
@@ -60,15 +67,21 @@ public final class TileManager {
         if (Files.exists(tilePath)) {
             File file = tilePath.toFile();
             try (InputStream inputStream = new FileInputStream(file)) {
-                image = new Image(inputStream);
-                addToCacheMemory(tileId, image);
-                return image;
+                tileImage = new Image(inputStream);
+                addToCacheMemory(tileId, tileImage);
+                return tileImage;
             }
         }
         return null;
 
     }
 
+    /**
+     * Méthode privée permettant d'ajouter l'image d'une tuile au cache mémoire
+     *
+     * @param tileId (TileId) : l'identité de la tuile
+     * @param image  (Image) : l'image de la tuile
+     */
     private void addToCacheMemory(TileId tileId, Image image) {
         if (cacheMemory.size() == CAPACITY) {
             TileId key = null;
@@ -91,10 +104,15 @@ public final class TileManager {
      */
     record TileId(int zoomLevel, int x, int y) {
 
-        public static boolean isValid(TileId tileId) {
-            int zoomLevel = tileId.zoomLevel();
-            int x = tileId.x();
-            int y = tileId.y();
+        /**
+         * Méthode publique et statique permettant de déterminer si les paramètres passés en arguments constituent une
+         * identité de tuile valide
+         * @param zoomLevel (int) : le niveau de zoom
+         * @param x (int) : l'index x de la tuile
+         * @param y (int) : l'index y de la tuile
+         * @return (boolean) : true si les paramètres constituent une identité de tuile valide et false autrement
+         */
+        public static boolean isValid(int zoomLevel, int x, int y) {
             if ((0 <= x && x <= Math.pow(2, zoomLevel) - 1) && (0 <= y && y <= Math.pow(2, zoomLevel) - 1) &&
                     (0 <= zoomLevel) && (zoomLevel <= 20)) {
                 return true;
