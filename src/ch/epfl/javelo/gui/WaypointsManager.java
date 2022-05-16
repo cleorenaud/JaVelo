@@ -55,8 +55,8 @@ public final class WaypointsManager {
         this.mapViewParametersProperty = mapViewParametersProperty;
         this.waypointsList = wayPoints;
         this.errorConsumer = errorConsumer;
-        this.waypointsPane = new Pane();
 
+        this.waypointsPane = new Pane();
         waypointsPane.setPickOnBounds(false);
 
         installListeners();
@@ -159,7 +159,6 @@ public final class WaypointsManager {
         pinsToWaypoint.clear();
 
         for (int i = 0; i < waypointsList.size(); i++) {
-
             // Dessin des marqueurs grâce aux SVG Paths
             SVGPath child1 = new SVGPath();
             child1.setContent(SON_CONTENT1);

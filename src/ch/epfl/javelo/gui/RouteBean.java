@@ -50,13 +50,14 @@ public final class RouteBean {
         this.route = new SimpleObjectProperty<>();
         this.elevationProfile = new SimpleObjectProperty<>();
         this.cacheMemory = new LinkedHashMap<>();
+
         // On calcule le meilleur itinéraire avec les points de passage actuels
         updateRoute();
     }
 
     /**
-     * Méthode privée permettant de recalculer l'itinéraire et son profil à chaque fois que la liste des points de passage
-     * est modifiée
+     * Méthode privée permettant de recalculer l'itinéraire et son profil à chaque fois que la liste des points de
+     * passage est modifiée
      */
     private void updateRoute() {
         // Lorsque la liste des points de passage ne contient pas au moins deux éléments, alors ni l'itinéraire ni
@@ -67,18 +68,15 @@ public final class RouteBean {
             return;
         }
 
-        // Pour éviter que le cache mémoire ne grossisse de manière incontrôlée on y stocke uniquement les itinéraires
-        // simples correspondant à l'itinéraire multiple courant
-
         // Pour chaque paire de Waypoints se suivant on détermine le meilleur itinéraire simple les reliant
         // Les itinéraires simples sont ensuite combinés en un unique itinéraire multiple
         List<Route> segments = new ArrayList<>();
         for (int i = 0; i < waypoints().size() - 1; i++) {
-            // On regarde dans le cache mémoire si la route entre les deux waypoints existe déjà
             List<Waypoint> subList = new ArrayList<>(2);
             subList.add(waypoints().get(i));
             subList.add(waypoints().get(i + 1));
 
+            // On regarde dans le cache mémoire si la route entre les deux waypoints existe déjà
             if (cacheMemory.get(subList) != null) {
                 // Si elle existe déjà on y accède et on l'ajoute à notre itinéraire
                 segments.add(cacheMemory.get(subList));

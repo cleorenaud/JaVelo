@@ -29,7 +29,7 @@ public final class RouteManager {
     private final Circle highlightedPos;
     private List<PointCh> points;
 
-    private static final int RADIUS = 5;
+    private final int RADIUS = 5;
 
     /**
      * Constructeur public de la classe RouteManager
