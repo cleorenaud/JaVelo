@@ -25,7 +25,8 @@ public final class BaseMapManager {
 
     private final TileManager tileManager;
     private final WaypointsManager waypointsManager;
-    private final ObjectProperty<MapViewParameters> mapViewParameters;
+    private final ObjectProperty<MapViewParameters> mapViewParametersProperty;
+
     private boolean redrawNeeded;
     private Pane mapBackground;
     private Canvas canvas;
@@ -33,19 +34,18 @@ public final class BaseMapManager {
 
     private static final int TILE_SIZE = 256;
 
-
     /**
      * Constructeur public de la classe
      *
-     * @param tileManager       (TileManager) : le gestionnaire de tuiles à utiliser pour obtenir les tuiles de la carte
-     * @param waypointsManager  (WaypointsManager) : le gestionnaire des points de passage
-     * @param mapViewParameters (ObjectProperty) : une propriété JavaFX contenant les paramètres de la carte affichée
+     * @param tileManager               (TileManager) : le gestionnaire de tuiles à utiliser pour obtenir les tuiles de la carte
+     * @param waypointsManager          (WaypointsManager) : le gestionnaire des points de passage
+     * @param mapViewParametersProperty (ObjectProperty) : une propriété JavaFX contenant les paramètres de la carte affichée
      */
     public BaseMapManager(TileManager tileManager, WaypointsManager waypointsManager,
-                          ObjectProperty<MapViewParameters> mapViewParameters) {
+                          ObjectProperty<MapViewParameters> mapViewParametersProperty) {
         this.tileManager = tileManager;
         this.waypointsManager = waypointsManager;
-        this.mapViewParameters = mapViewParameters;
+        this.mapViewParametersProperty = mapViewParametersProperty;
 
         this.mapBackground = new Pane();
         this.canvas = new Canvas();
@@ -82,7 +82,7 @@ public final class BaseMapManager {
         // On cherche à obtenir le contexte graphique du canevas puis on utilise la méthode drawImage
         GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
 
-        MapViewParameters mapViewParameters = this.mapViewParameters.get();
+        MapViewParameters mapViewParameters = this.mapViewParametersProperty.get();
         float x = mapViewParameters.x();
         float y = mapViewParameters.y();
 
@@ -102,7 +102,7 @@ public final class BaseMapManager {
         for (int i = 0; i < xTiles; i++) {
             for (int j = 0; j < yTiles; j++) {
                 try {
-                    TileManager.TileId tileId = new TileManager.TileId(this.mapViewParameters.get().zoomLevel(), indexXLeftTile + i, indexYLeftTile + j);
+                    TileManager.TileId tileId = new TileManager.TileId(this.mapViewParametersProperty.get().zoomLevel(), indexXLeftTile + i, indexYLeftTile + j);
                     Image image = tileManager.imageForTileAt(tileId);
                     graphicsContext.drawImage(image, TILE_SIZE * i - xInTile, TILE_SIZE * j - yInTile, TILE_SIZE, TILE_SIZE);
 
@@ -147,8 +147,8 @@ public final class BaseMapManager {
             float deltaX = (float) (mousePosition.get().getX() - newPosSouris.getX());
             float deltaY = (float) (mousePosition.get().getY() - newPosSouris.getY());
 
-            MapViewParameters mapViewParameters = this.mapViewParameters.get();
-            this.mapViewParameters.set(mapViewParameters.withMinXY(mapViewParameters.x() + deltaX, mapViewParameters.y() + deltaY));
+            MapViewParameters mapViewParameters = this.mapViewParametersProperty.get();
+            this.mapViewParametersProperty.set(mapViewParameters.withMinXY(mapViewParameters.x() + deltaX, mapViewParameters.y() + deltaY));
 
             mousePosition.set(newPosSouris);
         });
@@ -163,14 +163,14 @@ public final class BaseMapManager {
 
             double xTranslation = scrollEvent.getX(); // La coordonnée x de la souris par rapport au coin supérieur gauche
             double yTranslation = scrollEvent.getY(); // La coordonnée y de la souris par rapport au coin supérieur gauche
-            float xSouris = (float) (mapViewParameters.get().x() + xTranslation); // La coordonnée x de la souris
-            float ySouris = (float) (mapViewParameters.get().y() + yTranslation); // La coordonnée y de la souris
+            float xSouris = (float) (mapViewParametersProperty.get().x() + xTranslation); // La coordonnée x de la souris
+            float ySouris = (float) (mapViewParametersProperty.get().y() + yTranslation); // La coordonnée y de la souris
 
             // On effectue une première translation pour que le point sous la souris se retrouve dans le coin
             // supérieur gauche de la fenêtre
-            mapViewParameters.set(mapViewParameters.get().withMinXY(xSouris, ySouris));
+            mapViewParametersProperty.set(mapViewParametersProperty.get().withMinXY(xSouris, ySouris));
 
-            int oldZoomLevel = mapViewParameters.get().zoomLevel();
+            int oldZoomLevel = mapViewParametersProperty.get().zoomLevel();
             int newZoomLevel = oldZoomLevel + zoomDelta;
             newZoomLevel = Math2.clamp(8, newZoomLevel, 19);
 
@@ -179,7 +179,7 @@ public final class BaseMapManager {
             float newX = (float) (Math.scalb(xSouris, difZoom) - xTranslation);
             float newY = (float) (Math.scalb(ySouris, difZoom) - yTranslation);
 
-            mapViewParameters.setValue(new MapViewParameters(newZoomLevel, newX, newY));
+            mapViewParametersProperty.setValue(new MapViewParameters(newZoomLevel, newX, newY));
         });
 
     }
@@ -196,7 +196,7 @@ public final class BaseMapManager {
      * Méthode privée installant un auditeur sur l'ObjectProperty contenant nos MapViewParameters
      */
     private void installListeners() {
-        mapViewParameters.addListener(e -> redrawOnNextPulse());
+        mapViewParametersProperty.addListener(e -> redrawOnNextPulse());
         canvas.widthProperty().addListener(e -> redrawOnNextPulse());
         canvas.heightProperty().addListener(e -> redrawOnNextPulse());
     }

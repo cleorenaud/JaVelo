@@ -19,14 +19,14 @@ import java.util.Map;
  */
 public final class RouteBean {
 
-    private ObservableList<Waypoint> waypoints; // La liste (observable) des points de passage
-    private ObjectProperty<Route> route; // L'itinéraire permettant de relier les points de passage
-    private DoubleProperty highlightedPosition; // La position mise en évidence
-    private ObjectProperty<ElevationProfile> elevationProfile; // Le profil de l'itinéraire
+    private ObservableList<Waypoint> waypoints;
+    private ObjectProperty<Route> route;
+    private DoubleProperty highlightedPosition;
+    private ObjectProperty<ElevationProfile> elevationProfile;
 
     private final RouteComputer routeComputer;
-
     private LinkedHashMap<List<Waypoint>, Route> cacheMemory;
+
     private final int CAPACITY = 100;
     private final static double MAX_STEP_LENGTH = 5;
 
@@ -41,7 +41,7 @@ public final class RouteBean {
 
         // Si aucune position ne doit être mise en évidence, la propriété contenant la position contient NaN
         this.highlightedPosition = new SimpleDoubleProperty();
-        highlightedPosition.set(Double.NaN);
+        setHighlightedPosition(Double.NaN);
 
         // On installe un auditeur sur la liste contenant les points de passage pour que l'itinéraire et son profil
         // soient recalculés à chaque changement de cette liste
@@ -52,11 +52,10 @@ public final class RouteBean {
         this.cacheMemory = new LinkedHashMap<>();
         // On calcule le meilleur itinéraire avec les points de passage actuels
         updateRoute();
-
     }
 
     /**
-     * Méthode permettant de recalculer l'itinéraire et son profil à chaque fois que la liste des points de passage
+     * Méthode privée permettant de recalculer l'itinéraire et son profil à chaque fois que la liste des points de passage
      * est modifiée
      */
     private void updateRoute() {
@@ -71,22 +70,19 @@ public final class RouteBean {
         // Pour éviter que le cache mémoire ne grossisse de manière incontrôlée on y stocke uniquement les itinéraires
         // simples correspondant à l'itinéraire multiple courant
 
-
         // Pour chaque paire de Waypoints se suivant on détermine le meilleur itinéraire simple les reliant
         // Les itinéraires simples sont ensuite combinés en un unique itinéraire multiple
-        List<Route> segments = new ArrayList<>(); // La liste dans laquelle on stocke tous les itinéraires simples
-
-
+        List<Route> segments = new ArrayList<>();
         for (int i = 0; i < waypoints().size() - 1; i++) {
             // On regarde dans le cache mémoire si la route entre les deux waypoints existe déjà
             List<Waypoint> subList = new ArrayList<>(2);
             subList.add(waypoints().get(i));
-            subList.add(waypoints().get(i+1));
+            subList.add(waypoints().get(i + 1));
 
             if (cacheMemory.get(subList) != null) {
                 // Si elle existe déjà on y accède et on l'ajoute à notre itinéraire
                 segments.add(cacheMemory.get(subList));
-            } else{
+            } else {
                 // Si ce n'est pas le cas on la crée et on l'ajoute au cache mémoire et à notre itinéraire
                 // Si deux points de passage successifs sont associés au même nœud alors on ne calcule pas l'itinéraire
                 // entre ces deux points
@@ -98,15 +94,9 @@ public final class RouteBean {
             }
         }
 
-        // S'il existe au moins une paire de points de passage entre lesquels aucun itinéraire ne peut être trouvé,
-        // alors ni son l'itinéraire ni son profil n'existent
-        if (cacheMemory.containsValue(null)) {
-            route.set(null);
-            elevationProfile.set(null);
-            return;
-        }
-
-        if (segments.isEmpty()) {
+        // S'il existe au moins une paire de points de passage entre lesquels aucun itinéraire ne peut être trouvé ou si
+        // notre liste ne contient aucune route, alors ni l'itinéraire ni son profil n'existent
+        if (segments.isEmpty() || cacheMemory.containsValue(null)) {
             route.set(null);
             elevationProfile.set(null);
         } else {
@@ -114,9 +104,14 @@ public final class RouteBean {
             elevationProfile.set(ElevationProfileComputer.elevationProfile(route(), MAX_STEP_LENGTH));
         }
 
-
     }
 
+    /**
+     * Méthode privée permettant d'ajouter au cache mémoire une route entre deux points de passage
+     *
+     * @param waypoints (List<Waypoint>) : la liste contenant deux points de passage consécutifs
+     * @param route     (Route) : la route les reliant
+     */
     private void addToCacheMemory(List<Waypoint> waypoints, Route route) {
         List<Waypoint> key = null;
         if (cacheMemory.size() == CAPACITY) {
@@ -129,6 +124,12 @@ public final class RouteBean {
         cacheMemory.put(waypoints, route);
     }
 
+    /**
+     * Méthode retournant l'index du segment à la position donnée (variante de la méthode indexOfSegmentAt)
+     *
+     * @param position (double) : la position donnée
+     * @return (int) :
+     */
     public int indexOfNonEmptySegmentAt(double position) {
         int index = route().indexOfSegmentAt(position);
         for (int i = 0; i <= index; i += 1) {
@@ -198,7 +199,6 @@ public final class RouteBean {
      */
     public void setHighlightedPosition(double x) {
         this.highlightedPosition.set(x);
-
     }
 
     /**
@@ -218,4 +218,5 @@ public final class RouteBean {
     public ElevationProfile elevationProfile() {
         return elevationProfile.get();
     }
+    
 }

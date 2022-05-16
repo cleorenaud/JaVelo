@@ -46,12 +46,9 @@ public final class JaVelo extends Application {
 
         AnnotatedMapManager mapPane = new AnnotatedMapManager(graph, tileManager, routeBean, errorConsumer);
 
-
-
         SplitPane splitPane = new SplitPane();
         splitPane.setOrientation(Orientation.VERTICAL);
         splitPane.getItems().add(mapPane.pane());
-
 
         ElevationProfileManager profileManager = new ElevationProfileManager
                 (routeBean.elevationProfileProperty(), routeBean.highlightedPositionProperty());
@@ -75,7 +72,6 @@ public final class JaVelo extends Application {
                         .then(mapPane.mousePositionOnRouteProperty())
                         .otherwise(profileManager.mousePositionOnProfileProperty()));
 
-
         MenuBar menuBar = new MenuBar();
         Menu menu = new Menu("Fichier");
         menuBar.getMenus().add(menu);
@@ -93,15 +89,12 @@ public final class JaVelo extends Application {
             }
         });
 
-
         StackPane mainPane = new StackPane(splitPane, errorManager.pane(), menuBar);
         primaryStage.setMinWidth(800);
         primaryStage.setMinHeight(600);
         primaryStage.setScene(new Scene(mainPane));
         primaryStage.setTitle("JaVelo");
         primaryStage.show();
-
-
     }
 
 }
