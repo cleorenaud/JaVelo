@@ -211,7 +211,7 @@ public final class ElevationProfileManager {
             }
         }
         // le nombre de lignes horizontales à dessiner
-        double numHLines = Math.floor((maxElevation - minElevation - minElevation % posStepsY) / posStepsY) + 1;
+        double numHLines = Math.floor((maxElevation - minElevation + minElevation % posStepsY) / posStepsY);
 
         // On cherche l'écart entre la première ligne à dessiner et l'origine 
         int firstStepReal = (int) (minElevation % posStepsY);
