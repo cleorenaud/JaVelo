@@ -117,6 +117,7 @@ public final class RouteBean {
                 key = entry.getKey();
                 continue;
             }
+
             cacheMemory.remove(key);
         }
         cacheMemory.put(waypoints, route);
