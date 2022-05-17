@@ -26,20 +26,19 @@ import java.util.function.Consumer;
  */
 public final class WaypointsManager {
 
+    private final static String SON_CONTENT1 = "M-8-20C-5-14-2-7 0 0 2-7 5-14 8-20 20-40-20-40-8-20";
+    private final static String SON_CONTENT2 = "M0-23A1 1 0 000-29 1 1 0 000-23";
+    private final static double SEARCH_DISTANCE = 500;
+
     private final Graph graph;
     private final ObjectProperty<MapViewParameters> mapViewParametersProperty;
     private final ObservableList<Waypoint> waypointsList;
     private final Consumer<String> errorConsumer;
-
     private final Pane waypointsPane;
     private final Map<Group, Waypoint> pinsToWaypoint = new HashMap<>();
+
     private javafx.geometry.Point2D mousePos;
     private javafx.geometry.Point2D newPlace;
-
-    private final String SON_CONTENT1 = "M-8-20C-5-14-2-7 0 0 2-7 5-14 8-20 20-40-20-40-8-20";
-    private final String SON_CONTENT2 = "M0-23A1 1 0 000-29 1 1 0 000-23";
-
-    private final double SEARCH_DISTANCE = 500;
 
     /**
      * Constructeur public de la classe
@@ -102,6 +101,7 @@ public final class WaypointsManager {
      * @param pin (Group) : le marqueur sur lequel il faut installer la gestion d'événement
      */
     private void installHandlers(Group pin) {
+
         pin.setOnMousePressed((MouseEvent mouseEvent) -> {
             // On crée deux Point2D contenant la position à laquelle se trouvaient le marqueur
             // et la souris au moment où elle est pressée
@@ -112,33 +112,35 @@ public final class WaypointsManager {
         pin.setOnMouseDragged((MouseEvent mouseEvent) -> {
             javafx.geometry.Point2D newMousePos = new javafx.geometry.Point2D(mouseEvent.getX(), mouseEvent.getY());
             Point2D dif = newMousePos.subtract(mousePos);
-            Point2D posMarqueur = new javafx.geometry.Point2D(pin.getLayoutX(), pin.getLayoutY());
-            newPlace = dif.add(posMarqueur);
+            Point2D pinPosition = new javafx.geometry.Point2D(pin.getLayoutX(), pin.getLayoutY());
+            newPlace = dif.add(pinPosition);
             pin.setLayoutX(newPlace.getX());
             pin.setLayoutY(newPlace.getY());
 
         });
 
         pin.setOnMouseReleased((MouseEvent mouseEvent) -> { //gère le déplacement et la suppression d'un marqueur
-            Waypoint pointPassage = pinsToWaypoint.get(pin); //le wayPoint associé au marqueur
+            Waypoint waypointForPin = pinsToWaypoint.get(pin); //le wayPoint associé au marqueur
 
             if (!mouseEvent.isStillSincePress()) { //si la souris s'est déplacée on déplace le marqueur
-                PointWebMercator pWM = mapViewParametersProperty.get().pointAt
+                PointWebMercator mousePointWebMercator = mapViewParametersProperty.get().pointAt
                         (newPlace.getX(), newPlace.getY());
 
-                if (inSwissBounds(pWM)) {//vérifie que le point est dans les limites suisses
-                    PointCh newPCh = pWM.toPointCh();
-                    int i = waypointsList.indexOf(pointPassage);
-                    int node = graph.nodeClosestTo(newPCh, SEARCH_DISTANCE);
+                if (inSwissBounds(mousePointWebMercator)) {//vérifie que le point est dans les limites suisses
 
-                    if (node == -1) { // On n'a pas trouvé de nœud proche -> erreur
+                    PointCh mousePointCh = mousePointWebMercator.toPointCh();
+                    int i = waypointsList.indexOf(waypointForPin);
+                    int node = graph.nodeClosestTo(mousePointCh, SEARCH_DISTANCE);
+
+                    if (node == -1) { // On n'a pas trouvé de nœud proche donc erreur
                         nodeError();
                         replace(); // On remet le nœud là où on l'a pris au début
                     } else { // On change le waypoint
-                        Waypoint newWaypoint = new Waypoint(newPCh, node);
+                        Waypoint newWaypoint = new Waypoint(mousePointCh, node);
                         waypointsList.set(i, newWaypoint);
                         pinsToWaypoint.put(pin, newWaypoint);
                     }
+
                 } else {
                     nodeError();
                     replace(); // On remet le nœud là où on l'a pris au début
@@ -193,8 +195,8 @@ public final class WaypointsManager {
      */
     private void replace() {
         for (Node pin : waypointsPane.getChildren()) {
-            PointCh pointCh = pinsToWaypoint.get(pin).point();
-            PointWebMercator webMercator = PointWebMercator.ofPointCh(pointCh);
+            PointCh pointChOfPin = pinsToWaypoint.get(pin).point();
+            PointWebMercator webMercator = PointWebMercator.ofPointCh(pointChOfPin);
 
             pin.setLayoutX(mapViewParametersProperty.get().viewX(webMercator));
             pin.setLayoutY(mapViewParametersProperty.get().viewY(webMercator));

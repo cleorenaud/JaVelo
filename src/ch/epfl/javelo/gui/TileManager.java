@@ -18,11 +18,13 @@ import javafx.scene.image.Image;
  */
 public final class TileManager {
 
+    private final static int CAPACITY = 100;
+
     private final Path path;
     private final String serverName;
 
     private LinkedHashMap<TileId, Image> cacheMemory;
-    private final int CAPACITY = 100;
+
 
     /**
      * Constructeur public de la classe TileManager
@@ -33,7 +35,7 @@ public final class TileManager {
     public TileManager(Path path, String serverName) {
         this.path = path;
         this.serverName = serverName;
-        this.cacheMemory = new LinkedHashMap<>(100, 2, true);
+        this.cacheMemory = new LinkedHashMap<>(CAPACITY, 2, true);
     }
 
     /**

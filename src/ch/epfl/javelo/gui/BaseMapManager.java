@@ -22,16 +22,18 @@ import java.io.IOException;
  */
 public final class BaseMapManager {
 
+    private final static int TILE_SIZE = 256;
+    private final static int MIN_ZOOM = 8;
+    private final static int MAX_ZOOM = 19;
+    private final static int DELTA_TIME_ZOOM = 200;
+
     private final TileManager tileManager;
     private final WaypointsManager waypointsManager;
     private final ObjectProperty<MapViewParameters> mapViewParametersProperty;
+    private final Pane mapBackground;
+    private final Canvas canvas;
 
     private boolean redrawNeeded;
-    private Pane mapBackground;
-    private Canvas canvas;
-    private ObjectProperty<Point2D> mousePosition;
-
-    private final int TILE_SIZE = 256;
 
     /**
      * Constructeur public de la classe
@@ -45,7 +47,6 @@ public final class BaseMapManager {
         this.tileManager = tileManager;
         this.waypointsManager = waypointsManager;
         this.mapViewParametersProperty = mapViewParametersProperty;
-
         this.mapBackground = new Pane();
         this.canvas = new Canvas();
         mapBackground.getChildren().add(canvas);
@@ -124,6 +125,7 @@ public final class BaseMapManager {
      * Méthode privée installant les gestionnaires d'événements
      */
     private void installHandlers() {
+        ObjectProperty<Point2D> mousePosition = new SimpleObjectProperty<>();
         mapBackground.setOnMouseClicked((MouseEvent mouseEvent) -> {
             if (mouseEvent.isStillSincePress()) {
                 double x = mouseEvent.getX();
@@ -134,7 +136,7 @@ public final class BaseMapManager {
 
         mapBackground.setOnMousePressed((MouseEvent mouseEvent) -> {
             // On crée un ObjectProperty contenant la position à laquelle se trouvait la souris au moment où elle est pressée
-            this.mousePosition = new SimpleObjectProperty<>(new Point2D(mouseEvent.getX(), mouseEvent.getY()));
+            mousePosition.set(new Point2D(mouseEvent.getX(), mouseEvent.getY()));
         });
 
         mapBackground.setOnMouseDragged((MouseEvent mouseEvent) -> {
@@ -153,7 +155,7 @@ public final class BaseMapManager {
             if (scrollEvent.getDeltaY() == 0d) return;
             long currentTime = System.currentTimeMillis();
             if (currentTime < minScrollTime.get()) return;
-            minScrollTime.set(currentTime + 200);
+            minScrollTime.set(currentTime + DELTA_TIME_ZOOM);
             int zoomDelta = (int) Math.signum(scrollEvent.getDeltaY());
 
             double xTranslation = scrollEvent.getX(); // La coordonnée x de la souris par rapport au coin supérieur gauche
@@ -166,10 +168,9 @@ public final class BaseMapManager {
             mapViewParametersProperty.set(mapViewParametersProperty.get().withMinXY(xSouris, ySouris));
 
             int oldZoomLevel = mapViewParametersProperty.get().zoomLevel();
-            int newZoomLevel = oldZoomLevel + zoomDelta;
-            newZoomLevel = Math2.clamp(8, newZoomLevel, 19);
-
+            int newZoomLevel = Math2.clamp(MIN_ZOOM, oldZoomLevel + zoomDelta, MAX_ZOOM);;
             int difZoom = newZoomLevel - oldZoomLevel;
+
             // On effectue la deuxième translation pour que le point sous la souris se retrouve à nouveau au bon endroit
             float newX = (float) (Math.scalb(xSouris, difZoom) - xTranslation);
             float newY = (float) (Math.scalb(ySouris, difZoom) - yTranslation);
