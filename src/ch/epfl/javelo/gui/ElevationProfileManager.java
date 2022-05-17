@@ -28,6 +28,10 @@ import static java.lang.Double.NaN;
  */
 public final class ElevationProfileManager {
 
+    private final static Insets rectInsets = new Insets(10, 10, 20, 40);
+    private final static int[] POS_STEPS = {1000, 2000, 5000, 10_000, 25_000, 50_000, 100_000};
+    private final static int[] ELE_STEPS = {5, 10, 20, 25, 50, 100, 200, 250, 500, 1_000};
+
     private final BorderPane mainPane;
     private final Pane centerArea;
     private final Path grid;
@@ -51,10 +55,6 @@ public final class ElevationProfileManager {
     private double rectWidth;
     private double rectHeight;
 
-    private final static Insets rectInsets = new Insets(10, 10, 20, 40);
-    private final static int[] POS_STEPS = {1000, 2000, 5000, 10_000, 25_000, 50_000, 100_000};
-    private final static int[] ELE_STEPS = {5, 10, 20, 25, 50, 100, 200, 250, 500, 1_000};
-
     /**
      * Constructeur public de la classe
      *
@@ -69,8 +69,7 @@ public final class ElevationProfileManager {
         this.positionProperty = positionProperty;
         this.elevationProfileProperty = elevationProfileProperty;
 
-        this.mousePosition = new SimpleDoubleProperty();
-        mousePosition.set(NaN);
+        this.mousePosition = new SimpleDoubleProperty(NaN);
         this.profileRect = new SimpleObjectProperty<>();
         this.screenToWorld = new SimpleObjectProperty<>();
         this.worldToScreen = new SimpleObjectProperty<>();
@@ -217,9 +216,11 @@ public final class ElevationProfileManager {
 
         for (int i = 1; i <= numHLines; i++) {
             grid.getElements().add(
-                    new MoveTo(rectInsets.getLeft(), rectInsets.getTop() + rectHeight - (i * pixelIntY) + firstStepScreen));
+                    new MoveTo(rectInsets.getLeft(),
+                            rectInsets.getTop() + rectHeight - (i * pixelIntY) + firstStepScreen));
             grid.getElements().add(
-                    new LineTo(rectInsets.getLeft() + rectWidth, rectInsets.getTop() + rectHeight - (i * pixelIntY) + firstStepScreen));
+                    new LineTo(rectInsets.getLeft() + rectWidth,
+                            rectInsets.getTop() + rectHeight - (i * pixelIntY) + firstStepScreen));
 
             // On crée maintenant les étiquettes correspondant aux graduations
             Text label = new Text(String.valueOf((int) (i * posStepsY + minElevation - firstStepReal)));
@@ -240,13 +241,16 @@ public final class ElevationProfileManager {
         graphProfile.getPoints().clear();
         graphProfile.getPoints().add(rectInsets.getLeft());
         graphProfile.getPoints().add(rectHeight + rectInsets.getTop());
+
         for (int i = 0; i < rectWidth; i++) {
             double worldPos = screenToWorld.get().transform(i + rectInsets.getLeft(), 0).getX();
             double worldHeight = elevationProfileProperty.get().elevationAt(worldPos);
             double screenHeight = worldToScreen.get().transform(0, worldHeight).getY();
+
             graphProfile.getPoints().add((double) i + rectInsets.getLeft());
             graphProfile.getPoints().add(screenHeight);
         }
+
         graphProfile.getPoints().add(rectWidth + rectInsets.getLeft());
         graphProfile.getPoints().add(rectHeight + rectInsets.getTop());
     }
@@ -288,6 +292,7 @@ public final class ElevationProfileManager {
     private void installListeners() {
         centerArea.widthProperty().addListener(e -> redraw());
         centerArea.heightProperty().addListener(e -> redraw());
+
         elevationProfileProperty.addListener(e -> redraw());
     }
 
@@ -297,8 +302,10 @@ public final class ElevationProfileManager {
     private void installBindings() {
         highlightedPosLine.layoutXProperty().bind(Bindings.createDoubleBinding(() ->
                 worldToScreen.get().transform(positionProperty.get(), 0).getX(), positionProperty));
+
         highlightedPosLine.startYProperty().bind(Bindings.select(profileRect, "minY"));
         highlightedPosLine.endYProperty().bind(Bindings.select(profileRect, "maxY"));
+
         highlightedPosLine.visibleProperty().bind(positionProperty.greaterThanOrEqualTo(0));
     }
 
