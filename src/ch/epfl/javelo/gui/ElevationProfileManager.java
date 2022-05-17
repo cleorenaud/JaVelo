@@ -27,6 +27,9 @@ import static java.lang.Double.NaN;
  * @author Cléo Renaud (325156)
  */
 public final class ElevationProfileManager {
+    private final static Insets RECTANGLE_INSETS = new Insets(10, 10, 20, 40);
+    private final static int[] POS_STEPS = {1000, 2000, 5000, 10_000, 25_000, 50_000, 100_000};
+    private final static int[] ELE_STEPS = {5, 10, 20, 25, 50, 100, 200, 250, 500, 1_000};
 
     private final BorderPane mainPane;
     private final Pane centerArea;
@@ -51,9 +54,7 @@ public final class ElevationProfileManager {
     private double rectWidth;
     private double rectHeight;
 
-    private final static Insets rectInsets = new Insets(10, 10, 20, 40);
-    private final static int[] POS_STEPS = {1000, 2000, 5000, 10_000, 25_000, 50_000, 100_000};
-    private final static int[] ELE_STEPS = {5, 10, 20, 25, 50, 100, 200, 250, 500, 1_000};
+
 
     /**
      * Constructeur public de la classe
@@ -132,14 +133,14 @@ public final class ElevationProfileManager {
         maxElevation = elevationProfileProperty.get().maxElevation();
         minElevation = elevationProfileProperty.get().minElevation();
         length = elevationProfileProperty.get().length();
-        rectWidth = centerArea.getWidth() - rectInsets.getRight() - rectInsets.getLeft();
-        rectHeight = centerArea.getHeight() - rectInsets.getTop() - rectInsets.getBottom();
+        rectWidth = centerArea.getWidth() - RECTANGLE_INSETS.getRight() - RECTANGLE_INSETS.getLeft();
+        rectHeight = centerArea.getHeight() - RECTANGLE_INSETS.getTop() - RECTANGLE_INSETS.getBottom();
 
         writeText();
         setTransforms();
 
         if (rectWidth > 0 && rectHeight > 0) {
-            profileRect.set(new Rectangle2D(rectInsets.getLeft(), rectInsets.getTop(), rectWidth, rectHeight));
+            profileRect.set(new Rectangle2D(RECTANGLE_INSETS.getLeft(), RECTANGLE_INSETS.getTop(), rectWidth, rectHeight));
             drawProfile();
             drawLines();
         }
@@ -152,7 +153,7 @@ public final class ElevationProfileManager {
         Affine STW = new Affine();
         double slopeX = length / rectWidth;
         double slopeY = -(maxElevation - minElevation) / rectHeight;
-        STW.prependTranslation(-rectInsets.getLeft(), -rectHeight - rectInsets.getTop());
+        STW.prependTranslation(-RECTANGLE_INSETS.getLeft(), -rectHeight - RECTANGLE_INSETS.getTop());
         STW.prependScale(slopeX, slopeY);
         STW.prependTranslation(0, minElevation);
 
@@ -185,15 +186,16 @@ public final class ElevationProfileManager {
 
         for (int i = 0; i < numVLines; i++) {
             grid.getElements().add(
-                    new MoveTo(rectInsets.getLeft() + (i * pixelIntX), rectInsets.getTop()));
+                    new MoveTo(RECTANGLE_INSETS.getLeft() + (i * pixelIntX), RECTANGLE_INSETS.getTop()));
             grid.getElements().add(
-                    new LineTo(rectInsets.getLeft() + (i * pixelIntX), rectInsets.getTop() + rectHeight));
+                    new LineTo(RECTANGLE_INSETS.getLeft() + (i * pixelIntX), RECTANGLE_INSETS.getTop() + rectHeight));
+
             // On crée maintenant les étiquettes correspondant aux graduations
             Text label = new Text(String.valueOf((int) (i * posStepsX / 1000)));
             label.setFont(Font.font("Avenir", 10));
             label.textOriginProperty().set(VPos.TOP);
-            label.setX(rectInsets.getLeft() + (i * pixelIntX) - label.prefWidth(0) / 2);
-            label.setY(rectInsets.getTop() + rectHeight);
+            label.setX(RECTANGLE_INSETS.getLeft() + (i * pixelIntX) - label.prefWidth(0) / 2);
+            label.setY(RECTANGLE_INSETS.getTop() + rectHeight);
             label.getStyleClass().add("grid_label");
             label.getStyleClass().add("horizontal");
             labelsText.getChildren().add(label);
@@ -217,16 +219,16 @@ public final class ElevationProfileManager {
 
         for (int i = 1; i <= numHLines; i++) {
             grid.getElements().add(
-                    new MoveTo(rectInsets.getLeft(), rectInsets.getTop() + rectHeight - (i * pixelIntY) + firstStepScreen));
+                    new MoveTo(RECTANGLE_INSETS.getLeft(), RECTANGLE_INSETS.getTop() + rectHeight - (i * pixelIntY) + firstStepScreen));
             grid.getElements().add(
-                    new LineTo(rectInsets.getLeft() + rectWidth, rectInsets.getTop() + rectHeight - (i * pixelIntY) + firstStepScreen));
+                    new LineTo(RECTANGLE_INSETS.getLeft() + rectWidth, RECTANGLE_INSETS.getTop() + rectHeight - (i * pixelIntY) + firstStepScreen));
 
             // On crée maintenant les étiquettes correspondant aux graduations
             Text label = new Text(String.valueOf((int) (i * posStepsY + minElevation - firstStepReal)));
             label.textOriginProperty().set(VPos.CENTER);
             label.setFont(Font.font("Avenir", 10));
-            label.setX(rectInsets.getLeft() - label.prefWidth(0) - 2);
-            label.setY(rectInsets.getTop() + rectHeight - (i * pixelIntY) + firstStepScreen);
+            label.setX(RECTANGLE_INSETS.getLeft() - label.prefWidth(0) - 2);
+            label.setY(RECTANGLE_INSETS.getTop() + rectHeight - (i * pixelIntY) + firstStepScreen);
             label.getStyleClass().add("grid_label");
             label.getStyleClass().add("vertical");
             labelsText.getChildren().add(label);
@@ -238,17 +240,17 @@ public final class ElevationProfileManager {
      */
     private void drawProfile() {
         graphProfile.getPoints().clear();
-        graphProfile.getPoints().add(rectInsets.getLeft());
-        graphProfile.getPoints().add(rectHeight + rectInsets.getTop());
+        graphProfile.getPoints().add(RECTANGLE_INSETS.getLeft());
+        graphProfile.getPoints().add(rectHeight + RECTANGLE_INSETS.getTop());
         for (int i = 0; i < rectWidth; i++) {
-            double worldPos = screenToWorld.get().transform(i + rectInsets.getLeft(), 0).getX();
+            double worldPos = screenToWorld.get().transform(i + RECTANGLE_INSETS.getLeft(), 0).getX();
             double worldHeight = elevationProfileProperty.get().elevationAt(worldPos);
             double screenHeight = worldToScreen.get().transform(0, worldHeight).getY();
-            graphProfile.getPoints().add((double) i + rectInsets.getLeft());
+            graphProfile.getPoints().add((double) i + RECTANGLE_INSETS.getLeft());
             graphProfile.getPoints().add(screenHeight);
         }
-        graphProfile.getPoints().add(rectWidth + rectInsets.getLeft());
-        graphProfile.getPoints().add(rectHeight + rectInsets.getTop());
+        graphProfile.getPoints().add(rectWidth + RECTANGLE_INSETS.getLeft());
+        graphProfile.getPoints().add(rectHeight + RECTANGLE_INSETS.getTop());
     }
 
     /**

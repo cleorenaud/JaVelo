@@ -59,7 +59,7 @@ public final class RouteBean {
      * Méthode privée permettant de recalculer l'itinéraire et son profil à chaque fois que la liste des points de
      * passage est modifiée
      */
-    private void updateRoute() {
+    private void updateRoute() {;
         // Lorsque la liste des points de passage ne contient pas au moins deux éléments, alors ni l'itinéraire ni
         // son profil n'existent (les propriétés correspondantes contiennent alors null)
         if (waypoints().size() < 2) {
@@ -94,7 +94,7 @@ public final class RouteBean {
 
         // S'il existe au moins une paire de points de passage entre lesquels aucun itinéraire ne peut être trouvé ou si
         // notre liste ne contient aucune route, alors ni l'itinéraire ni son profil n'existent
-        if (segments.isEmpty() || cacheMemory.containsValue(null)) {
+        if (segments.isEmpty() || segments.contains(null)) {
             route.set(null);
             elevationProfile.set(null);
         } else {
