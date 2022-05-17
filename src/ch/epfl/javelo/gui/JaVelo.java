@@ -19,9 +19,9 @@ import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.util.function.Consumer;
 
-
 /**
  * Classe publique et instantiable qui est la classe principale de l'application
+ *
  * @author Roxanne Chevalley (339716)
  * @author Cléo Renaud (325156)
  */
@@ -38,7 +38,7 @@ public final class JaVelo extends Application {
         Graph graph = Graph.loadFrom(Path.of("ch_west")); //TODO : a supprimer plus tard, pour les tests
         //Path cacheBasePath = Path.of("osm-cache");
         Path cacheBasePath = Path.of(".");  //TODO : a supprimer plus tard, pour tester
-        String tileServerHost = "tile.openstreetmap.org";
+        String tileServerHost = "https://tile.openstreetmap.org/";
         TileManager tileManager = new TileManager(cacheBasePath, tileServerHost);
         RouteBean routeBean = new RouteBean(new RouteComputer(graph, new CityBikeCF(graph)));
         ErrorManager errorManager = new ErrorManager();
@@ -46,35 +46,28 @@ public final class JaVelo extends Application {
 
         AnnotatedMapManager mapPane = new AnnotatedMapManager(graph, tileManager, routeBean, errorConsumer);
 
-
-
         SplitPane splitPane = new SplitPane();
         splitPane.setOrientation(Orientation.VERTICAL);
         splitPane.getItems().add(mapPane.pane());
 
-
         ElevationProfileManager profileManager = new ElevationProfileManager
                 (routeBean.elevationProfileProperty(), routeBean.highlightedPositionProperty());
 
-
-        routeBean.elevationProfileProperty().addListener((p, oldP, newP)->
-        {
-            if(newP == null && oldP != null){
+        routeBean.elevationProfileProperty().addListener((p, oldP, newP) -> {
+            if (newP == null && oldP != null) {
                 splitPane.getItems().retainAll(mapPane.pane());
             }
 
-            if(newP != null && oldP==null){
+            if (newP != null && oldP == null) {
                 splitPane.getItems().add(profileManager.pane());
                 SplitPane.setResizableWithParent(profileManager.pane(), false);
             }
-
         });
 
         routeBean.highlightedPositionProperty().bind(Bindings.
-                        when(mapPane.mousePositionOnRouteProperty().greaterThanOrEqualTo(0))
-                        .then(mapPane.mousePositionOnRouteProperty())
-                        .otherwise(profileManager.mousePositionOnProfileProperty()));
-
+                when(mapPane.mousePositionOnRouteProperty().greaterThanOrEqualTo(0))
+                .then(mapPane.mousePositionOnRouteProperty())
+                .otherwise(profileManager.mousePositionOnProfileProperty()));
 
         MenuBar menuBar = new MenuBar();
         Menu menu = new Menu("Fichier");
@@ -93,15 +86,12 @@ public final class JaVelo extends Application {
             }
         });
 
-
         StackPane mainPane = new StackPane(splitPane, errorManager.pane(), menuBar);
         primaryStage.setMinWidth(800);
         primaryStage.setMinHeight(600);
         primaryStage.setScene(new Scene(mainPane));
         primaryStage.setTitle("JaVelo");
         primaryStage.show();
-
-
     }
 
 }

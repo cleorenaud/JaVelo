@@ -1,6 +1,5 @@
 package ch.epfl.javelo.routing;
 
-
 import ch.epfl.javelo.projection.PointCh;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -13,7 +12,6 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-
 
 /**
  * Classe non instantiable représentant un générateur d'itinéraire au format GPX
@@ -36,19 +34,17 @@ public final class GpxGenerator {
      * @return (Document) : le document GPX correspondant à l'itinéraire
      */
     public static Document createGpx(Route route, ElevationProfile elevationProfile) {
+        Document doc = newDocument();
 
-        Document doc = newDocument(); // voir plus bas
-
-        Element root = doc
-                .createElementNS("http://www.topografix.com/GPX/1/1",
-                        "gpx");
+        Element root = doc.createElementNS(
+                "http://www.topografix.com/GPX/1/1",
+                "gpx");
         doc.appendChild(root);
 
         root.setAttributeNS(
                 "http://www.w3.org/2001/XMLSchema-instance",
                 "xsi:schemaLocation",
-                "http://www.topografix.com/GPX/1/1 "
-                        + "http://www.topografix.com/GPX/1/1/gpx.xsd");
+                "http://www.topografix.com/GPX/1/1 " + "http://www.topografix.com/GPX/1/1/gpx.xsd");
         root.setAttribute("version", "1.1");
         root.setAttribute("creator", "JaVelo");
 
@@ -76,7 +72,6 @@ public final class GpxGenerator {
             RoutePoint routePoint = route.pointClosestTo(point);
             double elevation = elevationProfile.elevationAt(routePoint.position());
             rtept.setTextContent(String.valueOf(elevation));
-            // On définit maintenant ele comme ayant pour "parent" l'élément rtept
             rtept.appendChild(ele);
 
             // On définit maintenant rtept et ses attributs et enfant comme ayant pour "parent" l'élément rte
@@ -87,7 +82,7 @@ public final class GpxGenerator {
     }
 
     /**
-     * Méthode permettant de créer un nouveau Document
+     * Méthode privée permettant de créer un nouveau Document
      * (donnée à l'étape 7 du projet)
      *
      * @return (Document) : un nouveau Document
@@ -130,7 +125,7 @@ public final class GpxGenerator {
     }
 
     /**
-     * Méthode permettant de créer un nouveau Transformer
+     * Méthode privée permettant de créer un nouveau Transformer
      * (inspirée de la méthode newDocument() donnée à l'étape 7 du projet)
      *
      * @return (Transformer) : un nouveau Transformer
@@ -144,6 +139,5 @@ public final class GpxGenerator {
             throw new Error(e); // Should never happen
         }
     }
-
 
 }

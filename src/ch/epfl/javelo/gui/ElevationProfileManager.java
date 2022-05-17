@@ -8,11 +8,9 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.geometry.VPos;
 import javafx.scene.Group;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -30,22 +28,22 @@ import static java.lang.Double.NaN;
  */
 public final class ElevationProfileManager {
 
-    private final BorderPane mainPane; // borderPane représentant la fenêtre
-    private final Pane centerArea; // pane représentant la partie centrale de l'écran contenant le profil
-    private final Path grid; // chemin représentant la grille
-    private final Group labelsText; // groupe représentant les étiquettes de la grille
-    private final Polygon graphProfile; // polygone représentant le graphe du profil
-    private final Line highlightedPosLine; // ligne représentant la position mise en évidence
+    private final BorderPane mainPane;
+    private final Pane centerArea;
+    private final Path grid;
+    private final Group labelsText;
+    private final Polygon graphProfile;
+    private final Line highlightedPosLine;
     private final DoubleProperty mousePosition;
-    private final VBox bottomArea; // vbox représentant la partie basse de l'écran contenant les statistiques du profil
-    private final Text profileStats; // texte contenant les statistiques du profil
+    private final VBox bottomArea;
+    private final Text profileStats;
 
-    private final ObjectProperty<Rectangle2D> profileRect; // Propriété contenant le rectangle englobant le dessin du profil
-    private final ObjectProperty<Transform> screenToWorld; // Propriété contenant la transformation screenToWorld
-    private final ObjectProperty<Transform> worldToScreen; // Propriété contenant la transformation worldToScreen
+    private final ObjectProperty<Rectangle2D> profileRect;
+    private final ObjectProperty<Transform> screenToWorld;
+    private final ObjectProperty<Transform> worldToScreen;
 
-    private final ReadOnlyObjectProperty<ElevationProfile> elevationProfileProperty; // Propriété contenant le profil à afficher
-    private final ReadOnlyDoubleProperty position; // Propriété contenant la position le long du profil à mettre en évidence
+    private final ReadOnlyObjectProperty<ElevationProfile> elevationProfileProperty;
+    private final ReadOnlyDoubleProperty positionProperty;
 
     private double maxElevation;
     private double minElevation;
@@ -60,14 +58,15 @@ public final class ElevationProfileManager {
     /**
      * Constructeur public de la classe
      *
-     * @param elevationProfileProperty (ReadOnlyObjectProperty<ElevationProfile>) : une propriété contenant
-     *                                 le profil à afficher
-     * @param position                 (ReadOnlyDoubleProperty) : une propriété contenant
-     *                                 la position le long du profil à mettre en évidence
+     * @param elevationProfileProperty (ReadOnlyObjectProperty<ElevationProfile>) : une propriété contenant le profil
+     *                                 à afficher
+     * @param positionProperty         (ReadOnlyDoubleProperty) : une propriété contenant la position le long du profil
+     *                                 à mettre en évidence
      */
     public ElevationProfileManager(ReadOnlyObjectProperty<ElevationProfile> elevationProfileProperty,
-                                   ReadOnlyDoubleProperty position) {
-        this.position = position;
+                                   ReadOnlyDoubleProperty positionProperty) {
+
+        this.positionProperty = positionProperty;
         this.elevationProfileProperty = elevationProfileProperty;
 
         this.mousePosition = new SimpleDoubleProperty();
@@ -97,7 +96,6 @@ public final class ElevationProfileManager {
         installHandlers();
         installBindings();
         installListeners();
-
     }
 
     /**
@@ -121,9 +119,12 @@ public final class ElevationProfileManager {
     }
 
 
+    /**
+     * Méthode privée permettant le re-dessin de la fenêtre contenant le profil en long de l'itinéraire
+     */
     private void redraw() {
-        if(elevationProfileProperty.get() == null) {
-            worldToScreen.set(new Affine(0,0,0,0,0,0));
+        if (elevationProfileProperty.get() == null) {
+            worldToScreen.set(new Affine(0, 0, 0, 0, 0, 0));
             mousePosition.set(NaN);
             return;
         }
@@ -136,22 +137,22 @@ public final class ElevationProfileManager {
 
         writeText();
         setTransforms();
+
         if (rectWidth > 0 && rectHeight > 0) {
             profileRect.set(new Rectangle2D(rectInsets.getLeft(), rectInsets.getTop(), rectWidth, rectHeight));
             drawProfile();
             drawLines();
         }
-
     }
 
     /**
-     * Méthode permettant de créer les transformations
+     * Méthode privée permettant de créer les transformations
      */
     private void setTransforms() {
         Affine STW = new Affine();
         double slopeX = length / rectWidth;
         double slopeY = -(maxElevation - minElevation) / rectHeight;
-        STW.prependTranslation(-rectInsets.getLeft(), -rectHeight -rectInsets.getTop());
+        STW.prependTranslation(-rectInsets.getLeft(), -rectHeight - rectInsets.getTop());
         STW.prependScale(slopeX, slopeY);
         STW.prependTranslation(0, minElevation);
 
@@ -162,20 +163,15 @@ public final class ElevationProfileManager {
         } catch (NonInvertibleTransformException e) {
             e.printStackTrace();
         }
-
     }
 
     /**
-     * Méthode permettant le (re)dessin de la grille derrière le profil
+     * Méthode privée permettant le re-dessin de la grille derrière le profil
      */
     private void drawLines() {
-        // On commence par "réinitialiser" la totalité des lignes composant la grille du profil et les étiquettes
-        // représentant les graduations
         grid.getElements().clear();
         labelsText.getChildren().clear();
 
-        // Pour dessiner les lignes verticales on itère sur les valeurs de POS_STEPS pour trouver la plus petite nous
-        // permettant d'avoir au moins 25 unités JavaFX entre deux lignes verticales
         int posStepsX = POS_STEPS[POS_STEPS.length - 1];
         double pixelIntX = 0;
         for (int i : POS_STEPS) {
@@ -185,9 +181,9 @@ public final class ElevationProfileManager {
                 break;
             }
         }
-        double numVLines = Math.floor(length / posStepsX); // le nombre de lignes à dessiner (exceptée celle à l'origine)
+        double numVLines = Math.floor(length / posStepsX) + 1; // le nombre de lignes verticales à dessiner
 
-        for (int i = 0; i <= numVLines; i++) {
+        for (int i = 0; i < numVLines; i++) {
             grid.getElements().add(
                     new MoveTo(rectInsets.getLeft() + (i * pixelIntX), rectInsets.getTop()));
             grid.getElements().add(
@@ -203,29 +199,28 @@ public final class ElevationProfileManager {
             labelsText.getChildren().add(label);
         }
 
-
-        // Pour dessiner les lignes horizontales on itère sur les valeurs de ELE_STEPS pour trouver la plus petite nous
-        // permettant d'avoir au moins 50 unités JavaFX entre deux lignes horizontales
         int posStepsY = ELE_STEPS[ELE_STEPS.length - 1];
         double pixelIntY = 0;
         for (int i : ELE_STEPS) {
             pixelIntY = i * rectHeight / (maxElevation - minElevation);
-            if (pixelIntY >=25) {
+            if (pixelIntY >= 25) {
                 posStepsY = i;
                 break;
             }
         }
-        // le nombre de lignes à dessiner
+        // le nombre de lignes horizontales à dessiner
         double numHLines = Math.floor((maxElevation - minElevation - minElevation % posStepsY) / posStepsY) + 1;
 
         // On cherche l'écart entre la première ligne à dessiner et l'origine 
         int firstStepReal = (int) (minElevation % posStepsY);
         double firstStepScreen = firstStepReal * pixelIntY / posStepsY;
+
         for (int i = 1; i <= numHLines; i++) {
             grid.getElements().add(
                     new MoveTo(rectInsets.getLeft(), rectInsets.getTop() + rectHeight - (i * pixelIntY) + firstStepScreen));
             grid.getElements().add(
                     new LineTo(rectInsets.getLeft() + rectWidth, rectInsets.getTop() + rectHeight - (i * pixelIntY) + firstStepScreen));
+
             // On crée maintenant les étiquettes correspondant aux graduations
             Text label = new Text(String.valueOf((int) (i * posStepsY + minElevation - firstStepReal)));
             label.textOriginProperty().set(VPos.CENTER);
@@ -236,10 +231,11 @@ public final class ElevationProfileManager {
             label.getStyleClass().add("vertical");
             labelsText.getChildren().add(label);
         }
-
-
     }
 
+    /**
+     * Méthode privée permettant le re-dessin du profil de l'itinéraire
+     */
     private void drawProfile() {
         graphProfile.getPoints().clear();
         graphProfile.getPoints().add(rectInsets.getLeft());
@@ -255,6 +251,9 @@ public final class ElevationProfileManager {
         graphProfile.getPoints().add(rectHeight + rectInsets.getTop());
     }
 
+    /**
+     * Méthode privée permettant d'afficher les statistiques du profil à l'écran
+     */
     private void writeText() {
         double totalDescent = elevationProfileProperty.get().totalDescent();
         double totalAscent = elevationProfileProperty.get().totalAscent();
@@ -267,6 +266,9 @@ public final class ElevationProfileManager {
         profileStats.setText(text);
     }
 
+    /**
+     * Méthode privée installant les gestionnaires d'événements
+     */
     private void installHandlers() {
         centerArea.setOnMouseMoved(e -> {
             if (profileRect.get() != null && profileRect.get().contains(e.getX(), e.getY())) {
@@ -277,26 +279,27 @@ public final class ElevationProfileManager {
             }
         });
 
-        centerArea.setOnMouseExited(e -> {
-            mousePosition.set(NaN);
-        });
-
-
+        centerArea.setOnMouseExited(e -> mousePosition.set(NaN));
     }
 
+    /**
+     * Méthode privée installant les auditeurs
+     */
     private void installListeners() {
         centerArea.widthProperty().addListener(e -> redraw());
         centerArea.heightProperty().addListener(e -> redraw());
         elevationProfileProperty.addListener(e -> redraw());
-
     }
 
+    /**
+     * Méthode privée installant les liens
+     */
     private void installBindings() {
-        highlightedPosLine.layoutXProperty().bind(Bindings.createDoubleBinding(() -> 
-                        worldToScreen.get().transform(position.get(),0).getX(), position));
+        highlightedPosLine.layoutXProperty().bind(Bindings.createDoubleBinding(() ->
+                worldToScreen.get().transform(positionProperty.get(), 0).getX(), positionProperty));
         highlightedPosLine.startYProperty().bind(Bindings.select(profileRect, "minY"));
         highlightedPosLine.endYProperty().bind(Bindings.select(profileRect, "maxY"));
-        highlightedPosLine.visibleProperty().bind(position.greaterThanOrEqualTo(0));
+        highlightedPosLine.visibleProperty().bind(positionProperty.greaterThanOrEqualTo(0));
     }
 
 }

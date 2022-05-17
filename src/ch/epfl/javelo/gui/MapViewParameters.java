@@ -8,8 +8,7 @@ import ch.epfl.javelo.projection.PointWebMercator;
 import com.sun.javafx.geom.Point2D;
 
 /**
- * Enregistrement représentant les paramètres du fond de carte
- * présenté dans l'interface graphique.
+ * Enregistrement représentant les paramètres du fond de carte présenté dans l'interface graphique.
  *
  * @param zoomLevel (int) : le niveau de zoom
  * @param x         (float) : la coordonnée x du coin haut-gauche de la portion de carte affichée
@@ -19,7 +18,7 @@ import com.sun.javafx.geom.Point2D;
 public record MapViewParameters(int zoomLevel, float x, float y) {
 
     /**
-     * Méthode qui retourne les coordonnées du coin haut-gauche sous la forme d'un objet de type Point2D
+     * Méthode retournant les coordonnées du coin haut-gauche sous la forme d'un objet de type Point2D
      *
      * @return (Point2D) : les coordonnées du coin haut-gauche
      */
@@ -28,7 +27,7 @@ public record MapViewParameters(int zoomLevel, float x, float y) {
     }
 
     /**
-     * Méthode qui retourne une instance de MapViewParameters identique au récepteur,
+     * Méthode retournant une instance de MapViewParameters identique au récepteur,
      * si ce n'est que les coordonnées du coin haut-gauche sont celles passées en arguments à la méthode.
      *
      * @param x (float) : la coordonnée x du coin haut-gauche de la nouvelle instance de MapViewParameters
@@ -41,9 +40,8 @@ public record MapViewParameters(int zoomLevel, float x, float y) {
     }
 
     /**
-     * Méthode qui prend en arguments les coordonnées x et y d'un point,
-     * exprimées par rapport au coin haut-gauche de la portion de carte affichée à l'écran
-     * et retourne ce point sous la forme d'une instance de PointWebMercator
+     * Méthode prenant en arguments les coordonnées x et y d'un point, exprimées par rapport au coin haut-gauche
+     * de la portion de carte affichée à l'écran et retournant ce point sous la forme d'une instance de PointWebMercator
      *
      * @param x (double) : coordonnée x d'un point exprimée par rapport au coin haut-gauche de la portion de carte
      * @param y (double) : coordonnée y d'un point exprimée par rapport au coin haut-gauche de la portion de carte
@@ -55,7 +53,7 @@ public record MapViewParameters(int zoomLevel, float x, float y) {
     }
 
     /**
-     * Méthode qui retourne la position x correspondant au point donné en argument
+     * Méthode retournant la position x correspondant au point donné en argument
      * (exprimées par rapport au coin haut-gauche de notre portion de carte)
      *
      * @param point (PointWebMercator) : le point de référence
@@ -66,7 +64,7 @@ public record MapViewParameters(int zoomLevel, float x, float y) {
     }
 
     /**
-     * Méthode qui retourne la position y correspondant au point donné en argument
+     * Méthode retournant la position y correspondant au point donné en argument
      * (exprimées par rapport au coin haut-gauche de notre portion de carte)
      *
      * @param point (PointWeMercator) : le point de référence

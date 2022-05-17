@@ -15,7 +15,6 @@ import javafx.scene.layout.Pane;
 
 import java.io.IOException;
 
-
 /**
  * Classe publique et finale qui gère l'affichage et interaction avec le fond de carte
  *
@@ -25,30 +24,31 @@ public final class BaseMapManager {
 
     private final TileManager tileManager;
     private final WaypointsManager waypointsManager;
-    private final ObjectProperty<MapViewParameters> objectProperty;
+    private final ObjectProperty<MapViewParameters> mapViewParametersProperty;
+
     private boolean redrawNeeded;
-    private Pane pane;
+    private Pane mapBackground;
     private Canvas canvas;
     private ObjectProperty<Point2D> mousePosition;
 
-    private static final int TILE_SIZE = 256;
-
+    private final int TILE_SIZE = 256;
 
     /**
      * Constructeur public de la classe
      *
-     * @param tileManager      (TileManager) : le gestionnaire de tuiles à utiliser pour obtenir les tuiles de la carte
-     * @param waypointsManager (WaypointsManager) : le gestionnaire des points de passage
-     * @param objectProperty   (ObjectProperty) : une propriété JavaFX contenant les paramètres de la carte affichée
+     * @param tileManager               (TileManager) : le gestionnaire de tuiles à utiliser pour obtenir les tuiles de la carte
+     * @param waypointsManager          (WaypointsManager) : le gestionnaire des points de passage
+     * @param mapViewParametersProperty (ObjectProperty) : une propriété JavaFX contenant les paramètres de la carte affichée
      */
-    public BaseMapManager(TileManager tileManager, WaypointsManager waypointsManager, ObjectProperty<MapViewParameters> objectProperty) {
+    public BaseMapManager(TileManager tileManager, WaypointsManager waypointsManager,
+                          ObjectProperty<MapViewParameters> mapViewParametersProperty) {
         this.tileManager = tileManager;
         this.waypointsManager = waypointsManager;
-        this.objectProperty = objectProperty;
+        this.mapViewParametersProperty = mapViewParametersProperty;
 
-        this.pane = new Pane();
+        this.mapBackground = new Pane();
         this.canvas = new Canvas();
-        pane.getChildren().add(canvas);
+        mapBackground.getChildren().add(canvas);
 
         installListeners();
         installHandlers();
@@ -60,9 +60,6 @@ public final class BaseMapManager {
             newS.addPreLayoutPulseListener(this::redrawIfNeeded);
         });
 
-
-
-
     }
 
     /**
@@ -71,11 +68,11 @@ public final class BaseMapManager {
      * @return (Pane) : le panneau JavaFX affichant le fond de carte
      */
     public Pane pane() {
-        return pane;
+        return mapBackground;
     }
 
     /**
-     * Méthode effectuant le redessin si et seulement si l'attribut redrewNeeded est vrai
+     * Méthode privée effectuant le re-dessin si et seulement si l'attribut redrewNeeded est vrai
      */
     private void redrawIfNeeded() {
         if (!redrawNeeded) return;
@@ -84,7 +81,7 @@ public final class BaseMapManager {
         // On cherche à obtenir le contexte graphique du canevas puis on utilise la méthode drawImage
         GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
 
-        MapViewParameters mapViewParameters = objectProperty.get();
+        MapViewParameters mapViewParameters = this.mapViewParametersProperty.get();
         float x = mapViewParameters.x();
         float y = mapViewParameters.y();
 
@@ -104,22 +101,19 @@ public final class BaseMapManager {
         for (int i = 0; i < xTiles; i++) {
             for (int j = 0; j < yTiles; j++) {
                 try {
-                    TileManager.TileId tileId = new TileManager.TileId(objectProperty.get().zoomLevel(), indexXLeftTile + i, indexYLeftTile + j);
+                    TileManager.TileId tileId = new TileManager.TileId(this.mapViewParametersProperty.get().zoomLevel(), indexXLeftTile + i, indexYLeftTile + j);
                     Image image = tileManager.imageForTileAt(tileId);
                     graphicsContext.drawImage(image, TILE_SIZE * i - xInTile, TILE_SIZE * j - yInTile, TILE_SIZE, TILE_SIZE);
-
                 } catch (IOException e) {
                     // ignore
                 }
-
             }
         }
-
 
     }
 
     /**
-     * Méthode permettant de demander un redessin au prochain battement
+     * Méthode privée permettant de demander un re-dessin au prochain battement
      */
     private void redrawOnNextPulse() {
         redrawNeeded = true;
@@ -127,39 +121,35 @@ public final class BaseMapManager {
     }
 
     /**
-     * Méthode installant les gestionnaires d'événements
+     * Méthode privée installant les gestionnaires d'événements
      */
     private void installHandlers() {
-        // On doit installer trois gestionnaires d'événement gérant le glissement de la carte
-
-        pane.setOnMouseClicked((MouseEvent mouseEvent) -> {
+        mapBackground.setOnMouseClicked((MouseEvent mouseEvent) -> {
             if (mouseEvent.isStillSincePress()) {
                 double x = mouseEvent.getX();
                 double y = mouseEvent.getY();
-                waypointsManager.addWaypoint(x,y);
+                waypointsManager.addWaypoint(x, y);
             }
         });
 
-        pane.setOnMousePressed((MouseEvent mouseEvent) -> {
+        mapBackground.setOnMousePressed((MouseEvent mouseEvent) -> {
             // On crée un ObjectProperty contenant la position à laquelle se trouvait la souris au moment où elle est pressée
             this.mousePosition = new SimpleObjectProperty<>(new Point2D(mouseEvent.getX(), mouseEvent.getY()));
-
         });
 
-        pane.setOnMouseDragged((MouseEvent mouseEvent) -> {
-            // TODO: utiliser les méthodes add et substract
+        mapBackground.setOnMouseDragged((MouseEvent mouseEvent) -> {
             Point2D newPosSouris = new Point2D(mouseEvent.getX(), mouseEvent.getY());
             float deltaX = (float) (mousePosition.get().getX() - newPosSouris.getX());
             float deltaY = (float) (mousePosition.get().getY() - newPosSouris.getY());
 
-            MapViewParameters mapViewParameters = objectProperty.get();
-            objectProperty.set(mapViewParameters.withMinXY(mapViewParameters.x() + deltaX, mapViewParameters.y() + deltaY));
+            MapViewParameters mapViewParameters = this.mapViewParametersProperty.get();
+            this.mapViewParametersProperty.set(mapViewParameters.withMinXY(mapViewParameters.x() + deltaX, mapViewParameters.y() + deltaY));
 
             mousePosition.set(newPosSouris);
         });
 
         SimpleLongProperty minScrollTime = new SimpleLongProperty();
-        pane.setOnScroll((ScrollEvent scrollEvent) -> {
+        mapBackground.setOnScroll((ScrollEvent scrollEvent) -> {
             if (scrollEvent.getDeltaY() == 0d) return;
             long currentTime = System.currentTimeMillis();
             if (currentTime < minScrollTime.get()) return;
@@ -168,15 +158,14 @@ public final class BaseMapManager {
 
             double xTranslation = scrollEvent.getX(); // La coordonnée x de la souris par rapport au coin supérieur gauche
             double yTranslation = scrollEvent.getY(); // La coordonnée y de la souris par rapport au coin supérieur gauche
-            float xSouris = (float) (objectProperty.get().x() + xTranslation); // La coordonnée x de la souris
-            float ySouris = (float) (objectProperty.get().y() + yTranslation); // La coordonnée y de la souris
-
+            float xSouris = (float) (mapViewParametersProperty.get().x() + xTranslation); // La coordonnée x de la souris
+            float ySouris = (float) (mapViewParametersProperty.get().y() + yTranslation); // La coordonnée y de la souris
 
             // On effectue une première translation pour que le point sous la souris se retrouve dans le coin
             // supérieur gauche de la fenêtre
-            objectProperty.set(objectProperty.get().withMinXY(xSouris, ySouris));
+            mapViewParametersProperty.set(mapViewParametersProperty.get().withMinXY(xSouris, ySouris));
 
-            int oldZoomLevel = objectProperty.get().zoomLevel();
+            int oldZoomLevel = mapViewParametersProperty.get().zoomLevel();
             int newZoomLevel = oldZoomLevel + zoomDelta;
             newZoomLevel = Math2.clamp(8, newZoomLevel, 19);
 
@@ -185,26 +174,24 @@ public final class BaseMapManager {
             float newX = (float) (Math.scalb(xSouris, difZoom) - xTranslation);
             float newY = (float) (Math.scalb(ySouris, difZoom) - yTranslation);
 
-            objectProperty.setValue(new MapViewParameters(newZoomLevel, newX, newY));
+            mapViewParametersProperty.setValue(new MapViewParameters(newZoomLevel, newX, newY));
         });
 
-
     }
 
     /**
-     * Méthode créant les liens entre la taille de la fenêtre et la taille de notre Pane (et donc du Canvas également)
+     * Méthode privée créant les liens entre la taille de la fenêtre et la taille de notre Pane (et donc du Canvas également)
      */
     private void installBindings() {
-        canvas.widthProperty().bind(pane.widthProperty());
-        canvas.heightProperty().bind(pane.heightProperty());
-
+        canvas.widthProperty().bind(mapBackground.widthProperty());
+        canvas.heightProperty().bind(mapBackground.heightProperty());
     }
 
     /**
-     * Méthode installant un auditeur sur l'ObjectProperty contenant nos MapViewParameters
+     * Méthode privée installant un auditeur sur l'ObjectProperty contenant nos MapViewParameters
      */
     private void installListeners() {
-        objectProperty.addListener(e -> redrawOnNextPulse());
+        mapViewParametersProperty.addListener(e -> redrawOnNextPulse());
         canvas.widthProperty().addListener(e -> redrawOnNextPulse());
         canvas.heightProperty().addListener(e -> redrawOnNextPulse());
     }
