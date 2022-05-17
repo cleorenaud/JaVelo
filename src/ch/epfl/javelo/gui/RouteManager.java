@@ -20,6 +20,8 @@ import java.util.List;
  */
 public final class RouteManager {
 
+    private static final int RADIUS = 5;
+
     private final RouteBean routeBean;
     private final ReadOnlyObjectProperty<MapViewParameters> mapViewParametersProperty;
 
@@ -28,8 +30,6 @@ public final class RouteManager {
     private final Polyline route;
     private final Circle highlightedPos;
     private List<PointCh> points;
-
-    private final int RADIUS = 5;
 
     /**
      * Constructeur public de la classe RouteManager
