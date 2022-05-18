@@ -11,6 +11,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
@@ -76,7 +77,6 @@ public final class JaVelo extends Application {
         menu.getItems().add(menuItem);
         BooleanBinding routeIsNull = routeBean.routeProperty().isNull();
         menuItem.disableProperty().bind(routeIsNull);
-        menuBar.setUseSystemMenuBar(true);
 
         menuItem.setOnAction(e -> {
             try {
@@ -86,10 +86,13 @@ public final class JaVelo extends Application {
             }
         });
 
-        StackPane mainPane = new StackPane(splitPane, errorManager.pane(), menuBar);
+        StackPane mainPane = new StackPane(splitPane, errorManager.pane());
+        BorderPane borderPane = new BorderPane();
+        borderPane.setCenter(mainPane);
+        borderPane.setTop(menuBar);
         primaryStage.setMinWidth(800);
         primaryStage.setMinHeight(600);
-        primaryStage.setScene(new Scene(mainPane));
+        primaryStage.setScene(new Scene(borderPane));
         primaryStage.setTitle("JaVelo");
         primaryStage.show();
     }
