@@ -38,10 +38,13 @@ public final class JaVelo extends Application {
         //Graph graph = Graph.loadFrom(Path.of("javelo-data"));
         Graph graph = Graph.loadFrom(Path.of("ch_west")); //TODO : a supprimer plus tard, pour les tests
         //Path cacheBasePath = Path.of("osm-cache");
+
         Path cacheBasePath = Path.of(".");  //TODO : a supprimer plus tard, pour tester
         String tileServerHost = "https://tile.openstreetmap.org/";
         TileManager tileManager = new TileManager(cacheBasePath, tileServerHost);
+
         RouteBean routeBean = new RouteBean(new RouteComputer(graph, new CityBikeCF(graph)));
+
         ErrorManager errorManager = new ErrorManager();
         Consumer<String> errorConsumer = (s -> errorManager.displayError(s));
 
@@ -86,13 +89,13 @@ public final class JaVelo extends Application {
             }
         });
 
-        StackPane mainPane = new StackPane(splitPane, errorManager.pane());
-        BorderPane borderPane = new BorderPane();
-        borderPane.setCenter(mainPane);
-        borderPane.setTop(menuBar);
+        StackPane centerPane = new StackPane(splitPane, errorManager.pane());
+        BorderPane mainPane = new BorderPane(centerPane);
+        mainPane.setTop(menuBar);
+
         primaryStage.setMinWidth(800);
         primaryStage.setMinHeight(600);
-        primaryStage.setScene(new Scene(borderPane));
+        primaryStage.setScene(new Scene(mainPane));
         primaryStage.setTitle("JaVelo");
         primaryStage.show();
     }
