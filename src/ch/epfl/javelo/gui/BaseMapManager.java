@@ -22,10 +22,10 @@ import java.io.IOException;
  */
 public final class BaseMapManager {
 
-    private final static int TILE_SIZE = 256;
-    private final static int MIN_ZOOM = 8;
-    private final static int MAX_ZOOM = 19;
-    private final static int DELTA_TIME_ZOOM = 200;
+    private final static int TILE_SIZE = 256; // la taille d'une tuile OSM (en unités JavaFX)
+    private final static int MIN_ZOOM = 8; // le niveau de zoom minimal autorisé
+    private final static int MAX_ZOOM = 19; // le niveau de zoom maximal autorisé
+    private final static int DELTA_TIME_ZOOM = 200; // durée minimale (en ms) entre deux changements de niveau de zoom
 
     private final TileManager tileManager;
     private final WaypointsManager waypointsManager;
@@ -88,13 +88,11 @@ public final class BaseMapManager {
 
         int indexXLeftTile = (int) Math.floor(x / TILE_SIZE); // L'index x de la Tile supérieure gauche
         int indexYLeftTile = (int) Math.floor(y / TILE_SIZE); // L'index y de la Tile supérieure gauche
-
         int indexXRightTile = (int) Math.floor((x + canvas.getWidth()) / TILE_SIZE); // L'index x de la Tile inférieure droite
         int indexYRightTile = (int) Math.floor((y + canvas.getHeight()) / TILE_SIZE); // L'index y de la Tile inférieure droite
 
         double xTiles = indexXRightTile - indexXLeftTile + 1; // Le nombre de tiles horizontales après la Tile supérieure gauche
         double yTiles = indexYRightTile - indexYLeftTile + 1; // Le nombre de tiles verticales après la Tile supérieure gauche
-
         double xInTile = x - indexXLeftTile * TILE_SIZE; // La coordonnée x du point supérieur gauche par rapport au sommet de la Tile supérieure gauche
         double yInTile = y - indexYLeftTile * TILE_SIZE; // La coordonnée y du point supérieur gauche par rapport au sommet de la Tile supérieure gauche
 

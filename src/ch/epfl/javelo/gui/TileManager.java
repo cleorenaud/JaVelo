@@ -18,13 +18,12 @@ import javafx.scene.image.Image;
  */
 public final class TileManager {
 
-    private final static int CAPACITY = 100;
+    private final static int CAPACITY = 100; // la capacité du cache mémoire
 
     private final Path path;
     private final String serverName;
 
     private LinkedHashMap<TileId, Image> cacheMemory;
-
 
     /**
      * Constructeur public de la classe TileManager

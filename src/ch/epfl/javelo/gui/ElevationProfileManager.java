@@ -27,8 +27,12 @@ import static java.lang.Double.NaN;
  * @author Cléo Renaud (325156)
  */
 public final class ElevationProfileManager {
+
+    // distances entre le rectangle contenant le profil en long de l'itinéraire et les bords de MainPane
     private final static Insets RECTANGLE_INSETS = new Insets(10, 10, 20, 40);
+    // les différentes valeurs utilisables pour séparer les lignes verticales
     private final static int[] POS_STEPS = {1000, 2000, 5000, 10_000, 25_000, 50_000, 100_000};
+    // les différentes valeurs utilisables pour séparer les lignes horizontales
     private final static int[] ELE_STEPS = {5, 10, 20, 25, 50, 100, 200, 250, 500, 1_000};
 
     private final BorderPane mainPane;
@@ -53,8 +57,6 @@ public final class ElevationProfileManager {
     private double length;
     private double rectWidth;
     private double rectHeight;
-
-
 
     /**
      * Constructeur public de la classe

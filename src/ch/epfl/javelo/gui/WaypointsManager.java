@@ -26,9 +26,9 @@ import java.util.function.Consumer;
  */
 public final class WaypointsManager {
 
-    private final static String SON_CONTENT1 = "M-8-20C-5-14-2-7 0 0 2-7 5-14 8-20 20-40-20-40-8-20";
-    private final static String SON_CONTENT2 = "M0-23A1 1 0 000-29 1 1 0 000-23";
-    private final static double SEARCH_DISTANCE = 500;
+    private final static String SON_CONTENT1 = "M-8-20C-5-14-2-7 0 0 2-7 5-14 8-20 20-40-20-40-8-20"; // chemin du contour d'un marqueur
+    private final static String SON_CONTENT2 = "M0-23A1 1 0 000-29 1 1 0 000-23"; // chemin du cercle intérieur du marqueur
+    private final static double SEARCH_DISTANCE = 500; // rayon de recherche de nœud le plus proche autour d'un point donnée
 
     private final Graph graph;
     private final ObjectProperty<MapViewParameters> mapViewParametersProperty;

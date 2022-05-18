@@ -19,6 +19,9 @@ import java.util.Map;
  */
 public final class RouteBean {
 
+    private final int CAPACITY = 100; // capacité du cache mémoire
+    private final static double MAX_STEP_LENGTH = 5; // l'espacement maximal entre les échantillons du profil
+
     private ObservableList<Waypoint> waypoints;
     private ObjectProperty<Route> route;
     private DoubleProperty highlightedPosition;
@@ -26,9 +29,6 @@ public final class RouteBean {
 
     private final RouteComputer routeComputer;
     private LinkedHashMap<List<Waypoint>, Route> cacheMemory;
-
-    private final int CAPACITY = 100;
-    private final static double MAX_STEP_LENGTH = 5;
 
     /**
      * Constructeur public de la classe
