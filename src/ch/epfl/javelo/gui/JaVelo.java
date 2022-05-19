@@ -28,10 +28,21 @@ import java.util.function.Consumer;
  */
 public final class JaVelo extends Application {
 
+    /**
+     * Classe publique permettant le lancement de l'application JaVelo
+     *
+     * @param args (String[]) : les paramètres de la ligne de commande
+     */
     public static void main(String[] args) {
         launch(args);
     }
 
+    /**
+     * Méthode se chargeant de construire l'interface graphique finale
+     *
+     * @param primaryStage (Stage) : la scène principale de l'application
+     * @throws Exception en cas d'erreur d'entrée/sortie
+     */
     @Override
     public void start(Stage primaryStage) throws Exception {
 
