@@ -101,9 +101,11 @@ public final class BaseMapManager {
         for (int i = 0; i < xTiles; i++) {
             for (int j = 0; j < yTiles; j++) {
                 try {
-                    TileManager.TileId tileId = new TileManager.TileId(this.mapViewParametersProperty.get().zoomLevel(), indexXLeftTile + i, indexYLeftTile + j);
+                    TileManager.TileId tileId = new TileManager.TileId(
+                            mapViewParameters.zoomLevel(), indexXLeftTile + i, indexYLeftTile + j);
                     Image image = tileManager.imageForTileAt(tileId);
-                    graphicsContext.drawImage(image, TILE_SIZE * i - xInTile, TILE_SIZE * j - yInTile, TILE_SIZE, TILE_SIZE);
+                    graphicsContext.drawImage
+                            (image, TILE_SIZE * i - xInTile, TILE_SIZE * j - yInTile, TILE_SIZE, TILE_SIZE);
                 } catch (IOException e) {
                     // ignore
                 }
@@ -172,7 +174,7 @@ public final class BaseMapManager {
             mapViewParametersProperty.set(mapViewParametersProperty.get().withMinXY(xSouris, ySouris));
 
             int oldZoomLevel = mapViewParametersProperty.get().zoomLevel();
-            int newZoomLevel = Math2.clamp(MIN_ZOOM, oldZoomLevel + zoomDelta, MAX_ZOOM);;
+            int newZoomLevel = Math2.clamp(MIN_ZOOM, oldZoomLevel + zoomDelta, MAX_ZOOM);
             int difZoom = newZoomLevel - oldZoomLevel;
 
             // On effectue la deuxième translation pour que le point sous la souris se retrouve à nouveau au bon endroit

@@ -24,11 +24,11 @@ public final class RouteManager {
 
     private final RouteBean routeBean;
     private final ReadOnlyObjectProperty<MapViewParameters> mapViewParametersProperty;
-
     private final Pane routePane;
     private int currentZoom;
     private final Polyline route;
     private final Circle highlightedPos;
+
     private List<PointCh> points;
 
     /**
@@ -42,7 +42,7 @@ public final class RouteManager {
         this.routeBean = routeBean;
         this.mapViewParametersProperty = mapViewParametersProperty;
 
-        this.points = new ArrayList();
+        this.points = new ArrayList<>();
         this.routePane = new Pane();
         currentZoom = mapViewParametersProperty.get().zoomLevel();
         this.route = new Polyline();
@@ -77,7 +77,8 @@ public final class RouteManager {
             route.setVisible(false);
             highlightedPos.setVisible(false);
         } else {
-            this.points = new ArrayList(routeBean.route().points());
+
+            this.points = new ArrayList<>(routeBean.route().points());
             PointWebMercator point1 = PointWebMercator.ofPointCh(points.get(0));
             double posXInit = mapViewParametersProperty.get().viewX(point1);
             double posYInit = mapViewParametersProperty.get().viewY(point1);
@@ -88,6 +89,7 @@ public final class RouteManager {
                 double posY = mapViewParametersProperty.get().viewY(pointWM);
                 route.getPoints().add(posX - posXInit);
                 route.getPoints().add(posY - posYInit);
+
             }
             replace();
         }
@@ -102,9 +104,9 @@ public final class RouteManager {
         }
         route.setVisible(true);
 
-        PointWebMercator debut = PointWebMercator.ofPointCh(points.get(0));
-        route.setLayoutX(mapViewParametersProperty.get().viewX(debut));
-        route.setLayoutY(mapViewParametersProperty.get().viewY(debut));
+        PointWebMercator startingPoint = PointWebMercator.ofPointCh(points.get(0));
+        route.setLayoutX(mapViewParametersProperty.get().viewX(startingPoint));
+        route.setLayoutY(mapViewParametersProperty.get().viewY(startingPoint));
         replaceCircle();
     }
 
@@ -113,9 +115,7 @@ public final class RouteManager {
      */
     private void installListeners() {
         // Auditeur permettant de récréer le dessin de l'itinéraire lorsque la liste des points de passage change
-        routeBean.waypoints().addListener((ListChangeListener<? super Waypoint>) e -> {
-            recreate();
-        });
+        routeBean.waypoints().addListener((ListChangeListener<? super Waypoint>) e -> recreate());
 
         // Auditeur permettant de recréer le dessin de l'itinéraire lorsque les paramètres de la carte changent
         // ou juste le replacer si le zoom n'a pas changé
@@ -155,12 +155,11 @@ public final class RouteManager {
      * Méthode privée permettant de replacer le cercle représentant la position mise en évidence
      */
     private void replaceCircle() {
-        if (routeBean.route() != null && !Double.isNaN(routeBean.highlightedPosition())) {
-            highlightedPos.setVisible(true);
-        } else {
+        if (routeBean.route() == null || Double.isNaN(routeBean.highlightedPosition())) {
             highlightedPos.setVisible(false);
-            return; // Inutile de chercher la position si pour l'instant elle ne doit pas être visible
+            return;
         }
+        highlightedPos.setVisible(true);
         double posCircle = routeBean.highlightedPosition();
         PointWebMercator pointCircle = PointWebMercator.ofPointCh(routeBean.route().pointAt(posCircle));
 

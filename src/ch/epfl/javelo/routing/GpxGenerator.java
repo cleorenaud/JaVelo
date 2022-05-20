@@ -81,22 +81,7 @@ public final class GpxGenerator {
         return doc;
     }
 
-    /**
-     * Méthode privée permettant de créer un nouveau Document
-     * (donnée à l'étape 7 du projet)
-     *
-     * @return (Document) : un nouveau Document
-     */
-    private static Document newDocument() {
-        try {
-            return DocumentBuilderFactory
-                    .newDefaultInstance()
-                    .newDocumentBuilder()
-                    .newDocument();
-        } catch (ParserConfigurationException e) {
-            throw new Error(e); // Should never happen
-        }
-    }
+
 
     /**
      * Méthode permettant d'écrire le document GPX correspondant aux paramètres passés en argument
@@ -122,6 +107,23 @@ public final class GpxGenerator {
             throw new IOException();
         }
 
+    }
+
+    /**
+     * Méthode privée permettant de créer un nouveau Document
+     * (donnée à l'étape 7 du projet)
+     *
+     * @return (Document) : un nouveau Document
+     */
+    private static Document newDocument() {
+        try {
+            return DocumentBuilderFactory
+                    .newDefaultInstance()
+                    .newDocumentBuilder()
+                    .newDocument();
+        } catch (ParserConfigurationException e) {
+            throw new Error(e); // Should never happen
+        }
     }
 
     /**

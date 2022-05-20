@@ -56,7 +56,7 @@ public final class JaVelo extends Application {
         RouteBean routeBean = new RouteBean(new RouteComputer(graph, new CityBikeCF(graph)));
 
         ErrorManager errorManager = new ErrorManager();
-        Consumer<String> errorConsumer = (s -> errorManager.displayError(s));
+        Consumer<String> errorConsumer = (errorManager::displayError);
 
         AnnotatedMapManager mapPane = new AnnotatedMapManager(graph, tileManager, routeBean, errorConsumer);
 

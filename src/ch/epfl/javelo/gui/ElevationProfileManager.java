@@ -34,6 +34,9 @@ public final class ElevationProfileManager {
     private final static int[] POS_STEPS = {1000, 2000, 5000, 10_000, 25_000, 50_000, 100_000};
     // les différentes valeurs utilisables pour séparer les lignes horizontales
     private final static int[] ELE_STEPS = {5, 10, 20, 25, 50, 100, 200, 250, 500, 1_000};
+    private final static Font LABEL_FONT = Font.font("Avenir", 10);
+    private final static int MAX_DIS_VERT_LINES = 50;
+    private final static int MAX_DIS_HOR_LINES = 25;
 
     private final BorderPane mainPane;
     private final Pane centerArea; // panneau contenant le dessin du profil et les graduations
@@ -138,7 +141,6 @@ public final class ElevationProfileManager {
         rectWidth = centerArea.getWidth() - RECTANGLE_INSETS.getRight() - RECTANGLE_INSETS.getLeft();
         rectHeight = centerArea.getHeight() - RECTANGLE_INSETS.getTop() - RECTANGLE_INSETS.getBottom();
 
-        writeText();
         setTransforms();
 
         if (rectWidth > 0 && rectHeight > 0) {
@@ -179,7 +181,7 @@ public final class ElevationProfileManager {
         double pixelIntX = 0;
         for (int i : POS_STEPS) {
             pixelIntX = i * rectWidth / length;
-            if (pixelIntX >= 50) {
+            if (pixelIntX >= MAX_DIS_VERT_LINES) {
                 posStepsX = i;
                 break;
             }
@@ -191,8 +193,8 @@ public final class ElevationProfileManager {
             grid.getElements().add(new LineTo(RECTANGLE_INSETS.getLeft() + (i * pixelIntX), RECTANGLE_INSETS.getTop() + rectHeight));
 
             // On crée maintenant les étiquettes correspondant aux graduations
-            Text label = new Text(String.valueOf((int) (i * posStepsX / 1000)));
-            label.setFont(Font.font("Avenir", 10));
+            Text label = new Text(String.valueOf((i * posStepsX / 1000)));
+            label.setFont(LABEL_FONT);
             label.textOriginProperty().set(VPos.TOP);
             label.setX(RECTANGLE_INSETS.getLeft() + (i * pixelIntX) - label.prefWidth(0) / 2);
             label.setY(RECTANGLE_INSETS.getTop() + rectHeight);
@@ -205,7 +207,7 @@ public final class ElevationProfileManager {
         double pixelIntY = 0;
         for (int i : ELE_STEPS) {
             pixelIntY = i * rectHeight / (maxElevation - minElevation);
-            if (pixelIntY >= 25) {
+            if (pixelIntY >= MAX_DIS_HOR_LINES) {
                 posStepsY = i;
                 break;
             }
@@ -228,7 +230,7 @@ public final class ElevationProfileManager {
             // On crée maintenant les étiquettes correspondant aux graduations
             Text label = new Text(String.valueOf((int) (i * posStepsY + minElevation - firstStepReal)));
             label.textOriginProperty().set(VPos.CENTER);
-            label.setFont(Font.font("Avenir", 10));
+            label.setFont(LABEL_FONT);
             label.setX(RECTANGLE_INSETS.getLeft() - label.prefWidth(0) - 2);
             label.setY(RECTANGLE_INSETS.getTop() + rectHeight - (i * pixelIntY) + firstStepScreen);
             label.getStyleClass().add("grid_label");
@@ -294,7 +296,10 @@ public final class ElevationProfileManager {
     private void installListeners() {
         centerArea.widthProperty().addListener(e -> redraw());
         centerArea.heightProperty().addListener(e -> redraw());
-        elevationProfileProperty.addListener(e -> redraw());
+        elevationProfileProperty.addListener(e -> {
+            redraw();
+            writeText();
+        });
     }
 
     /**

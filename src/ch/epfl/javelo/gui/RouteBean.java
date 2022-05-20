@@ -9,7 +9,7 @@ import javafx.collections.ObservableList;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
+
 
 /**
  * Classe publique et finale représentant un bean JavaFX regroupant les propriétés relatives aux points de passage et à
@@ -19,16 +19,15 @@ import java.util.Map;
  */
 public final class RouteBean {
 
-    private final int CAPACITY = 100; // capacité du cache mémoire
+    private final static int CAPACITY = 100; // capacité du cache mémoire
     private final static double MAX_STEP_LENGTH = 5; // l'espacement maximal entre les échantillons du profil
 
-    private ObservableList<Waypoint> waypoints;
-    private ObjectProperty<Route> route;
-    private DoubleProperty highlightedPosition;
-    private ObjectProperty<ElevationProfile> elevationProfile;
-
+    private final ObservableList<Waypoint> waypoints;
+    private final ObjectProperty<Route> route;
+    private final DoubleProperty highlightedPosition;
+    private final ObjectProperty<ElevationProfile> elevationProfile;
     private final RouteComputer routeComputer;
-    private LinkedHashMap<List<Waypoint>, Route> cacheMemory;
+    private final LinkedHashMap<List<Waypoint>, Route> cacheMemory;
 
     /**
      * Constructeur public de la classe
@@ -49,7 +48,7 @@ public final class RouteBean {
         waypoints.addListener((ListChangeListener<? super Waypoint>) e -> updateRoute());
         this.route = new SimpleObjectProperty<>();
         this.elevationProfile = new SimpleObjectProperty<>();
-        this.cacheMemory = new LinkedHashMap<>();
+        this.cacheMemory = new LinkedHashMap<>(CAPACITY, 0.75f, true);
 
         // On calcule le meilleur itinéraire avec les points de passage actuels
         updateRoute();
@@ -59,7 +58,7 @@ public final class RouteBean {
      * Méthode privée permettant de recalculer l'itinéraire et son profil à chaque fois que la liste des points de
      * passage est modifiée
      */
-    private void updateRoute() {;
+    private void updateRoute() {
         // Lorsque la liste des points de passage ne contient pas au moins deux éléments, alors ni l'itinéraire ni
         // son profil n'existent (les propriétés correspondantes contiennent alors null)
         if (waypoints().size() < 2) {
@@ -111,14 +110,8 @@ public final class RouteBean {
      * @param route     (Route) : la route les reliant
      */
     private void addToCacheMemory(List<Waypoint> waypoints, Route route) {
-        List<Waypoint> key = null;
         if (cacheMemory.size() == CAPACITY) {
-            for (Map.Entry<List<Waypoint>, Route> entry : cacheMemory.entrySet()) {
-                key = entry.getKey();
-                continue;
-            }
-
-            cacheMemory.remove(key);
+            cacheMemory.remove(cacheMemory.keySet().iterator().next());
         }
         cacheMemory.put(waypoints, route);
     }

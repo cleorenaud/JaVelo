@@ -6,7 +6,6 @@ import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 import ch.epfl.javelo.Preconditions;
 import javafx.scene.image.Image;
@@ -19,11 +18,12 @@ import javafx.scene.image.Image;
 public final class TileManager {
 
     private final static int CAPACITY = 100; // la capacité du cache mémoire
+    private final static int MAX_ZOOM = 20;
+    private final static int MIN_ZOOM = 0;
 
     private final Path path;
     private final String serverName;
-
-    private LinkedHashMap<TileId, Image> cacheMemory;
+    private final LinkedHashMap<TileId, Image> cacheMemory;
 
     /**
      * Constructeur public de la classe TileManager
@@ -34,7 +34,7 @@ public final class TileManager {
     public TileManager(Path path, String serverName) {
         this.path = path;
         this.serverName = serverName;
-        this.cacheMemory = new LinkedHashMap<>(CAPACITY, 2, true);
+        this.cacheMemory = new LinkedHashMap<>(CAPACITY, 0.75f, true);
     }
 
     /**
@@ -54,10 +54,10 @@ public final class TileManager {
         Image tileImage;
         Path dir = path.resolve(String.valueOf(tileId.zoomLevel()));
         dir = dir.resolve(String.valueOf(tileId.x()));
-        Path tilePath = dir.resolve(String.valueOf(tileId.y()) + ".png");
+        Path tilePath = dir.resolve(tileId.y() + ".png");
         if (!Files.exists(tilePath)) {
             Files.createDirectories(dir);
-            URL u = new URL(serverName + tileId.zoomLevel() + "/" + tileId.x + "/" + tileId.y + ".png");
+            URL u = new URL(serverName + tileId.zoomLevel + "/" + tileId.x + "/" + tileId.y + ".png");
             URLConnection c = u.openConnection();
             c.setRequestProperty("User-Agent", "JaVelo");
             try (InputStream i = c.getInputStream()) {
@@ -85,15 +85,9 @@ public final class TileManager {
      */
     private void addToCacheMemory(TileId tileId, Image image) {
         if (cacheMemory.size() == CAPACITY) {
-            TileId key = null;
-            for (Map.Entry<TileId, Image> entry : cacheMemory.entrySet()) {
-                key = entry.getKey();
-                continue;
-            }
-            cacheMemory.remove(key);
+            cacheMemory.remove(cacheMemory.keySet().iterator().next());
         }
         cacheMemory.put(tileId, image);
-
     }
 
     /**
@@ -115,11 +109,8 @@ public final class TileManager {
          * @return (boolean) : true si les paramètres constituent une identité de tuile valide et false autrement
          */
         public static boolean isValid(int zoomLevel, int x, int y) {
-            if ((0 <= x && x <= Math.pow(2, zoomLevel) - 1) && (0 <= y && y <= Math.pow(2, zoomLevel) - 1) &&
-                    (0 <= zoomLevel) && (zoomLevel <= 20)) {
-                return true;
-            }
-            return false;
+            return (0 <= x && x <= Math.scalb(1, zoomLevel) - 1) && (0 <= y && y <= Math.scalb(1, zoomLevel) - 1) &&
+                    (MIN_ZOOM <= zoomLevel) && (zoomLevel <= MAX_ZOOM);
         }
     }
 
