@@ -36,14 +36,14 @@ public final class ElevationProfileManager {
     private final static int[] ELE_STEPS = {5, 10, 20, 25, 50, 100, 200, 250, 500, 1_000};
 
     private final BorderPane mainPane;
-    private final Pane centerArea;
-    private final Path grid;
-    private final Group labelsText;
+    private final Pane centerArea; // panneau contenant le dessin du profil et les graduations
+    private final Path grid; // la grille
+    private final Group labelsText; // les étiquettes de la grille
     private final Polygon graphProfile;
     private final Line highlightedPosLine;
     private final DoubleProperty mousePosition;
-    private final VBox bottomArea;
-    private final Text profileStats;
+    private final VBox bottomArea; // contient les statistiques du profil
+    private final Text profileStats; // les statistiques du profil
 
     private final ObjectProperty<Rectangle2D> profileRect;
     private final ObjectProperty<Transform> screenToWorld;
@@ -187,10 +187,8 @@ public final class ElevationProfileManager {
         double numVLines = Math.floor(length / posStepsX) + 1; // le nombre de lignes verticales à dessiner
 
         for (int i = 0; i < numVLines; i++) {
-            grid.getElements().add(
-                    new MoveTo(RECTANGLE_INSETS.getLeft() + (i * pixelIntX), RECTANGLE_INSETS.getTop()));
-            grid.getElements().add(
-                    new LineTo(RECTANGLE_INSETS.getLeft() + (i * pixelIntX), RECTANGLE_INSETS.getTop() + rectHeight));
+            grid.getElements().add(new MoveTo(RECTANGLE_INSETS.getLeft() + (i * pixelIntX), RECTANGLE_INSETS.getTop()));
+            grid.getElements().add(new LineTo(RECTANGLE_INSETS.getLeft() + (i * pixelIntX), RECTANGLE_INSETS.getTop() + rectHeight));
 
             // On crée maintenant les étiquettes correspondant aux graduations
             Text label = new Text(String.valueOf((int) (i * posStepsX / 1000)));
@@ -220,10 +218,12 @@ public final class ElevationProfileManager {
         double firstStepScreen = firstStepReal * pixelIntY / posStepsY;
 
         for (int i = 1; i <= numHLines; i++) {
-            grid.getElements().add(
-                    new MoveTo(RECTANGLE_INSETS.getLeft(), RECTANGLE_INSETS.getTop() + rectHeight - (i * pixelIntY) + firstStepScreen));
-            grid.getElements().add(
-                    new LineTo(RECTANGLE_INSETS.getLeft() + rectWidth, RECTANGLE_INSETS.getTop() + rectHeight - (i * pixelIntY) + firstStepScreen));
+            grid.getElements().add(new MoveTo(
+                    RECTANGLE_INSETS.getLeft(),
+                    RECTANGLE_INSETS.getTop() + rectHeight - (i * pixelIntY) + firstStepScreen));
+            grid.getElements().add(new LineTo(
+                    RECTANGLE_INSETS.getLeft() + rectWidth,
+                    RECTANGLE_INSETS.getTop() + rectHeight - (i * pixelIntY) + firstStepScreen));
 
             // On crée maintenant les étiquettes correspondant aux graduations
             Text label = new Text(String.valueOf((int) (i * posStepsY + minElevation - firstStepReal)));
@@ -261,12 +261,12 @@ public final class ElevationProfileManager {
     private void writeText() {
         double totalDescent = elevationProfileProperty.get().totalDescent();
         double totalAscent = elevationProfileProperty.get().totalAscent();
-        String text = String.format("Longueur : %.1f km" +
-                        "     Montée : %.0f m" +
-                        "     Descente : %.0f m" +
-                        "     Altitude : de %.0f m à %.0f m",
-                length / 1000.0, totalAscent, totalDescent, minElevation, maxElevation
-        );
+        String text = String.format(
+                "Longueur : %.1f km" +
+                "     Montée : %.0f m" +
+                "     Descente : %.0f m" +
+                "     Altitude : de %.0f m à %.0f m",
+                length / 1000.0, totalAscent, totalDescent, minElevation, maxElevation);
         profileStats.setText(text);
     }
 
@@ -274,6 +274,7 @@ public final class ElevationProfileManager {
      * Méthode privée installant les gestionnaires d'événements
      */
     private void installHandlers() {
+        // Gestionnaire du déplacement de souris
         centerArea.setOnMouseMoved(e -> {
             if (profileRect.get() != null && profileRect.get().contains(e.getX(), e.getY())) {
                 Point2D newMousePosition = screenToWorld.get().transform(e.getX(), e.getY());
@@ -283,6 +284,7 @@ public final class ElevationProfileManager {
             }
         });
 
+        // Gestionnaire de souris hors du cadre
         centerArea.setOnMouseExited(e -> mousePosition.set(NaN));
     }
 

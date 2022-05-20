@@ -26,14 +26,18 @@ import java.util.function.Consumer;
  */
 public final class WaypointsManager {
 
-    private final static String SON_CONTENT1 = "M-8-20C-5-14-2-7 0 0 2-7 5-14 8-20 20-40-20-40-8-20"; // chemin du contour d'un marqueur
-    private final static String SON_CONTENT2 = "M0-23A1 1 0 000-29 1 1 0 000-23"; // chemin du cercle intérieur du marqueur
-    private final static double SEARCH_DISTANCE = 500; // rayon de recherche de nœud le plus proche autour d'un point donnée
+    // chemin du contour d'un marqueur
+    private final static String PIN_OUT_CONTENT = "M-8-20C-5-14-2-7 0 0 2-7 5-14 8-20 20-40-20-40-8-20";
+    // chemin du cercle intérieur du marqueur
+    private final static String PIN_IN_CONTENT = "M0-23A1 1 0 000-29 1 1 0 000-23";
+    // rayon de recherche de nœud le plus proche autour d'un point donnée
+    private final static double SEARCH_DISTANCE = 500;
 
     private final Graph graph;
     private final ObjectProperty<MapViewParameters> mapViewParametersProperty;
     private final ObservableList<Waypoint> waypointsList;
     private final Consumer<String> errorConsumer;
+
     private final Pane waypointsPane;
     private final Map<Group, Waypoint> pinsToWaypoint = new HashMap<>();
 
@@ -50,6 +54,7 @@ public final class WaypointsManager {
      */
     public WaypointsManager(Graph graph, ObjectProperty<MapViewParameters> mapViewParametersProperty,
                             ObservableList<Waypoint> wayPoints, Consumer<String> errorConsumer) {
+
         this.graph = graph;
         this.mapViewParametersProperty = mapViewParametersProperty;
         this.waypointsList = wayPoints;
@@ -108,7 +113,7 @@ public final class WaypointsManager {
             this.mousePos = new javafx.geometry.Point2D(mouseEvent.getX(), mouseEvent.getY());
         });
 
-        //déplace le marqueur sans déplacer le wayPoint
+        // Déplace le marqueur sans déplacer le wayPoint
         pin.setOnMouseDragged((MouseEvent mouseEvent) -> {
             javafx.geometry.Point2D newMousePos = new javafx.geometry.Point2D(mouseEvent.getX(), mouseEvent.getY());
             Point2D dif = newMousePos.subtract(mousePos);
@@ -119,14 +124,14 @@ public final class WaypointsManager {
 
         });
 
-        pin.setOnMouseReleased((MouseEvent mouseEvent) -> { //gère le déplacement et la suppression d'un marqueur
-            Waypoint waypointForPin = pinsToWaypoint.get(pin); //le wayPoint associé au marqueur
+        pin.setOnMouseReleased((MouseEvent mouseEvent) -> { // Gère le déplacement et la suppression d'un marqueur
+            Waypoint waypointForPin = pinsToWaypoint.get(pin); // Le wayPoint associé au marqueur
 
-            if (!mouseEvent.isStillSincePress()) { //si la souris s'est déplacée on déplace le marqueur
+            if (!mouseEvent.isStillSincePress()) { // Si la souris s'est déplacée on déplace le marqueur
                 PointWebMercator mousePointWebMercator = mapViewParametersProperty.get().pointAt
                         (newPlace.getX(), newPlace.getY());
 
-                if (inSwissBounds(mousePointWebMercator)) {//vérifie que le point est dans les limites suisses
+                if (inSwissBounds(mousePointWebMercator)) { // Vérifie que le point est dans les limites suisses
 
                     PointCh mousePointCh = mousePointWebMercator.toPointCh();
                     int i = waypointsList.indexOf(waypointForPin);
@@ -162,13 +167,13 @@ public final class WaypointsManager {
 
         for (int i = 0; i < waypointsList.size(); i++) {
             // Dessin des marqueurs grâce aux SVG Paths
-            SVGPath child1 = new SVGPath();
-            child1.setContent(SON_CONTENT1);
-            child1.getStyleClass().add("pin_outside");
-            SVGPath child2 = new SVGPath();
-            child2.getStyleClass().add("pin_inside");
-            child2.setContent(SON_CONTENT2);
-            Group pin = new Group(child1, child2);
+            SVGPath pinOut = new SVGPath();
+            pinOut.setContent(PIN_OUT_CONTENT);
+            pinOut.getStyleClass().add("pin_outside");
+            SVGPath pinIn = new SVGPath();
+            pinIn.getStyleClass().add("pin_inside");
+            pinIn.setContent(PIN_IN_CONTENT);
+            Group pin = new Group(pinOut, pinIn);
             pin.getStyleClass().add("pin");
 
             // Coloriage des marqueurs

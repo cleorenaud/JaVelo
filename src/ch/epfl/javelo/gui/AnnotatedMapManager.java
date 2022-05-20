@@ -20,10 +20,10 @@ import java.util.function.Consumer;
  */
 public final class AnnotatedMapManager {
 
-    private final RouteBean routeBean; // Le bean de l'itinéraire
+    private final RouteBean routeBean; // Bean de l'itinéraire
 
-    private final StackPane annotatedMap; // Le panneau contenant la carte annotée
-    private final DoubleProperty mousePositionOnRoute; // Propriété contenant la position du pointeur de la souris le long de l'itinéraire
+    private final StackPane annotatedMap; // Panneau contenant la carte annotée
+    private final DoubleProperty mousePositionOnRoute; // Position du pointeur de la souris le long de l'itinéraire
     private final ObjectProperty<MapViewParameters> mapViewParametersProperty;
 
     /**
@@ -35,7 +35,7 @@ public final class AnnotatedMapManager {
         MapViewParameters mapViewParameters =
                 new MapViewParameters(12, 543200, 370650);
 
-        this.mapViewParametersProperty =  new SimpleObjectProperty<>(mapViewParameters);
+        this.mapViewParametersProperty = new SimpleObjectProperty<>(mapViewParameters);
 
         ObservableList<Waypoint> waypoints = routeBean.waypoints();
         WaypointsManager waypointsManager = new WaypointsManager(graph, mapViewParametersProperty, waypoints, errorConsumer);
@@ -73,33 +73,35 @@ public final class AnnotatedMapManager {
      * Méthode installant les gestionnaires d'événement
      */
     private void installHandler() {
+        // Gestionnaire de déplacement de la souris
         annotatedMap.setOnMouseMoved(e -> {
-            if(routeBean.route()!= null){
-                PointWebMercator PWMMouse= mapViewParametersProperty.get().pointAt(e.getX(), e.getY());
+            if (routeBean.route() != null) {
+                PointWebMercator PWMMouse = mapViewParametersProperty.get().pointAt(e.getX(), e.getY());
                 double east = Ch1903.e(PWMMouse.lon(), PWMMouse.lat());
                 double north = Ch1903.n(PWMMouse.lon(), PWMMouse.lat());
-                if(SwissBounds.containsEN(east,north)){
-                    PointCh pointMouse  = PWMMouse.toPointCh();
+                if (SwissBounds.containsEN(east, north)) {
+                    PointCh pointMouse = PWMMouse.toPointCh();
                     RoutePoint pointClosestToMouse = routeBean.route().pointClosestTo(pointMouse);
                     PointCh closestMousePointCh = pointClosestToMouse.point();
                     PointWebMercator PWMClosest = PointWebMercator.ofPointCh(closestMousePointCh);
-                    double deltaX = mapViewParametersProperty.get().viewX(PWMMouse)-
+                    double deltaX = mapViewParametersProperty.get().viewX(PWMMouse) -
                             mapViewParametersProperty.get().viewX(PWMClosest);
-                    double deltaY = mapViewParametersProperty.get().viewY(PWMMouse)-
+                    double deltaY = mapViewParametersProperty.get().viewY(PWMMouse) -
                             mapViewParametersProperty.get().viewY(PWMClosest);
-                    if (Math2.norm(deltaX, deltaY)<=15){
+                    if (Math2.norm(deltaX, deltaY) <= 15) {
                         mousePositionOnRoute.set(pointClosestToMouse.position());
-                    }else{
+                    } else {
                         mousePositionOnRoute.set(Double.NaN);
                     }
-                }else{
+                } else {
                     mousePositionOnRoute.set(Double.NaN);
                 }
-            }else{
+            } else {
                 mousePositionOnRoute.set(Double.NaN);
             }
         });
 
+        // Gestionnaire lorsque la souris sort du cadre
         annotatedMap.setOnMouseExited(e -> {
             mousePositionOnRoute.set(Double.NaN);
         });

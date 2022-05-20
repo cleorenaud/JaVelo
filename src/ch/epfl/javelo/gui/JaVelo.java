@@ -49,7 +49,6 @@ public final class JaVelo extends Application {
         //Graph graph = Graph.loadFrom(Path.of("javelo-data"));
         Graph graph = Graph.loadFrom(Path.of("ch_west")); //TODO : a supprimer plus tard, pour les tests
         //Path cacheBasePath = Path.of("osm-cache");
-
         Path cacheBasePath = Path.of(".");  //TODO : a supprimer plus tard, pour tester
         String tileServerHost = "https://tile.openstreetmap.org/";
         TileManager tileManager = new TileManager(cacheBasePath, tileServerHost);
@@ -61,6 +60,7 @@ public final class JaVelo extends Application {
 
         AnnotatedMapManager mapPane = new AnnotatedMapManager(graph, tileManager, routeBean, errorConsumer);
 
+        // SplitPane contenant la carte en haut et le profil en long de l'itinéraire en bas
         SplitPane splitPane = new SplitPane();
         splitPane.setOrientation(Orientation.VERTICAL);
         splitPane.getItems().add(mapPane.pane());
@@ -84,6 +84,7 @@ public final class JaVelo extends Application {
                 .then(mapPane.mousePositionOnRouteProperty())
                 .otherwise(profileManager.mousePositionOnProfileProperty()));
 
+        // Création d'un menu permettant d'exporter l'itinéraire affiché sous forme de fichier GPX
         MenuBar menuBar = new MenuBar();
         Menu menu = new Menu("Fichier");
         menuBar.getMenus().add(menu);

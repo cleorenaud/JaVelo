@@ -20,7 +20,7 @@ import java.util.List;
  */
 public final class RouteManager {
 
-    private static final int RADIUS = 5; // raton du disque représentant la position mise en évidence
+    private static final int RADIUS = 5; // rayon du disque représentant la position mise en évidence
 
     private final RouteBean routeBean;
     private final ReadOnlyObjectProperty<MapViewParameters> mapViewParametersProperty;

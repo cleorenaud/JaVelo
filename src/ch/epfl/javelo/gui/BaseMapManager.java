@@ -44,6 +44,7 @@ public final class BaseMapManager {
      */
     public BaseMapManager(TileManager tileManager, WaypointsManager waypointsManager,
                           ObjectProperty<MapViewParameters> mapViewParametersProperty) {
+
         this.tileManager = tileManager;
         this.waypointsManager = waypointsManager;
         this.mapViewParametersProperty = mapViewParametersProperty;
@@ -123,6 +124,8 @@ public final class BaseMapManager {
      * Méthode privée installant les gestionnaires d'événements
      */
     private void installHandlers() {
+
+        // Gestionnaire pour le clic de souris : ajoute un waypoint
         ObjectProperty<Point2D> mousePosition = new SimpleObjectProperty<>();
         mapBackground.setOnMouseClicked((MouseEvent mouseEvent) -> {
             if (mouseEvent.isStillSincePress()) {
@@ -132,11 +135,13 @@ public final class BaseMapManager {
             }
         });
 
+        // Gestionnaire pour le déplacement de la carte
         mapBackground.setOnMousePressed((MouseEvent mouseEvent) -> {
             // On crée un ObjectProperty contenant la position à laquelle se trouvait la souris au moment où elle est pressée
             mousePosition.set(new Point2D(mouseEvent.getX(), mouseEvent.getY()));
         });
 
+        // Gestionnaire pour le déplacement de la carte
         mapBackground.setOnMouseDragged((MouseEvent mouseEvent) -> {
             Point2D newPosSouris = new Point2D(mouseEvent.getX(), mouseEvent.getY());
             float deltaX = (float) (mousePosition.get().getX() - newPosSouris.getX());
@@ -148,6 +153,7 @@ public final class BaseMapManager {
             mousePosition.set(newPosSouris);
         });
 
+        // Gestionnaire pour le zoom de la carte
         SimpleLongProperty minScrollTime = new SimpleLongProperty();
         mapBackground.setOnScroll((ScrollEvent scrollEvent) -> {
             if (scrollEvent.getDeltaY() == 0d) return;
@@ -187,7 +193,7 @@ public final class BaseMapManager {
     }
 
     /**
-     * Méthode privée installant un auditeur sur l'ObjectProperty contenant nos MapViewParameters
+     * Méthode privée installant un auditeur sur l'ObjectProperty contenant nos MapViewParameters et sur la taille du Canvas
      */
     private void installListeners() {
         mapViewParametersProperty.addListener(e -> redrawOnNextPulse());
