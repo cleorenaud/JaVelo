@@ -45,7 +45,6 @@ public final class ElevationProfileManager {
     private final Polygon graphProfile;
     private final Line highlightedPosLine;
     private final DoubleProperty mousePosition;
-    private final VBox bottomArea; // contient les statistiques du profil
     private final Text profileStats; // les statistiques du profil
 
     private final ObjectProperty<Rectangle2D> profileRect;
@@ -82,7 +81,7 @@ public final class ElevationProfileManager {
         this.worldToScreen = new SimpleObjectProperty<>();
 
         this.profileStats = new Text();
-        this.bottomArea = new VBox(profileStats);
+        VBox bottomArea = new VBox(profileStats);
         bottomArea.setId("profile_data");
 
         this.highlightedPosLine = new Line();
