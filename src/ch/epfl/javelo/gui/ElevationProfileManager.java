@@ -177,41 +177,22 @@ public final class ElevationProfileManager {
         grid.getElements().clear();
         labelsText.getChildren().clear();
 
-        int posStepsX = POS_STEPS[POS_STEPS.length - 1];
-        double pixelIntX = 0;
-        for (int i : POS_STEPS) {
-            pixelIntX = i * rectWidth / length;
-            if (pixelIntX >= MAX_DIS_VERT_LINES) {
-                posStepsX = i;
-                break;
-            }
-        }
+        int posStepsX = getStep(POS_STEPS, length, rectWidth, MAX_DIS_VERT_LINES);
+        double pixelIntX = posStepsX * rectWidth/length;
         double numVLines = Math.floor(length / posStepsX) + 1; // le nombre de lignes verticales à dessiner
 
         for (int i = 0; i < numVLines; i++) {
-            grid.getElements().add(new MoveTo(RECTANGLE_INSETS.getLeft() + (i * pixelIntX), RECTANGLE_INSETS.getTop()));
-            grid.getElements().add(new LineTo(RECTANGLE_INSETS.getLeft() + (i * pixelIntX), RECTANGLE_INSETS.getTop() + rectHeight));
+            grid.getElements().add(new MoveTo(RECTANGLE_INSETS.getLeft() + (i * pixelIntX),
+                            RECTANGLE_INSETS.getTop()));
+            grid.getElements().add(new LineTo(RECTANGLE_INSETS.getLeft() + (i * pixelIntX),
+                            RECTANGLE_INSETS.getTop() + rectHeight));
 
             // On crée maintenant les étiquettes correspondant aux graduations
-            Text label = new Text(String.valueOf((i * posStepsX / 1000)));
-            label.setFont(LABEL_FONT);
-            label.textOriginProperty().set(VPos.TOP);
-            label.setX(RECTANGLE_INSETS.getLeft() + (i * pixelIntX) - label.prefWidth(0) / 2);
-            label.setY(RECTANGLE_INSETS.getTop() + rectHeight);
-            label.getStyleClass().add("grid_label");
-            label.getStyleClass().add("horizontal");
-            labelsText.getChildren().add(label);
+            labels(i, posStepsX, 0, 1000, VPos.TOP, (i * pixelIntX),0, "horizontal");
         }
 
-        int posStepsY = ELE_STEPS[ELE_STEPS.length - 1];
-        double pixelIntY = 0;
-        for (int i : ELE_STEPS) {
-            pixelIntY = i * rectHeight / (maxElevation - minElevation);
-            if (pixelIntY >= MAX_DIS_HOR_LINES) {
-                posStepsY = i;
-                break;
-            }
-        }
+        int posStepsY = getStep(ELE_STEPS, (maxElevation-minElevation), rectHeight, MAX_DIS_HOR_LINES);
+        double pixelIntY = posStepsY * rectHeight / (maxElevation - minElevation);
         // le nombre de lignes horizontales à dessiner
         double numHLines = Math.floor((maxElevation - minElevation + minElevation % posStepsY) / posStepsY);
 
@@ -220,22 +201,15 @@ public final class ElevationProfileManager {
         double firstStepScreen = firstStepReal * pixelIntY / posStepsY;
 
         for (int i = 1; i <= numHLines; i++) {
-            grid.getElements().add(new MoveTo(
-                    RECTANGLE_INSETS.getLeft(),
+            grid.getElements().add(new MoveTo(RECTANGLE_INSETS.getLeft(),
                     RECTANGLE_INSETS.getTop() + rectHeight - (i * pixelIntY) + firstStepScreen));
-            grid.getElements().add(new LineTo(
-                    RECTANGLE_INSETS.getLeft() + rectWidth,
+            grid.getElements().add(new LineTo(RECTANGLE_INSETS.getLeft() + rectWidth,
                     RECTANGLE_INSETS.getTop() + rectHeight - (i * pixelIntY) + firstStepScreen));
 
             // On crée maintenant les étiquettes correspondant aux graduations
-            Text label = new Text(String.valueOf((int) (i * posStepsY + minElevation - firstStepReal)));
-            label.textOriginProperty().set(VPos.CENTER);
-            label.setFont(LABEL_FONT);
-            label.setX(RECTANGLE_INSETS.getLeft() - label.prefWidth(0) - 2);
-            label.setY(RECTANGLE_INSETS.getTop() + rectHeight - (i * pixelIntY) + firstStepScreen);
-            label.getStyleClass().add("grid_label");
-            label.getStyleClass().add("vertical");
-            labelsText.getChildren().add(label);
+            double deltaY = - (i * pixelIntY) + firstStepScreen;
+            double deltaLabel = minElevation-firstStepReal;
+            labels(i, posStepsY,deltaLabel, 1, VPos.CENTER, 0, deltaY, "vertical");
         }
     }
 
@@ -298,7 +272,9 @@ public final class ElevationProfileManager {
         centerArea.heightProperty().addListener(e -> redraw());
         elevationProfileProperty.addListener(e -> {
             redraw();
-            writeText();
+            if(elevationProfileProperty.isNotNull().get()){
+                writeText();
+            }
         });
     }
 
@@ -311,6 +287,29 @@ public final class ElevationProfileManager {
         highlightedPosLine.startYProperty().bind(Bindings.select(profileRect, "minY"));
         highlightedPosLine.endYProperty().bind(Bindings.select(profileRect, "maxY"));
         highlightedPosLine.visibleProperty().bind(positionProperty.greaterThanOrEqualTo(0));
+    }
+
+    private int getStep(int [] steps, double realLength, double screenLength, int max){
+        for (int i : steps) {
+            double pixelIntX = i * screenLength / realLength;
+            if (pixelIntX >= max) {
+                return i;
+            }
+        }
+        return steps[steps.length-1];
+    }
+
+    private void labels(int i, int step, double deltaLabel, int fact, VPos pos, double deltaX, double deltaY, String orientation){
+        Text label = new Text(String.valueOf((int) ((i * step + deltaLabel)/fact) ));
+        label.setFont(LABEL_FONT);
+        label.textOriginProperty().set(pos);
+        double deltaX2 = orientation.equals("horizontal") ?
+                - label.prefWidth(0) / 2 : - label.prefWidth(0) - 2;
+        label.setX(RECTANGLE_INSETS.getLeft() +  deltaX + deltaX2);
+        label.setY(RECTANGLE_INSETS.getTop() + rectHeight + deltaY);
+        label.getStyleClass().add("grid_label");
+        label.getStyleClass().add(orientation);
+        labelsText.getChildren().add(label);
     }
 
 }
