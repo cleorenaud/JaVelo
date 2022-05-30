@@ -102,9 +102,7 @@ public final class AnnotatedMapManager {
         });
 
         // Gestionnaire lorsque la souris sort du cadre
-        annotatedMap.setOnMouseExited(e -> {
-            mousePositionOnRoute.set(Double.NaN);
-        });
+        annotatedMap.setOnMouseExited(e -> mousePositionOnRoute.set(Double.NaN));
     }
 
 }

@@ -37,6 +37,7 @@ public final class ElevationProfileManager {
     private final static Font LABEL_FONT = Font.font("Avenir", 10);
     private final static int MAX_DIS_VERT_LINES = 50;
     private final static int MAX_DIS_HOR_LINES = 25;
+    private final static int KM_TO_M_RATIO = 1000;
 
     private final BorderPane mainPane;
     private final Pane centerArea; // panneau contenant le dessin du profil et les graduations
@@ -187,7 +188,7 @@ public final class ElevationProfileManager {
                             RECTANGLE_INSETS.getTop() + rectHeight));
 
             // On crée maintenant les étiquettes correspondant aux graduations
-            labels(i, posStepsX, 0, 1000, VPos.TOP, (i * pixelIntX),0, "horizontal");
+            labels(i, posStepsX, 0, KM_TO_M_RATIO, VPos.TOP, (i * pixelIntX),0, "horizontal");
         }
 
         int posStepsY = getStep(ELE_STEPS, (maxElevation-minElevation), rectHeight, MAX_DIS_HOR_LINES);
@@ -241,7 +242,7 @@ public final class ElevationProfileManager {
                 "     Montée : %.0f m" +
                 "     Descente : %.0f m" +
                 "     Altitude : de %.0f m à %.0f m",
-                length / 1000.0, totalAscent, totalDescent, minElevation, maxElevation);
+                length / KM_TO_M_RATIO, totalAscent, totalDescent, minElevation, maxElevation);
         profileStats.setText(text);
     }
 
