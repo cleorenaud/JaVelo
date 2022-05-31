@@ -46,10 +46,8 @@ public final class JaVelo extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        //Graph graph = Graph.loadFrom(Path.of("javelo-data"));
-        Graph graph = Graph.loadFrom(Path.of("ch_west")); //TODO : a supprimer plus tard, pour les tests
-        //Path cacheBasePath = Path.of("osm-cache");
-        Path cacheBasePath = Path.of(".");  //TODO : a supprimer plus tard, pour tester
+        Graph graph = Graph.loadFrom(Path.of("javelo-data"));
+        Path cacheBasePath = Path.of("osm-cache");
         String tileServerHost = "https://tile.openstreetmap.org/";
         TileManager tileManager = new TileManager(cacheBasePath, tileServerHost);
 
