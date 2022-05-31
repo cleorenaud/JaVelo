@@ -22,10 +22,8 @@ public final class ErrorManager {
     private final static double FADE_MAX = 0.8;
     private final static double FADE_MIN = 0;
 
-    // Le panneau contient une box dans laquelle se trouve le message d'erreur
     private final VBox errorVbox;
     private final Text errorMessage;
-    // Transitions gérant l'animation de l'apparition/disparition du panneau
     private final SequentialTransition fullTransition;
 
     /**
@@ -52,7 +50,7 @@ public final class ErrorManager {
     /**
      * Méthode retournant le panneau sur lequel les messages d'erreurs apparaissent
      *
-     * @return BorderPane : le panneau
+     * @return Pane : le panneau
      */
     public Pane pane() {
         return errorVbox;

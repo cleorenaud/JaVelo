@@ -61,7 +61,7 @@ public final class RouteManager {
     /**
      * Méthode publique permettant d'obtenir le pane qui contient le dessin de l'itinéraire
      *
-     * @return (Pane) : le pane
+     * @return (Pane) : le panneau contenant la route
      */
     public Pane pane() {
         return routePane;
@@ -111,6 +111,22 @@ public final class RouteManager {
     }
 
     /**
+     * Méthode privée permettant de replacer le cercle représentant la position mise en évidence
+     */
+    private void replaceCircle() {
+        if (routeBean.route() == null || Double.isNaN(routeBean.highlightedPosition())) {
+            highlightedPos.setVisible(false);
+            return;
+        }
+        highlightedPos.setVisible(true);
+        double posCircle = routeBean.highlightedPosition();
+        PointWebMercator pointCircle = PointWebMercator.ofPointCh(routeBean.route().pointAt(posCircle));
+
+        highlightedPos.setLayoutX(mapViewParametersProperty.get().viewX(pointCircle));
+        highlightedPos.setLayoutY(mapViewParametersProperty.get().viewY(pointCircle));
+    }
+
+    /**
      * Méthode privée s'occupant d'ajouter les auditeurs
      */
     private void installListeners() {
@@ -151,20 +167,5 @@ public final class RouteManager {
         });
     }
 
-    /**
-     * Méthode privée permettant de replacer le cercle représentant la position mise en évidence
-     */
-    private void replaceCircle() {
-        if (routeBean.route() == null || Double.isNaN(routeBean.highlightedPosition())) {
-            highlightedPos.setVisible(false);
-            return;
-        }
-        highlightedPos.setVisible(true);
-        double posCircle = routeBean.highlightedPosition();
-        PointWebMercator pointCircle = PointWebMercator.ofPointCh(routeBean.route().pointAt(posCircle));
-
-        highlightedPos.setLayoutX(mapViewParametersProperty.get().viewX(pointCircle));
-        highlightedPos.setLayoutY(mapViewParametersProperty.get().viewY(pointCircle));
-    }
 
 }

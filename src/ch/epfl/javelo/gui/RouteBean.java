@@ -120,7 +120,7 @@ public final class RouteBean {
      * Méthode retournant l'index du segment à la position donnée (variante de la méthode indexOfSegmentAt)
      *
      * @param position (double) : la position donnée
-     * @return (int) :
+     * @return (int) : l'index du segment non nul
      */
     public int indexOfNonEmptySegmentAt(double position) {
         int index = route().indexOfSegmentAt(position);

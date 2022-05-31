@@ -37,7 +37,6 @@ public final class WaypointsManager {
     private final ObjectProperty<MapViewParameters> mapViewParametersProperty;
     private final ObservableList<Waypoint> waypointsList;
     private final Consumer<String> errorConsumer;
-
     private final Pane waypointsPane;
     private final Map<Group, Waypoint> pinsToWaypoint = new HashMap<>();
 
