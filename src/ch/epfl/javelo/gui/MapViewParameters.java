@@ -5,7 +5,7 @@
 package ch.epfl.javelo.gui;
 
 import ch.epfl.javelo.projection.PointWebMercator;
-import com.sun.javafx.geom.Point2D;
+import javafx.geometry.Point2D;
 
 /**
  * Enregistrement représentant les paramètres du fond de carte présenté dans l'interface graphique.
