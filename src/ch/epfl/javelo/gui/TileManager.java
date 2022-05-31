@@ -33,7 +33,7 @@ public final class TileManager {
      */
     public TileManager(Path path, String serverName) {
         this.path = path;
-        this.serverName = serverName;
+        this.serverName ="https://" + serverName + "/";
         this.cacheMemory = new LinkedHashMap<>(CAPACITY, 0.75f, true);
     }
 
@@ -57,7 +57,7 @@ public final class TileManager {
         Path tilePath = dir.resolve(tileId.y() + ".png");
         if (!Files.exists(tilePath)) {
             Files.createDirectories(dir);
-            URL u = new URL("https://" + serverName + tileId.zoomLevel + "/" + tileId.x + "/" + tileId.y + ".png");
+            URL u = new URL( serverName + tileId.zoomLevel + "/" + tileId.x + "/" + tileId.y + ".png");
             URLConnection c = u.openConnection();
             c.setRequestProperty("User-Agent", "JaVelo");
             try (InputStream i = c.getInputStream()) {
